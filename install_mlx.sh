@@ -182,7 +182,7 @@ else
     pnt ${SEP} $((LEN - 36))
     echo -e "${R}(git clone failed) ❌${E}"
 fi
-echo -e "\n${M}for more details, check log file: ${Y}${log_file}${E}"
+echo -e "\n${M}for more details, check log file:\n - ${Y}${log_file}${E}"
 
 # =[ 5 | Add mlx's doc to man command ]=======================================================================
 title_1 "5  | Add mlx's doc to man command (temporarly)"
