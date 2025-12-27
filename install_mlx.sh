@@ -173,7 +173,15 @@ else
     pnt ${SEP} $((LEN - 34))
     echo -e "${G}(already cloned) ☑️"${E}
 fi
-title_2 "4.2| Make mlx:"
+title_2 "4.2| Change mlx folder owner from root to user:"
+if [ -d ${MLX_PATH} ];then
+	pnt ${SEP} $((LEN - 50))
+	chown -R ${SUDO_USER}:${SUDO_USER} ${MLX_PATH} && echo -e " ✅"${E} || echo -e " ❌"${E}
+else
+	pnt ${SEP} $((LEN - 72))
+	echo -e "${R}(mlx folder not found) ❌"${E}
+fi
+title_2 "4.3| Make mlx:"
 if [ -d ${MLX_PATH} ];then
     print_in_log_file "cd ./mlx && ./configure:"
     if [[ ! -f "${MLX_PATH}/libmlx.a" ]];then
@@ -184,7 +192,7 @@ if [ -d ${MLX_PATH} ];then
         echo -e "${G}(already made) ☑️"${E}
     fi
 else
-    pnt ${SEP} $((LEN - 36))
+    pnt ${SEP} $((LEN - 35))
     echo -e "${R}(git clone failed) ❌${E}"
 fi
 echo -e "\n${M}for more details, check log file:\n - ${Y}${log_file}${E}"
