@@ -66,3 +66,44 @@ cd mlx_lab && ./clean.sh
     ...
 	  if [ -d $(MLX_DIR) ];then rm -rf $(MLX_DIR);fi
   ```
+
+## C | mlx's basic init and free functions
+
+### C.1 | Starting point of any MLX program: `void *mlx_init()`
+- This function create a **connection** between your program and your computer's **display server**.
+- Return value:
+  - ON FAILURE return NULL --> do not forget to protect with `if (!*mlx_ptr)...PANIC`
+  - ON SUCCESS return a `mlx_ptr` --> used by all other MLX functions(~ACCESS ID OF DISPLAY SERVER)
+- Freeing `mlx_ptr`--> `mlx_destroy_display()` + `free()` + set at NULL
+  ```c
+  void *mlx_ptr = mlx_init();
+  ...
+  mlx_destroy_display(mlx_ptr);
+  free(mlx_ptr);
+  mlx_ptr = NULL;
+  ```
+
+### C.2 | Manage windows: `void *mlx_new_window(void *mlx_ptr, int x, int y, char *title)`
+- This function asks the **display server** to create a new window.
+- Return value:
+  - ON FAILURE return NULL --> do not forget to protect with `if (!*win_ptr)...PANIC`
+  - ON SUCCESS return a `win_ptr` --> used by other windows functions(~WINDOW ID)
+- Freeing `win_ptr`--> `mlx_destroy_window()` + set at NULL
+  ```c
+  void *win_ptr = mlx_destroy_window(mlx_ptr, 400, 800, "titre");
+  ...
+  mlx_destroy_window(mlx_ptr, win_ptr);
+  win_ptr = NULL;
+  ```
+
+> [!CAUTION]
+> mlx_new_window triggers the Valgrind warning, add `--undef-value-errors=no` flags to delete false-negative warnings.
+
+## C.3 | Examples: `c_basic_init_free_fun.c`
+basic use of `mlx_init()`,`mlx_destroy_display()`, `mlx_new_windows()`, `mlx_destroy_window()`
+  ```c
+  cc -Wall -Wextra -Werror -Imlx src/c_basic_init_free_fun.c -o t1 -lXext -lX11
+  ```
+  ```c
+  valgrind valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t1
+  ```
