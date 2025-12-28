@@ -198,9 +198,11 @@ fi
 echo -e "\n${M}for more details, check log file:\n - ${Y}${log_file}${E}"
 
 # =[ 5 | Add mlx's doc to man command ]=======================================================================
-title_1 "5  | Add mlx's doc to man command (temporarly)"
-title_2 "5.1| Create tmp file :\n"
+title_1 "5  | Add mlx's doc to man command:"
+title_2 "\n5.1| Temporary :\n"
 echo "export MANPATH=\"${MLX_PATH}/man:\$MANPATH\"" > ${env_file}
-echo -e "To add mlx's man to your MANPATH, do:${R} \`${UG}source ${env_file}${E}${R}\`${E}\nThen to test, do:${R} \`${UG}man mlx${E}${R}\`${E}"
-title_2 "5.2| Permanently add mlx's man:\n"
-echo -e "This changes are temporary. To make them permanent, add these line:\n '${M}export MANPATH=\"${MLX_PATH}/man:\$MANPATH\"${E}'\ninto a startup dotfile (e.g. .zshrc, .bashrc, .profile) (then manually source this dotfile once, or just restart the session)"
+echo -e "- Exec:${R} \`${UG}source ${env_file}${E}${R}\`${G} (Add mlx/man/ folder to MANPATH env-var.)${E}"
+echo -e "- Test:${R} \`${UG}man mlx${E}${R}\`${G} (should display mlx man page)${E}"
+title_2 "\n5.2| Permanently :\n"
+echo -e "- Add this line: '${M}export MANPATH=\"${MLX_PATH}/man:\$MANPATH\"${E}'\n- In any startup dotfile: ${G}(e.g. .zshrc, .bashrc, .profile)${E}\n- Then manually source this dotfile once, or just restart the session."
+echo -e "${G}(Note that now ${MLX_PATH}/man must not be removed ^^')${E}"
