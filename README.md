@@ -288,7 +288,8 @@ So, another way to handle clean exit feature without directly calling `mlx_loop_
 
 - **File**: 
   - [src/e_dest_win_with_flag.c](https://github.com/alterGNU/mlx_lab/blob/main/src/e_dest_win_with_flag.c)
-  - Program can be cleanly exit by pressing down `[ESC]` key, hook `mlx_loop_end()` wrapper, then clean in main fun.
+  - Program hangle clean exit when `[ESC]`key pressed or `[X]`window button clicked.
+  - Call `mlx_destoy_window()` in the `mlx_loop_hook()` function, using a flag store in data.
 - **Compilation**: 
   ```c
   cc -Wall -Wextra -Werror -Imlx src/e_dest_win_with_flag.c mlx/libmlx.a -o t3_esc_and_dest_with_flag -lXext -lX11 
