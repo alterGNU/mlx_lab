@@ -132,9 +132,13 @@ cd mlx_lab && ./clean.sh
 
 ## D | Display image `mlx_loop()`
 In previous code example, our newly create window or image are not displayed on screen
+
 _(Actually, they're displayed, but too quickly to being seen and then are destroyed)._
+
 To fix this, a **'naive approch'** would have been to use a `while (true){...}` loop between init. and destruction.
+
 A better way is to use the Minilibx provided `int mlx_loop(void *mlx_ptr)` function that handle events while looping infinitely.
+
 _(This way, we can associate user-defined functions with events (exit loop when `[ESC]` key is pressed...)_
 
 > [!NOTE]
@@ -152,3 +156,86 @@ _(This way, we can associate user-defined functions with events (exit loop when 
 
 > [!WARNING]
 > Without event, loop can only be stopped with `[CTRL]+[C]` --> leaks!!!
+
+## E | Events
+### E.1 | X11 Interface - Events
+X-Window system is **bi-directionnal**:
+  - The program sends orders to the screen to display pixels/images/...
+  - The program can get information from keyboard/mouse associated to the screen by receving **events** from keyboard/mouse
+
+Each event have an **int ID** and can be combined with a mask (int ID too) to whitelist or blacklist events.
+
+- [Off. Docs: X11 events](https://tronche.com/gui/x/xlib/events/)
+
+#### E.1.1 | events ID/KEY
+```c
+enum {
+	ON_KEYDOWN = 2,
+	ON_KEYUP = 3,
+	ON_MOUSEDOWN = 4,
+	ON_MOUSEUP = 5,
+	ON_MOUSEMOVE = 6,
+	ON_EXPOSE = 12,
+	ON_DESTROY = 17
+};
+```
+### E.2 | MinilibX API - Events
+#### E.2.1 | Generic Access to X11-Event: `mlx_hook()`
+- `int	mlx_hook(void *win_ptr, int x_event, int x_mask, int (*funct)(), void *param)`
+  - `void *win_ptr`   : ptr to the window on which this assignment is specific
+  - `int x_event`     : event id
+  - `int x_mask`      : mask id
+  - `int (*funct)()`  : ptr to the fun. you want to be called when an event occurs
+  - `void *param`     : ptr who will be passed to the fun. (should be used to store the parameters needed by fun.)
+
+MLX therefore handle event with **mlx_hook aliases**:
+
+#### E.2.2 | Alias to manage NO EVENT `mlx_loop_hook(win_ptr, fun, arg)`:
+- When **NO EVENT** `int	mlx_loop_hook(t_xvar *xvar,int (*funct)(),void *param)` run:
+  - `t_xvar *xvar`    : t_xvar struct (window id) on which this assignment is specific
+  - `int (*funct)()`  : ptr to the fun. you want to be called when an event occurs
+  - `void *param`     : ptr who will be passed to the fun. (should be used to store the parameters needed by fun.)
+
+> [!IDEE]
+> This mlx_hook alias function can be use to draw when no event detected.
+
+#### E.2.3 | Alias to manage KEYUP pressing event: `mlx_key_hook(win_ptr, fun, arg)`
+- When **a key is pressed** use alias: `int	mlx_key_hook(t_xvar *xvar,int (*funct)(),void *param)` run:
+  - `t_xvar *xvar`    : t_xvar struct (window id) on which this assignment is specific
+  - `int (*funct)()`  : ptr to the fun. you want to be called when an event occurs
+  - `void *param`     : ptr who will be passed to the fun. (should be used to store the parameters needed by fun.)
+
+#### E.2.4 | Alias to manage MOUSE button pressing event: `mlx_mouse_hook(win_ptr, fun, arg)`
+- When **the mouse is pressed** use alias: `int	mlx_mouse_hook(t_xvar *xvar,int (*funct)(),void *param)` run:
+  - `t_xvar *xvar`    : t_xvar struct (window id) on which this assignment is specific
+  - `int (*funct)()`  : ptr to the fun. you want to be called when an event occurs
+  - `void *param`     : ptr who will be passed to the fun. (should be used to store the parameters needed by fun.)
+
+#### E.2.5 | Alias to manage EXPOSE event: `mlx_expose_hook(win_ptr, fun, arg)`
+- When **a part of the window should be redraw**, use alias: `int	mlx_expose_hook(t_xvar *xvar,int (*funct)(),void *param)` run:
+  - `t_xvar *xvar`    : t_xvar struct (window id) on which this assignment is specific
+  - `int (*funct)()`  : ptr to the fun. you want to be called when an event occurs
+  - `void *param`     : ptr who will be passed to the fun. (should be used to store the parameters needed by fun.)
+
+### E.3 | Examples with : Clean Exit Features
+#### E.3.1 | Clicking `[X]` --> **ON_DESTROY**:17 event
+##### E.3.1.1 | Call `mlx_loop_end()` to stop `mlx_loop()`:
+Clean Exit when event: click on `[X]` windows --> destroy window.
+
+Calls `mlx_hook(win_ptr, 17, 0, mlx_loop_end, mlx_ptr);` --> end `mlx_loop()`
+
+- **File**: 
+  - `src/e_end_loop_destroy_window.c`
+- **Compilation**: 
+  ```c
+  cc -Wall -Wextra -Werror -Imlx src/e_end_loop_destroy_window.c mlx/libmlx.a -o t3_end_loop_dest_win -lXext -lX11 
+  ```
+- **Valgrind**: 
+  ```c
+  valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t3_end_loop_dest_win
+  ```
+
+>[!WARNING]
+> need cleaning functions in main after `mlx_loop()`!
+
+#### E.3.2 | Pressing `[ESC]` --> **KEYUP**:3 event
