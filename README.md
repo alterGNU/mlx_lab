@@ -90,20 +90,41 @@ cd mlx_lab && ./clean.sh
   - ON SUCCESS return a `win_ptr` --> used by other windows functions(~WINDOW ID)
 - Freeing `win_ptr`--> `mlx_destroy_window()` + set at NULL
   ```c
-  void *win_ptr = mlx_destroy_window(mlx_ptr, 400, 800, "titre");
+  void *win_ptr = mlx_new_window(mlx_ptr, 400, 800, "titre");
   ...
   mlx_destroy_window(mlx_ptr, win_ptr);
   win_ptr = NULL;
+  ```
+- Examples: `src/c_basic_init_free_window.c`
+  - basic use of `mlx_init()`,`mlx_destroy_display()`, `mlx_new_windows()`, `mlx_destroy_window()`
+  ```c
+  cc -Wall -Wextra -Werror -Imlx src/c_basic_init_free_window.c mlx/libmlx.a -o t1_win -lXext -lX11 
+  ```
+  - create and destroy display and window without displaying anything (too quick), use just to check leaks with valgrind
+  ```c
+  valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t1_win
   ```
 
 > [!CAUTION]
 > mlx_new_window triggers the Valgrind warning, add `--undef-value-errors=no` flags to delete false-negative warnings.
 
-## C.3 | Examples: `c_basic_init_free_fun.c`
-basic use of `mlx_init()`,`mlx_destroy_display()`, `mlx_new_windows()`, `mlx_destroy_window()`
+### C.3 | Manage images: `void *mlx_new_image(void *mlx_ptr, int x, int y)`
+- This function creates a new image in memory. 
+- Return value:
+  - ON FAILURE return NULL --> do not forget to protect with `if (!*img_ptr)...PANIC`
+  - ON SUCCESS return a `img_ptr` --> used by other manipulating images functions(~IMAGES ID)
+- Freeing `img_ptr`--> `mlx_destroy_image()` + set at NULL
   ```c
-  cc -Wall -Wextra -Werror -Imlx src/c_basic_init_free_fun.c -o t1 -lXext -lX11
+  void *img_ptr = mlx_new_image(mlx_ptr, 1920, 1080);
+  ...
+  mlx_destroy_image(mlx_ptr, img_ptr);
   ```
+- Examples: `src/c_basic_init_free_image.c`-> create and destroy display and image (do not display anything)
+  - basic use of `mlx_init()`,`mlx_destroy_display()`, `mlx_new_images()`, `mlx_destroy_image()`
   ```c
-  valgrind valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t1
+  cc -Wall -Wextra -Werror -Imlx src/c_basic_init_free_image.c mlx/libmlx.a -o t1_img -lXext -lX11 
+  ```
+  - create and destroy display and image without displaying anything (too quick), use just to check leaks with valgrind
+  ```c
+  valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t1_img
   ```
