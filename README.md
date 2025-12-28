@@ -118,6 +118,7 @@ cd mlx_lab && ./clean.sh
   void *img_ptr = mlx_new_image(mlx_ptr, 1920, 1080);
   ...
   mlx_destroy_image(mlx_ptr, img_ptr);
+  img_ptr = NULL;
   ```
 - Examples: `src/c_basic_init_free_image.c`-> create and destroy display and image (do not display anything)
   - basic use of `mlx_init()`,`mlx_destroy_display()`, `mlx_new_images()`, `mlx_destroy_image()`
@@ -128,3 +129,26 @@ cd mlx_lab && ./clean.sh
   ```c
   valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t1_img
   ```
+
+## D | Display image `mlx_loop()`
+In previous code example, our newly create window or image are not displayed on screen
+_(Actually, they're displayed, but too quickly to being seen and then are destroyed)._
+To fix this, a **'naive approch'** would have been to use a `while (true){...}` loop between init. and destruction.
+A better way is to use the Minilibx provided `int mlx_loop(void *mlx_ptr)` function that handle events while looping infinitely.
+_(This way, we can associate user-defined functions with events (exit loop when `[ESC]` key is pressed...)_
+
+> [!NOTE]
+> loop stop if `xvar->window_count < 1`:no window left(destroyed) or `xvar->end_loop > 0`:fun.`mlx_loop_end(mlx_ptr)`called
+
+### Example: `src/d_display_window.c`-> display window
+  - Add `mlx_loop` to previous code:
+  ```c
+  cc -Wall -Wextra -Werror -Imlx src/d_display_window.c mlx/libmlx.a -o t2_win -lXext -lX11 
+  ```
+  - create and destroy display and image without displaying anything (too quick), use just to check leaks with valgrind
+  ```c
+  valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t2_win
+  ```
+
+> [!WARNING]
+> Without event, loop can only be stopped with `[CTRL]+[C]` --> leaks!!!
