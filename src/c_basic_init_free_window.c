@@ -6,12 +6,12 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/27 16:02:36 by lagrondi          #+#    #+#             */
-/*   Updated: 2025/12/28 12:24:10 by lagrondi         ###   ########.fr       */
+/*   Updated: 2025/12/28 15:33:35 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mlx.h"
-#include "stdlib.h"
+#include <stdlib.h>
 
 int	main(void)
 {

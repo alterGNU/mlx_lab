@@ -6,12 +6,12 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/27 16:02:36 by lagrondi          #+#    #+#             */
-/*   Updated: 2025/12/28 13:17:31 by lagrondi         ###   ########.fr       */
+/*   Updated: 2025/12/28 15:33:44 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mlx.h"
-#include "stdlib.h"
+#include <stdlib.h>
 
 /**
  * Displays a window with an window using the MiniLibX library.
