@@ -231,10 +231,14 @@ MLX therefore handle event with **mlx_hook aliases**:
   - `void *param`     : ptr who will be passed to the fun. (should be used to store the parameters needed by fun.)
 
 ### E.3 | Examples with : Clean Exit Features
-#### E.3.1 | Clicking `[X]` --> **ON_DESTROY**:17 event
-##### E.3.1.1 | Call `mlx_loop_end()` to stop `mlx_loop()`:
+#### E.3.1 | Call `mlx_loop_end()` directly
 
-**Clean Exit** when event: click on `[X]` windows --> destroy window --> `mlx_loop_end()`
+>[!NOTE]
+> This way is simplier, it will just stop the loop: just call cleaning functions in main after `mlx_loop()` calls.
+
+##### E.3.1.a | On event Window's `[X]` Button.
+
+**Clean Exit** when event: click on `[X]` windows --> `mlx_loop_end()` --> stop `mlx_loop()`
 
 - **File**: 
   - [src/e_end_loop_destroy_window.c](https://github.com/alterGNU/mlx_lab/blob/main/src/e_end_loop_destroy_window.c)
@@ -248,13 +252,9 @@ MLX therefore handle event with **mlx_hook aliases**:
   valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t3_end_loop_dest_win
   ```
 
->[!WARNING]
-> need cleaning functions in main after `mlx_loop()`!
+##### E.3.2.b | On event Pressing Key `[ESC]` Down.
 
-#### E.3.2 | Pressing Down `[ESC]` --> **KEYDOWN**:2 event + **KeyPress**:(1L<<0) mask
-##### E.3.2.1 | Call `mlx_loop_end()` to stop `mlx_loop()`:
-
-**Clean Exit** when event: press down `[ESC]` key --> `mlx_loop_end()`
+**Clean Exit** when event: press down `[ESC]` key --> `mlx_loop_end()` --> stop `mlx_loop()`
 
 - **File**: 
   - [src/e_end_loop_esc_keydown.c](https://github.com/alterGNU/mlx_lab/blob/main/src/e_end_loop_esc_keydown.c)
@@ -268,5 +268,32 @@ MLX therefore handle event with **mlx_hook aliases**:
   valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t3_end_loop_esc
   ```
 
->[!WARNING]
-> need cleaning functions in main after `mlx_loop()`!
+#### E.3.2 | Call `mlx_destroy_window()` using a flag.
+
+>[!CAUTION]
+>`mlx_hook()` runs DURING event processing, so calling `mlx_destroy_window()` can lead to use-after-free error since `mlx_loop()` still holds a ptr to the newly destroyed window
+
+>[!TIP]
+>`mlx_loop_hook()` runs BETWEEEN iterations, when no event is being handled, so calling `mlx_destroy_window()` there is safer
+
+So, another way to handle clean exit feature without directly calling `mlx_loop_end()`:
+1. Create a struct with 3 members:
+  1. `void *mlx_ptr`: pointer to display's ID init by `mlx_init()`.
+  2. `void *win_ptr`: ptr to window's ID init by `mlx_new_window()`.
+  3. `int window_should_be_destroyed`: flag init at 0, increase when event leading to windows destruction occures.
+2. Create functions that increment the flag called by the `mlx_hook()` when:
+  1. key `[ESC]` is pressed down --> `mlx_hook(dt.win_ptr, 17, 0, &increment_close_win_flag, &dt);`
+  1. window's `[X]` buttin is clicked on --> `mlx_hook(dt.win_ptr, 2, (1L << 0), &handle_input, &dt);`
+3. Create the function called by `mlx_loop_hook()` that will actually called `mlx_destroy_window()`
+
+- **File**: 
+  - [src/e_dest_win_with_flag.c](https://github.com/alterGNU/mlx_lab/blob/main/src/e_dest_win_with_flag.c)
+  - Program can be cleanly exit by pressing down `[ESC]` key, hook `mlx_loop_end()` wrapper, then clean in main fun.
+- **Compilation**: 
+  ```c
+  cc -Wall -Wextra -Werror -Imlx src/e_dest_win_with_flag.c mlx/libmlx.a -o t3_esc_and_dest_with_flag -lXext -lX11 
+  ```
+- **Valgrind**: 
+  ```c
+  valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t3_esc_and_dest_with_flag
+  ```
