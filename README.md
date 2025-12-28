@@ -251,4 +251,22 @@ MLX therefore handle event with **mlx_hook aliases**:
 >[!WARNING]
 > need cleaning functions in main after `mlx_loop()`!
 
-#### E.3.2 | Pressing `[ESC]` --> **KEYUP**:3 event
+#### E.3.2 | Pressing Down `[ESC]` --> **KEYDOWN**:2 event + **KeyPress**:(1L<<0) mask
+##### E.3.2.1 | Call `mlx_loop_end()` to stop `mlx_loop()`:
+
+**Clean Exit** when event: press down `[ESC]` key --> `mlx_loop_end()`
+
+- **File**: 
+  - [src/e_end_loop_esc_keydown.c](https://github.com/alterGNU/mlx_lab/blob/main/src/e_end_loop_esc_keydown.c)
+  - Program can be cleanly exit by pressing down `[ESC]` key, hook `mlx_loop_end()` wrapper, then clean in main fun.
+- **Compilation**: 
+  ```c
+  cc -Wall -Wextra -Werror -Imlx src/e_end_loop_esc_keydown.c mlx/libmlx.a -o t3_end_loop_esc -lXext -lX11 
+  ```
+- **Valgrind**: 
+  ```c
+  valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t3_end_loop_esc
+  ```
+
+>[!WARNING]
+> need cleaning functions in main after `mlx_loop()`!
