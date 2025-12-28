@@ -26,6 +26,7 @@ cd mlx_lab && ./clean.sh
 - Main steps:
   - step 1: Remove scripts generated files (`env_file` and `*.log` files)
   - step 2: Remove sub-folders in list `SUB_FOLDERS_TO_DEL=( "mlx" )`
+  - step 3: Remove binary tests files (pattern:`t[0-9]_*`)
 
 ## B | Add mlx to project's Makefile:
 - B.1 | Rules to git clone mlx and make minilibx.
@@ -70,11 +71,13 @@ cd mlx_lab && ./clean.sh
 ## C | mlx's basic init and free functions
 
 ### C.1 | Starting point of any MLX program: `void *mlx_init()`
-- This function create a **connection** between your program and your computer's **display server**.
-- Return value:
+
+This function create a **connection** between your program and your computer's **display server**.
+
+- **Return value**:
   - ON FAILURE return NULL --> do not forget to protect with `if (!*mlx_ptr)...PANIC`
   - ON SUCCESS return a `mlx_ptr` --> used by all other MLX functions(~ACCESS ID OF DISPLAY SERVER)
-- Freeing `mlx_ptr`--> `mlx_destroy_display()` + `free()` + set at NULL
+- **Freeing**: 
   ```c
   void *mlx_ptr = mlx_init();
   ...
@@ -84,23 +87,27 @@ cd mlx_lab && ./clean.sh
   ```
 
 ### C.2 | Manage windows: `void *mlx_new_window(void *mlx_ptr, int x, int y, char *title)`
-- This function asks the **display server** to create a new window.
-- Return value:
+
+This function asks the **display server** to create a new window.
+
+- **Return value**:
   - ON FAILURE return NULL --> do not forget to protect with `if (!*win_ptr)...PANIC`
   - ON SUCCESS return a `win_ptr` --> used by other windows functions(~WINDOW ID)
-- Freeing `win_ptr`--> `mlx_destroy_window()` + set at NULL
+- **Freeing**:
   ```c
   void *win_ptr = mlx_new_window(mlx_ptr, 400, 800, "titre");
   ...
   mlx_destroy_window(mlx_ptr, win_ptr);
   win_ptr = NULL;
   ```
-- Examples: `src/c_basic_init_free_window.c`
-  - basic use of `mlx_init()`,`mlx_destroy_display()`, `mlx_new_windows()`, `mlx_destroy_window()`
+- **File**:
+  - [src/c_basic_init_free_window.c](https://github.com/alterGNU/mlx_lab/blob/main/src/c_basic_init_free_window.c)
+  - create and destroy display and window without displaying anything (too quick), use just to check leaks with valgrind
+- **Compilation**:
   ```c
   cc -Wall -Wextra -Werror -Imlx src/c_basic_init_free_window.c mlx/libmlx.a -o t1_win -lXext -lX11 
   ```
-  - create and destroy display and window without displaying anything (too quick), use just to check leaks with valgrind
+- **Valgrind**:
   ```c
   valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t1_win
   ```
@@ -109,23 +116,27 @@ cd mlx_lab && ./clean.sh
 > mlx_new_window triggers the Valgrind warning, add `--undef-value-errors=no` flags to delete false-negative warnings.
 
 ### C.3 | Manage images: `void *mlx_new_image(void *mlx_ptr, int x, int y)`
-- This function creates a new image in memory. 
-- Return value:
+
+This function creates a new image in memory. 
+
+- **Return value**:
   - ON FAILURE return NULL --> do not forget to protect with `if (!*img_ptr)...PANIC`
   - ON SUCCESS return a `img_ptr` --> used by other manipulating images functions(~IMAGES ID)
-- Freeing `img_ptr`--> `mlx_destroy_image()` + set at NULL
+- **Freeing**:
   ```c
   void *img_ptr = mlx_new_image(mlx_ptr, 1920, 1080);
   ...
   mlx_destroy_image(mlx_ptr, img_ptr);
   img_ptr = NULL;
   ```
-- Examples: `src/c_basic_init_free_image.c`-> create and destroy display and image (do not display anything)
-  - basic use of `mlx_init()`,`mlx_destroy_display()`, `mlx_new_images()`, `mlx_destroy_image()`
+- **File**: 
+  - [src/c_basic_init_free_image.c](https://github.com/alterGNU/mlx_lab/blob/main/src/c_basic_init_free_image.c)
+  - create and destroy display and image without displaying anything (too quick), use just to check leaks with valgrind
+- **Compilation**:
   ```c
   cc -Wall -Wextra -Werror -Imlx src/c_basic_init_free_image.c mlx/libmlx.a -o t1_img -lXext -lX11 
   ```
-  - create and destroy display and image without displaying anything (too quick), use just to check leaks with valgrind
+- **Valgrind**:
   ```c
   valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t1_img
   ```
@@ -144,12 +155,14 @@ _(This way, we can associate user-defined functions with events (exit loop when 
 > [!NOTE]
 > loop stop if `xvar->window_count < 1`:no window left(destroyed) or `xvar->end_loop > 0`:fun.`mlx_loop_end(mlx_ptr)`called
 
-### Example: `src/d_display_window.c`-> display window
-  - Add `mlx_loop` to previous code:
+- **File**: 
+  - [src/d_display_window.c](https://github.com/alterGNU/mlx_lab/blob/main/src/d_display_window.c)
+  - create and destroy display and image without displaying anything (too quick), use just to check leaks with valgrind
+- **Compilation**:
   ```c
   cc -Wall -Wextra -Werror -Imlx src/d_display_window.c mlx/libmlx.a -o t2_win -lXext -lX11 
   ```
-  - create and destroy display and image without displaying anything (too quick), use just to check leaks with valgrind
+- **Valgrind**:
   ```c
   valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t2_win
   ```
@@ -196,7 +209,7 @@ MLX therefore handle event with **mlx_hook aliases**:
   - `int (*funct)()`  : ptr to the fun. you want to be called when an event occurs
   - `void *param`     : ptr who will be passed to the fun. (should be used to store the parameters needed by fun.)
 
-> [!IDEE]
+> [!TIP]
 > This mlx_hook alias function can be use to draw when no event detected.
 
 #### E.2.3 | Alias to manage KEYUP pressing event: `mlx_key_hook(win_ptr, fun, arg)`
@@ -220,12 +233,12 @@ MLX therefore handle event with **mlx_hook aliases**:
 ### E.3 | Examples with : Clean Exit Features
 #### E.3.1 | Clicking `[X]` --> **ON_DESTROY**:17 event
 ##### E.3.1.1 | Call `mlx_loop_end()` to stop `mlx_loop()`:
-Clean Exit when event: click on `[X]` windows --> destroy window.
 
-Calls `mlx_hook(win_ptr, 17, 0, mlx_loop_end, mlx_ptr);` --> end `mlx_loop()`
+**Clean Exit** when event: click on `[X]` windows --> destroy window --> `mlx_loop_end()`
 
 - **File**: 
-  - `src/e_end_loop_destroy_window.c`
+  - [src/e_end_loop_destroy_window.c](https://github.com/alterGNU/mlx_lab/blob/main/src/e_end_loop_destroy_window.c)
+  - Program can be cleanly exit by clicking on `[X]` Window Button, hook `mlx_loop_end()` then clean in main fun.
 - **Compilation**: 
   ```c
   cc -Wall -Wextra -Werror -Imlx src/e_end_loop_destroy_window.c mlx/libmlx.a -o t3_end_loop_dest_win -lXext -lX11 

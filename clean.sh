@@ -5,7 +5,7 @@
 #
 # - step 1: Remove scripts generated files (`env_file` and `*.log` files)
 # - step 2: Remove sub-folders in list `SUB_FOLDERS_TO_DEL=( "mlx" )`
-# - step 3: Remove tests compiled files (pattern:t[0-9]{1,2}_*)`
+# - step 3: Remove tests compiled files (pattern:t[0-9]_*)`
 #
 #                                                                                                 by alterGNU
 # ============================================================================================================
