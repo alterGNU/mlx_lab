@@ -5,6 +5,7 @@
 #
 # - step 1: Remove scripts generated files (`env_file` and `*.log` files)
 # - step 2: Remove sub-folders in list `SUB_FOLDERS_TO_DEL=( "mlx" )`
+# - step 3: Remove tests compiled files (pattern:t[0-9]{1,2}_*)`
 #
 #                                                                                                 by alterGNU
 # ============================================================================================================
@@ -63,7 +64,7 @@ title_2(){ echo -en "${@}" ; }
 # =[ Remove scripts generated files ]=========================================================================
 title_1 "1  | Remove scripts generated files:"
 title_2 "1.1| rm env_file:"
-if [[ -f ${env_file} ]];then
+if [ -f ${env_file} ];then
     pnt "${SEP}" $((LEN - 20))
 	rm -rf ${env_file} && echo -e " ✅" || echo -e " ❌"
 else
@@ -91,7 +92,7 @@ for sub_fold in "${SUB_FOLDERS_TO_DEL[@]}";do
     txt_sub_fold="1.2| rm sub-fold '${sub_fold}':"
     len_sub_fold=$(get_len "${txt_sub_fold}")
     echo -en "${txt_sub_fold}"
-    if [[ -d "${sub_fold}" ]];then
+    if [ -d "${sub_fold}" ];then
         pnt "${SEP}" $((LEN - len_sub_fold - 3))
         rm -rf ${sub_fold} && echo -e " ✅" || echo -e " ❌"
     else
@@ -100,3 +101,17 @@ for sub_fold in "${SUB_FOLDERS_TO_DEL[@]}";do
     fi
 done
 
+# =[ Remove tests compiled files ]===========================================================================
+title_1 "3  | Remove test compiled files:"
+test_files=( t[0-9]_* )
+if [ "${test_files[0]}" == "t[0-9]_*" ];then
+    pnt "${SEP}" $((LEN - 27))
+    echo -e ${G}"(no test compiled files) ✖️ "${E}
+else
+    for test_file in "${test_files[@]}";do
+        txt_test_file="   ⤷ rm ${test_file}"
+        len_test_file=$(get_len "${txt_test_file}")
+        echo -en "${txt_test_file}" && pnt "${SEP}" $((LEN - len_test_file - 3))
+        rm -rf ${test_file} && echo -e " ✅" || echo -e " ❌"
+    done
+fi
