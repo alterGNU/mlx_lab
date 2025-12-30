@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/27 16:02:36 by lagrondi          #+#    #+#             */
-/*   Updated: 2025/12/28 20:08:53 by lagrondi         ###   ########.fr       */
+/*   Updated: 2025/12/30 17:23:05 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #define WIN_X 800
 #define WIN_Y 400
-#define WIN_TITLE "Window closable with [X]--> Destroy Window"
+#define WIN_TITLE "Window can be closed using [ESC]Key OR [X]Window's Button ->"
 #define ESC_KEY 65307
 
 typedef struct s_data

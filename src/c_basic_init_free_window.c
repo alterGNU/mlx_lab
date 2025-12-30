@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/27 16:02:36 by lagrondi          #+#    #+#             */
-/*   Updated: 2025/12/28 15:33:35 by lagrondi         ###   ########.fr       */
+/*   Updated: 2025/12/30 17:21:15 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	main(void)
 	mlx_ptr = mlx_init();
 	if (!mlx_ptr)
 		return (1);
-	win_ptr = mlx_new_window(mlx_ptr, 800, 400, "Test Window");
+	win_ptr = mlx_new_window(mlx_ptr, 800, 400, "Create Window");
 	if (!win_ptr)
 		return (mlx_destroy_display(mlx_ptr), free(mlx_ptr), mlx_ptr = NULL, 2);
 	return (mlx_destroy_window(mlx_ptr, win_ptr), win_ptr = NULL, \

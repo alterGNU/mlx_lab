@@ -377,7 +377,7 @@ They're several ways of representing colors, minilibx use the **true color (32-b
   }
   ```
 
-#### F.1.b | mlx_pixel_put(): (slow)
+#### F.1.b | ❌ mlx_pixel_put(): (slow-->not recommended)
 -  To draw pixels, mlx have the `int mlx_pixel_put(void *mlx_ptr, void *win_ptr, int x, int y, int color)`
 
     ```c
@@ -402,8 +402,8 @@ They're several ways of representing colors, minilibx use the **true color (32-b
     - Use `mlx_pixel_put()` in the `mlx_loop_hook()`:
       - Instead of drawing the entire panel at once, it updates each pixel individually resulting in a slow rendering effect.
   - **Observations**:
-    - This approach is inlefficient and results in a very slow rendering.
-    - Hook like Clean-Exit can be ignored if occured during the drawing process. 
+    - This approach is **inefficient** and results in a very slow rendering.
+    - Hook like Clean-Exit can be **ignored** if occured during the drawing process. 
 
 - **Compilation**: 
   ```c
