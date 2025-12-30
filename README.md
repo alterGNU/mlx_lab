@@ -100,9 +100,16 @@ This function asks the **display server** to create a new window.
   mlx_destroy_window(mlx_ptr, win_ptr);
   win_ptr = NULL;
   ```
-- **File**:
-  - [src/c_basic_init_free_window.c](https://github.com/alterGNU/mlx_lab/blob/main/src/c_basic_init_free_window.c)
-  - create and destroy display and window without displaying anything (too quick), use just to check leaks with valgrind
+- **File**: [src/c_basic_init_free_window.c](https://github.com/alterGNU/mlx_lab/blob/main/src/c_basic_init_free_window.c)
+  - **Objectifs**:
+    - Manipulate display and window's basic fun. and check leaks with valgrind.
+  - **Implementation**:
+    - Call display's `mlx_init()` and `mlx_destroy_display()` fun.
+    - Call window's `mlx_new_window()` and `mlx_destroy_window()` fun.
+  - **Observations**:
+    - `mlx_destroy_display()` **do not frees** `mlx_ptr` pointer var., setting at null needed too.
+    - `mlx_destroy_window()` **frees** `win_ptr` pointer var., but setting at null needed.
+    - Without a loop, nothing displayed on screen (too fast/quick).
 - **Compilation**:
   ```c
   cc -Wall -Wextra -Werror -Imlx src/c_basic_init_free_window.c mlx/libmlx.a -o t1_win -lXext -lX11 
@@ -129,9 +136,14 @@ This function creates a new image in memory.
   mlx_destroy_image(mlx_ptr, img_ptr);
   img_ptr = NULL;
   ```
-- **File**: 
-  - [src/c_basic_init_free_image.c](https://github.com/alterGNU/mlx_lab/blob/main/src/c_basic_init_free_image.c)
-  - create and destroy display and image without displaying anything (too quick), use just to check leaks with valgrind
+- **File**: [src/c_basic_init_free_image.c](https://github.com/alterGNU/mlx_lab/blob/main/src/c_basic_init_free_image.c)
+  - **Objectifs**:
+    - Manipulate image basic fun (creation and deletion)
+  - **Implementation**:
+    - Call window's `mlx_new_image()` and `mlx_destroy_image()` fun.
+  - **Observations**:
+    - `mlx_destroy_image()` **frees** `img_ptr` pointer var., but setting at null needed.
+    - Without a loop, nothing displayed on screen (too fast/quick).
 - **Compilation**:
   ```c
   cc -Wall -Wextra -Werror -Imlx src/c_basic_init_free_image.c mlx/libmlx.a -o t1_img -lXext -lX11 
@@ -155,9 +167,13 @@ _(This way, we can associate user-defined functions with events (exit loop when 
 > [!NOTE]
 > loop stop if `xvar->window_count < 1`:no window left(destroyed) or `xvar->end_loop > 0`:fun.`mlx_loop_end(mlx_ptr)`called
 
-- **File**: 
-  - [src/d_display_window.c](https://github.com/alterGNU/mlx_lab/blob/main/src/d_display_window.c)
-  - create and destroy display and image without displaying anything (too quick), use just to check leaks with valgrind
+- **File**: [src/d_display_window.c](https://github.com/alterGNU/mlx_lab/blob/main/src/d_display_window.c)
+  - **Objectifs**:
+    - display the newly created window by adding a loop. _(destruction fun. wait the end of the loop)_
+  - **Implementation**:
+    - Calls `mlx_loop()` between window's creation and destruction funs.
+  - **Observations**:
+    - This time, a window is displayed, but wihtout hook on clean-exit fun., only `Ctrl+C` can kill the program, leading to leaks!
 - **Compilation**:
   ```c
   cc -Wall -Wextra -Werror -Imlx src/d_display_window.c mlx/libmlx.a -o t2_win -lXext -lX11 
@@ -240,9 +256,13 @@ MLX therefore handle event with **mlx_hook aliases**:
 
 **Clean Exit** when event: click on `[X]` windows --> `mlx_loop_end()` --> stop `mlx_loop()`
 
-- **File**: 
-  - [src/e_end_loop_destroy_window.c](https://github.com/alterGNU/mlx_lab/blob/main/src/e_end_loop_destroy_window.c)
-  - Program can be cleanly exit by clicking on `[X]` Window Button, hook `mlx_loop_end()` then clean in main fun.
+- **File**: [src/e_end_loop_destroy_window.c](https://github.com/alterGNU/mlx_lab/blob/main/src/e_end_loop_destroy_window.c)
+  - **Objectifs**:
+    - Displaying a window until the window's `[X]` Button clicked-on-->clean-exit!
+  - **Implementation**:
+    - Hook `[X]`Window's-Button with `mlx_hook()`-->calls `mlx_loop_end()` function.
+  - **Observations**:
+    - Cleaning and freeing functions must be called in main after `mlx_loop()` since `mlx_loop_end()` just stop the `mlx_loop()` fun.
 - **Compilation**: 
   ```c
   cc -Wall -Wextra -Werror -Imlx src/e_end_loop_destroy_window.c mlx/libmlx.a -o t3_end_loop_dest_win -lXext -lX11 
@@ -256,9 +276,13 @@ MLX therefore handle event with **mlx_hook aliases**:
 
 **Clean Exit** when event: press down `[ESC]` key --> `mlx_loop_end()` --> stop `mlx_loop()`
 
-- **File**: 
-  - [src/e_end_loop_esc_keydown.c](https://github.com/alterGNU/mlx_lab/blob/main/src/e_end_loop_esc_keydown.c)
-  - Program can be cleanly exit by pressing down `[ESC]` key, hook `mlx_loop_end()` wrapper, then clean in main fun.
+- **File**: [src/e_end_loop_esc_keydown.c](https://github.com/alterGNU/mlx_lab/blob/main/src/e_end_loop_esc_keydown.c)
+  - **Objectifs**:
+    - Handling clean exit by pressing down `[ESC]` key: unsing `mlx_loop_end()`
+  - **Implementation**:
+    - `mlx_hook()` calls a user-made function that calls `mlx_loop_end()`
+  - **Observations**:
+    - Cleaning and freeing functions must be called in main after `mlx_loop()`.
 - **Compilation**: 
   ```c
   cc -Wall -Wextra -Werror -Imlx src/e_end_loop_esc_keydown.c mlx/libmlx.a -o t3_end_loop_esc -lXext -lX11 
@@ -278,18 +302,19 @@ MLX therefore handle event with **mlx_hook aliases**:
 
 So, another way to handle clean exit feature without directly calling `mlx_loop_end()`:
 1. Create a struct with 3 members:
-  1. `void *mlx_ptr`: pointer to display's ID init by `mlx_init()`.
-  2. `void *win_ptr`: ptr to window's ID init by `mlx_new_window()`.
-  3. `int window_should_be_destroyed`: flag init at 0, increase when event leading to windows destruction occures.
+  - 1.1 | `void *mlx_ptr`: pointer to display's ID init by `mlx_init()`.
+  - 1.2 | `void *win_ptr`: ptr to window's ID init by `mlx_new_window()`.
+  - 1.3 | `int window_should_be_destroyed`: flag init at 0, increase when event leading to windows destruction occures.
 2. Create functions that increment the flag called by the `mlx_hook()` when:
-  1. key `[ESC]` is pressed down --> `mlx_hook(dt.win_ptr, 17, 0, &increment_close_win_flag, &dt);`
-  1. window's `[X]` buttin is clicked on --> `mlx_hook(dt.win_ptr, 2, (1L << 0), &handle_input, &dt);`
+  - 2.1 | key `[ESC]` is pressed down --> `mlx_hook(dt.win_ptr, 17, 0, &increment_close_win_flag, &dt);`
+  - 2.2 | window's `[X]` buttin is clicked on --> `mlx_hook(dt.win_ptr, 2, (1L << 0), &handle_input, &dt);`
 3. Create the function called by `mlx_loop_hook()` that will actually called `mlx_destroy_window()`
 
-- **File**: 
-  - [src/e_dest_win_with_flag.c](https://github.com/alterGNU/mlx_lab/blob/main/src/e_dest_win_with_flag.c)
-  - Program hangle clean exit when `[ESC]`key pressed or `[X]`window button clicked.
-  - Call `mlx_destoy_window()` in the `mlx_loop_hook()` function, using a flag store in data.
+- **File**: [src/e_dest_win_with_flag.c](https://github.com/alterGNU/mlx_lab/blob/main/src/e_dest_win_with_flag.c)
+  - **Objectifs**:
+    - handling clean exit when `[ESC]`key pressed AND `[X]`window button clicked.
+  - **Implementation**:
+    - Call `mlx_destoy_window()` in the `mlx_loop_hook()` function, using a flag store in data.
 - **Compilation**: 
   ```c
   cc -Wall -Wextra -Werror -Imlx src/e_dest_win_with_flag.c mlx/libmlx.a -o t3_esc_and_dest_with_flag -lXext -lX11 
@@ -297,4 +322,95 @@ So, another way to handle clean exit feature without directly calling `mlx_loop_
 - **Valgrind**: 
   ```c
   valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t3_esc_and_dest_with_flag
+  ```
+
+## F | Drawing Images
+### F.1 | Writing pixels to an image:
+#### F.1.a | Color
+They're several ways of representing colors, minilibx use the **true color (32-bit)** standard.
+
+- Has we need to fit the color into a `int datatype` to be a 32bits in our system:
+  - `int color = 0xTTRRGGBB;`
+
+>[!NOTE]
+> We do not need to change the T:Transparency since minilibx seems to ignore this , first byte remain 00.
+
+- `int color = 0x00RRGGBB;`
+
+>[!WARNING]
+> Out of range value color bits combined with bit shifting can result in corrupts adjacent color bits
+
+- **LONG IMPLEMENTATION**:
+  ```c
+  /**
+   * shorter version is: val_not_in_range(int v){ return (v < 0 || v > 255);};
+   */
+  int val_not_in_range(int v)
+  {
+    if (0 <= v && v <= 255)
+      return (0);
+    return (1);
+  }
+  /**
+   * if bit color out of range, replace by 0 
+   */
+  int convert_to_rgb(int r, int g, int b)
+  {
+    if (val_not_in_range(r))
+      r = 0;
+    if (val_not_in_range(g))
+      g = 0;
+    if (val_not_in_range(b))
+      b = 0;
+    return (r << 16 | g << 8 | b)
+  }
+  ```
+
+>[!TIP]
+> Using masks can clamped to 8bits automatically-->safer, no adjacent color bits corruption when out of range.
+
+- **SHORT IMPLEMENTATION**: RGB components are masked to 8bits before shifting to prevent overflow and sign-extension issues:
+  ```c
+  int convert_to_rgb(int r, int g, int b)
+  {
+    return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
+  }
+  ```
+
+#### F.1.b | mlx_pixel_put(): (slow)
+-  To draw pixels, mlx have the `int mlx_pixel_put(void *mlx_ptr, void *win_ptr, int x, int y, int color)`
+
+    ```c
+    /**
+      * Put a pixel on the screen.
+      *
+      * @param	void *mlx_ptr : the mlx instance pointer;
+      * @param	void *win_ptr : the window instance pointer;
+      * @param	int  x        : the x coordinate of the pixel to draw;
+      * @param	int  y        : the y coordinate of the pixel to draw;
+      * @param	int  color    : the color of the pixel to draw (0xTTRRGGBB);
+      * @return	              : NO RETURN VALUE
+      */
+    int		mlx_pixel_put(void *mlx_ptr, void *win_ptr, int x, int y, int color);
+    ```
+
+- **File**: [src/f_color_panel_PixByPix_slow.c](https://github.com/alterGNU/mlx_lab/blob/main/src/f_color_panel_PixByPix_slow.c)
+  - **Objectifs**:
+    - Displays a color panel (Red-Green) pixel by pixel slowly.
+  - **Implementation**:
+    - Clean exit on `[ESC]` key or `[X]` window close (using `mlx_loop_end()`)
+    - Use `mlx_pixel_put()` in the `mlx_loop_hook()`:
+      - Instead of drawing the entire panel at once, it updates each pixel individually resulting in a slow rendering effect.
+  - **Observations**:
+    - This approach is inlefficient and results in a very slow rendering.
+    - Hook like Clean-Exit can be ignored if occured during the drawing process. 
+
+- **Compilation**: 
+  ```c
+  cc -Wall -Wextra -Werror -Imlx src/f_color_panel_PixByPix_slow.c mlx/libmlx.a -o t4_col_pan_slow -lXext -lX11 
+  ```
+
+- **Valgrind**: 
+  ```c
+  valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t4_col_pan_slow
   ```
