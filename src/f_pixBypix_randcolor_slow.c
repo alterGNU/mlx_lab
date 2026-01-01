@@ -1,17 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   f_color_panel_PixByPix_slow.c                      :+:      :+:    :+:   */
+/*   f_pixBypix_randcolor_slow.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 18:54:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2025/12/30 15:48:56 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/01 18:29:38 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /**
- * Display a color panel (X axis = Red, Y axis = Green) pixel by pixel slowly.
+ * Display a random color image using mlx_pixel_put() in mlx_loop_hook()
+ * -> draws pixel by pixel directly on window (slow version).
  * 
  * - IMPLEMENTATION:
  *   - Clean exit on [ESC] key or window close (using mlx_loop_end())
@@ -20,7 +21,7 @@
  *       individually resulting in a slow rendering effect.
  * - OBSERVATIONS:
  *   - This approach is inefficient and results in a very slow rendering.
- *   - Clean exit can be ignored if occured during the drawing process. 
+ *   - Events can be ignored if occured during the drawing process. 
  */
 
 #include "mlx.h"
@@ -31,7 +32,7 @@
 #define ESC_KEY 65307
 #define WIN_X 1024
 #define WIN_Y 1024
-#define WIN_TITLE "(X:Red - Y:Green) Color Panel"
+#define WIN_TITLE "Random Color Panel (Slow)"
 #define COLOR_BLACK 0xFFFFFF
 
 typedef struct s_data
@@ -72,49 +73,41 @@ int	free_data(t_data dt)
 	return (0);
 }
 
-int	handle_key(int keycode, t_data *dt)
+int	create_random_color(void)
 {
-	if (keycode == ESC_KEY)
-		return (mlx_loop_end(dt->mlx_ptr), 1);
-	return (0);
-}
+	int	r;
+	int	g;
+	int	b;
 
-int	put_color_and_string(t_data *dt, int x, int y, int *fixed_value)
-{
-	int		r;
-	int		g;
-	int		b;
-	int		color;
-
-	r = x * 255;
-	if (r)
-		r /= (WIN_X - 1);
-	g = y * 255;
-	if (g)
-		g /= (WIN_Y - 1);
-	b = *fixed_value;
-	color = (r << 16) | (g << 8) | b;
-	mlx_pixel_put(dt->mlx_ptr, dt->win_ptr, x, y, color);
-	*fixed_value = (*fixed_value + 1) % 256;
-	return (0);
+	r = rand() % 256;
+	g = rand() % 256;
+	b = rand() % 256;
+	return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
 }
 
 int	draw_color_panel(t_data *dt)
 {
 	int	x;
 	int	y;
-	int	fixed_value;
+	int	color;
 
 	if (!dt->mlx_ptr || !dt->win_ptr)
 		return (printf("Error: Invalid data pointers\n"), 1);
-	fixed_value = 0;
+	color = create_random_color();
 	x = -1;
 	while (++x < WIN_X)
 	{
 		y = -1;
 		while (++y < WIN_Y)
-			put_color_and_string(dt, x, y, &fixed_value);
+			mlx_pixel_put(dt->mlx_ptr, dt->win_ptr, x, y, color);
 	}
+	return (0);
+}
+
+int	handle_key(int keycode, t_data *dt)
+{
+	if (keycode == ESC_KEY)
+		return (mlx_loop_end(dt->mlx_ptr), 1);
 	return (0);
 }
 

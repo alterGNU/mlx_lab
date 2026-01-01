@@ -325,16 +325,15 @@ So, another way to handle clean exit feature without directly calling `mlx_loop_
   ```
 
 ## F | Drawing Images
-### F.1 | Writing pixels-by-pixels
-#### F.1.a | Basic concepts:
+### F.1 | Basic concepts:
 To understand and manipulate pixels, a few concepts need to be clarified:
-- Color depth, `bpp` and pixel color representation in memory
-- Converting TRGB color representation to int 32-bit integer
-- Endianness
-- Image representation in memory
-- Padding
+- a | Color depth, `bpp` and pixel color representation in memory
+- b | Converting TRGB color representation to int 32-bit integer
+- c | Endianness
+- d | Image representation in memory
+- e | Padding
 
-##### **a.1)** <ins>Color depth,`bpp` and representation in memory:</ins>
+#### **F.1.a)** <ins>Color depth,`bpp` and representation in memory:</ins>
 
 The **color depth** describes how many **bits are used to represent the color of a single pixel**
 
@@ -353,13 +352,13 @@ It is usually expressed as `bpp` **(Bits-Per-Pixel):
 
 - A pixel color is represented as a **32-bits integer**, *(4bytes == 32bits)*, usually written in **TRGB** format::
   - `int pixel_color = 0xTTRRGGBB;`
-  - `int pixel_color = 0x00RRGGBB;`
 
 >[!NOTE]
 > In minilibx, the transparency byte is generally left unchanged at value of `0x00`, 0,  means fully opaque *(while `0xFF`, 255, means fully transparent)*.
 
+  - `int pixel_color = 0x00RRGGBB;`
 
-##### **a.2)** <ins>Convert TRGB to 32-bit integer:</ins>
+#### **F.1.b)** <ins>Convert TRGB to 32-bit integer:</ins>
 
 To convert our 3 RGB integer value into one 32-bit integer, we can use **bitshifting** operation in C *(left shift)*.
 
@@ -403,7 +402,7 @@ To convert our 3 RGB integer value into one 32-bit integer, we can use **bitshif
   }
   ```
 
-##### **a.3)** <ins>Endianness:</ins>
+#### **F.1.c)** <ins>Endianness:</ins>
 
 **Endianness** is a fundamental part of how computers read and understand **bytes**: it's the **order** in which **multi-byte values** are **stored in memory**.
 
@@ -416,7 +415,6 @@ There are actually more than two ways to represent endianness, but we will only 
 - **Big-Endian (BE)**: Left-to-Right
   - **Used by/for**: Network protocols
   - **Store**: **B**ig-**E**nd first:
-    - When reading multiple bytes, the first byte is the biggest, and last the lowest
     ```c
     // int HEX memory representation
     int pixel_color = 0x00RRGGBB;
@@ -428,10 +426,10 @@ There are actually more than two ways to represent endianness, but we will only 
     p[2]; // -> GG
     p[3]; // -> BB
     ```
+    - When reading multiple bytes, the first byte is the biggest, and last the lowest
 - **Little-Endian (LE)**: Right-to-Left
   - **Used by/for**: (x86 architecture)
   - **Store**: **L**ittle-**E**nd first:
-    - When reading multiple bytes, the first byte is the lowest, and last the biggest
     ```c
     // int HEX memory representation
     int pixel_color = 0x00RRGGBB;
@@ -443,12 +441,13 @@ There are actually more than two ways to represent endianness, but we will only 
     p[2]; // -> RR
     p[3]; // -> 00
     ```
+    - When reading multiple bytes, the first byte is the lowest, and last the biggest
 
 >[!CAUTION]
 > Only the byte order in RAM is changed, NOT THE INTEGER'S VALUE, (`int pixel_color` stays the same in BE or LE cases!!).
 
 
-##### **a.4)** <ins>Image representation:</ins>
+#### **F.1.d)** <ins>Image representation:</ins>
 
 Lets start by stating some obvious, but fundamental, ideas:
 
@@ -476,7 +475,7 @@ This ray memory buffer is not sufficient to describe an image, we also need **me
   - width (x): number of pixels per line
   - height(y): number of lines
 - Memory layout:
-  - Number of bytes used to store a single row of pixels in memory
+  - Number of bytes used to store a single row of pixels in memory (line len)
 
 All these lead to our final abstaction of a image:
 - A basic image representation in memory can be described as a structure containing:
@@ -486,17 +485,17 @@ All these lead to our final abstaction of a image:
   - The **endianness**: *(order in which the RAM will access (read/write) the pixel's color representation)*
   - The **image width and height**
 
-<ins>**In conclusion**:</ins>
+##### <ins>**In conclusion**:</ins>
 - An image is a **linear memory buffer** composed of contiguous bytes.
 - The 2D structure of the image is a **mathematical abstraction** that is reconstructed using calculations.
 
 >[!TIP]
 > What a coincidence...this is exaclty what `mlx_get_data_add()` provides, a way to correctly interpret a **linear memory bufffer as a 2D image**
 
-##### **a.5)** <ins>Padding:</ins>
+#### **F.1.e)** <ins>Padding:</ins>
 In our image struct, **line length** and **image height** seems redondant...but it's not quit the same thing because:
 - ✅ **pixels** inside a row **are** stored **contiguously**
-- ❌ **rows** themselves **are not** guaranted to stored **contiguously** *(be tightly packed in memory...)*
+- ❌ **rows** themselves **are not** guaranted to be stored **contiguously** *(be tightly packed in memory...)*
 
 In pratice, each row of pixels occupies a number of bytes calles **line length** *(a.k.a stride)* often **greater than** `image width * (bbp / 8)`.
 
@@ -518,7 +517,7 @@ The extra bytes at the end of each row are called **padding** and exists only to
     pix_add = img_add + (y * line_lenght) + (x * bpp / 8)`;
     ```
 
-#### F.1.b | ❌ mlx_pixel_put(): (slower-->not recommended)
+### F.2 | ❌ mlx_pixel_put(): (slower-->not recommended)
 -  To draw pixels, mlx have the `int mlx_pixel_put(void *mlx_ptr, void *win_ptr, int x, int y, int color)`
 
     ```c
@@ -538,9 +537,9 @@ The extra bytes at the end of each row are called **padding** and exists only to
 >[!IMPORTANT]
 > `mlx_pixel_put()` draw directly on the window, whitout waiting for the frame to be entirely rendered...
 
-- **File**: [src/f_color_panel_PixByPix_slow.c](https://github.com/alterGNU/mlx_lab/blob/main/src/f_color_panel_PixByPix_slow.c)
+- **File**: [src/f_pixBypix_randcolor_slow.c](https://github.com/alterGNU/mlx_lab/blob/main/src/f_pixBypix_randcolor_slow.c)
   - **Objectifs**:
-    - Displays a color panel (Red-Green) pixel by pixel slowly.
+    - Displays a random colors image.
   - **Implementation**:
     - Clean exit on `[ESC]` key or `[X]` window close (using `mlx_loop_end()`)
     - Use `mlx_pixel_put()` in the `mlx_loop_hook()`:
@@ -551,18 +550,115 @@ The extra bytes at the end of each row are called **padding** and exists only to
 
 - **Compilation**: 
   ```c
-  cc -Wall -Wextra -Werror -Imlx src/f_color_panel_PixByPix_slow.c mlx/libmlx.a -o t4_col_pan_slow -lXext -lX11 
+  cc -Wall -Wextra -Werror -Imlx src/f_pixBypix_randcolor_slow.c mlx/libmlx.a -o t4_randcol_slow -lXext -lX11 
   ```
 
 - **Valgrind**: 
   ```c
-  valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t4_col_pan_slow
+  valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t4_randcol_slow
   ```
 
->[!NOTE]
+>[!TIP]
 > This can be fixed by buffering all of our pixels to an image, then pushing the image to the window will...
 
-#### F.1.c | ✅ drawing on an image, not directly on the window: (faster-->recommended but more complex to implement)
-- 1 | Create a image: `mlx_new_image()`
-- 2 | Draw pixel on the image:
-- 3 | Import/Push the edited image to the window: `mlx_put_image_to_window()`
+### F.2 | ✅ using image and create our own put_pixel_to_img(): (faster-->recommended)
+
+#### F.2.a | ADD image: Modify `t_data *dt` struct to store image's members
+As we saw previously, images are struct and mlx provides fun. to manipulates images:
+
+1. In t_data add images struct members:
+  ```c
+  typedef struct s_data
+  {
+  	void	*mlx_ptr;
+  	void	*win_ptr;
+  	void	*img_ptr;   // -> pointer to image's struct
+  	char	*addr;      // -> pointer to the first image's pixel (x, y)= (0, 0) --> top left corner
+  	int		bpp;        // -> Bytes-Per-Pixels (to get bits-per-pixels = bpp /8)
+  	int		size_line;  // -> size of array's line = (image_heigth + padding)
+  	int		endian;     // -> 0 if little-endian, 1 if big-endian
+  }	t_data;
+  ```
+2. t_data functions to create image and set all image's struct members
+  ```c
+  init_data()
+  {
+    ...
+    dt.img_ptr = mlx_new_image(dt.mlx_ptr, WIN_X, WIN_Y);
+    ...
+    dt.addr = mlx_get_data_addr(dt.img_ptr, &dt.bpp, &dt.size_line, &dt.endian);
+    ...
+  }
+  ```
+
+#### F.2.b | Create our own function to draw pixel on the image:
+
+>[!IMPORTANT]
+> Instead of drawing directly on windows, create a fun. that will put pixel-by-pixel in an image:
+
+```c
+void	put_pixel_to_image(t_data *dt, int x, int y, int color)
+{
+	char	*pixel;
+	int		i;
+
+	pixel = dt->addr + (y * dt->size_line + x * (dt->bpp / 8));
+	i = dt->bpp - 8;
+	while (i >= 0)
+	{
+		if (dt->endian != 0)
+			*pixel++ = (color >> i) & 0xFF;
+		else
+			*pixel++ = (color >> (dt->bpp - 8 - i)) & 0xFF;
+		i -= 8;
+	}
+}
+```
+
+#### F.2.c | Import/Push the edited image to the window: `mlx_put_image_to_window()`
+
+>[!NOTE]
+> `draw_color_panel()` is called directly by `mlx_loop_hook()`--> exect a each loop
+
+```c
+int	draw_color_panel(t_data *dt)
+{
+	int	x;
+	int	y;
+	int	color;
+
+	if (!dt->mlx_ptr || !dt->win_ptr)
+		return (printf("Error: Invalid data pointers\n"), 1);
+	color = create_random_color();
+	x = -1;
+	while (++x < WIN_X)
+	{
+		y = -1;
+		while (++y < WIN_Y)
+			put_pixel_to_img(dt->mlx_ptr, dt->img_ptr, x, y, color);
+	}
+	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_ptr, 0, 0);
+	return (0);
+}
+```
+
+- **File**: [src/f_pixBypix_randcolor_fast.c](https://github.com/alterGNU/mlx_lab/blob/main/src/f_pixBypix_randcolor_fast.c)
+  - **Objectifs**:
+    - Displays a random colors image without delay.
+  - **Implementation**:
+    - Clean exit on `[ESC]` key or `[X]` window close (using `mlx_loop_end()`)
+    - Use `mlx_pixel_put()` in the `mlx_loop_hook()`:
+      - Instead of drawing the entire panel at once, it updates each pixel individually resulting in a slow rendering effect.
+  - **Observations**:
+    - This approach is more complex, but way faster for large images.
+    - The drawing process is done in memory, then displayed in one go.
+
+- **Compilation**: 
+  ```c
+  cc -Wall -Wextra -Werror -Imlx src/f_pixBypix_randcolor_fast.c mlx/libmlx.a -o t4_randcol_fast -lXext -lX11 
+  ```
+
+- **Valgrind**: 
+  ```c
+  valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t4_randcol_fast
+  ```
