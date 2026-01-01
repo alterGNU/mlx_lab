@@ -325,20 +325,46 @@ So, another way to handle clean exit feature without directly calling `mlx_loop_
   ```
 
 ## F | Drawing Images
-### F.1 | Writing pixels to an image:
-#### F.1.a | Color
-They're several ways of representing colors, minilibx use the **true color (32-bit)** standard.
+### F.1 | Writing pixels-by-pixels
+#### F.1.a | Basic concepts:
+To understand and manipulate pixels, a few concepts need to be clarified:
+- Color depth, `bpp` and pixel color representation in memory
+- Converting TRGB color representation to int 32-bit integer
+- Endianness
+- Image representation in memory
+- Padding
 
-- Has we need to fit the color into a `int datatype` to be a 32bits in our system:
-  - `int color = 0xTTRRGGBB;`
+##### **a.1)** <ins>Color depth,`bpp` and representation in memory:</ins>
+
+The **color depth** describes how many **bits are used to represent the color of a single pixel**
+
+It is usually expressed as `bpp` **(Bits-Per-Pixel):
+- `bpp` determines how many **disctinct colors** a pixel can represent:
+  - bpp = 1 --> 2**1 = 2 colors (monochrome)
+  - bpp = 2 --> 2**2 = 4 colors
+  - bpp = 4 --> 2**4 = 16 colors
+  - bpp = 8 --> 2**8 = 256 colors
+  - bpp = 16 --> 2**5 = 65 536 colors (Highcolor)
+  - bpp = 24 --> 2**5 = 16 777 216colors (Truecolor)
+
+- According to the Minilibx's README, images that we use are in the color depth:**32-bit Truecolor format**:
+  - 24-bits (3bytes) for the color components: R,G and B
+  - 8-bits (1bytes) unused or used for the alpha (Transparency) channel
+
+- A pixel color is represented as a **32-bits integer**, *(4bytes == 32bits)*, usually written in **TRGB** format::
+  - `int pixel_color = 0xTTRRGGBB;`
+  - `int pixel_color = 0x00RRGGBB;`
 
 >[!NOTE]
-> We do not need to change the T:Transparency since minilibx seems to ignore this , first byte remain 00.
+> In minilibx, the transparency byte is generally left unchanged at value of `0x00`, 0,  means fully opaque *(while `0xFF`, 255, means fully transparent)*.
 
-- `int color = 0x00RRGGBB;`
+
+##### **a.2)** <ins>Convert TRGB to 32-bit integer:</ins>
+
+To convert our 3 RGB integer value into one 32-bit integer, we can use **bitshifting** operation in C *(left shift)*.
 
 >[!WARNING]
-> Out of range value color bits combined with bit shifting can result in corrupts adjacent color bits
+> R,G or B out of range values color bits combined with bit shifting can result in corrupts adjacent color bits
 
 - **LONG IMPLEMENTATION**:
   ```c
@@ -369,7 +395,7 @@ They're several ways of representing colors, minilibx use the **true color (32-b
 >[!TIP]
 > Using masks can clamped to 8bits automatically-->safer, no adjacent color bits corruption when out of range.
 
-- **SHORT IMPLEMENTATION**: RGB components are masked to 8bits before shifting to prevent overflow and sign-extension issues:
+- **SHORT IMPLEMENTATION**: RGB components are masked to 8bits before shifting to prevent overflow and sign-extension issues leading to color corruption
   ```c
   int convert_to_rgb(int r, int g, int b)
   {
@@ -377,7 +403,122 @@ They're several ways of representing colors, minilibx use the **true color (32-b
   }
   ```
 
-#### F.1.b | ❌ mlx_pixel_put(): (slow-->not recommended)
+##### **a.3)** <ins>Endianness:</ins>
+
+**Endianness** is a fundamental part of how computers read and understand **bytes**: it's the **order** in which **multi-byte values** are **stored in memory**.
+
+*We usually do not have to know an image's endianness...each computer is internally consistent for their own data and handle internally all image's access memory manipulations*
+
+>[!NOTE]
+> Endianness matters only if you are placing bytes manually *(access to the memory using `mlx_get_data_addr()`)*
+
+There are actually more than two ways to represent endianness, but we will only look at:
+- **Big-Endian (BE)**: Left-to-Right
+  - **Used by/for**: Network protocols
+  - **Store**: **B**ig-**E**nd first:
+    - When reading multiple bytes, the first byte is the biggest, and last the lowest
+    ```c
+    // int HEX memory representation
+    int pixel_color = 0x00RRGGBB;
+    //Address -> +0 +1 +2 +3
+    //Memory  -> 00 RR GG BB
+    unsigned char *p = (unsigned char *)&pixel_color;
+    p[0]; // -> 00
+    p[1]; // -> RR
+    p[2]; // -> GG
+    p[3]; // -> BB
+    ```
+- **Little-Endian (LE)**: Right-to-Left
+  - **Used by/for**: (x86 architecture)
+  - **Store**: **L**ittle-**E**nd first:
+    - When reading multiple bytes, the first byte is the lowest, and last the biggest
+    ```c
+    // int HEX memory representation
+    int pixel_color = 0x00RRGGBB;
+    //Address -> +0 +1 +2 +3
+    //Memory  -> BB GG RR TT
+    unsigned char *p = (unsigned char *)&pixel_color;
+    p[0]; // -> BB
+    p[1]; // -> GG
+    p[2]; // -> RR
+    p[3]; // -> 00
+    ```
+
+>[!CAUTION]
+> Only the byte order in RAM is changed, NOT THE INTEGER'S VALUE, (`int pixel_color` stays the same in BE or LE cases!!).
+
+
+##### **a.4)** <ins>Image representation:</ins>
+
+Lets start by stating some obvious, but fundamental, ideas:
+
+- An **image** can be seen as a **two dimentionnal** structure composed of **one dimensionnal elementary units**:
+  - Real world: pigments(1D) distributed on a surface(2D)
+  - Math world: points(actually 0D, but discret units ^^') arranged on a plane(2D)
+- In a computer's world, is a binary world:
+  - The most elementary unit is the **bits**, which can have only two values: `0` or `1`.
+  - We, programmers, manipulate another units calls **bytes** which correspond of a **group of 8 bits**
+- For an image, the elementary units is called a **pixel**, and is seen as a **fixed-size set of bits** *(an int of 32-bits in our case)*
+  - A pixel represents the **color of a single point** in the image.
+
+Although an image is conceptually **two-dimensional**, a computer memory is **linear**:
+- So, to represent an image in a computer's world as we do in real or math world, we can use a `int img[with][height]`
+- But in memory it is a linear buffer of bytes `int *buff` *(stored image=pixels laid out line by line in a contiguous block of memory)*
+
+>[!NOTE]
+>As we know, both of these two objects(pixel and integer array) need extra informations to be manipulated so a **raw memory buffer** alone is not enough to describe an image...
+
+This ray memory buffer is not sufficient to describe an image, we also need **meta-data**:
+- Pixel-related information:
+  - **B**ytes-**P**er-**P**ixel: size of a single pixel in memory *(size of the unit array memory block)* `bpp / 8`
+  - endianness: order to get/set color manually in memory
+- Image dimesions:
+  - width (x): number of pixels per line
+  - height(y): number of lines
+- Memory layout:
+  - Number of bytes used to store a single row of pixels in memory
+
+All these lead to our final abstaction of a image:
+- A basic image representation in memory can be described as a structure containing:
+  - A pointer to the **first byte of pixel data** *(know where the actual image 2d array start)*
+  - The **Bytes-Per-Pixel**: *(in order to jump pixel by pixel in memory)*
+  - The **line length**: *(in bytes)*
+  - The **endianness**: *(order in which the RAM will access (read/write) the pixel's color representation)*
+  - The **image width and height**
+
+<ins>**In conclusion**:</ins>
+- An image is a **linear memory buffer** composed of contiguous bytes.
+- The 2D structure of the image is a **mathematical abstraction** that is reconstructed using calculations.
+
+>[!TIP]
+> What a coincidence...this is exaclty what `mlx_get_data_add()` provides, a way to correctly interpret a **linear memory bufffer as a 2D image**
+
+##### **a.5)** <ins>Padding:</ins>
+In our image struct, **line length** and **image height** seems redondant...but it's not quit the same thing because:
+- ✅ **pixels** inside a row **are** stored **contiguously**
+- ❌ **rows** themselves **are not** guaranted to stored **contiguously** *(be tightly packed in memory...)*
+
+In pratice, each row of pixels occupies a number of bytes calles **line length** *(a.k.a stride)* often **greater than** `image width * (bbp / 8)`.
+
+The extra bytes at the end of each row are called **padding** and exists only to **aligne memory correctly** to a multiples of 2^n bytes *(in order to improve CPU, GPU and cache performance)*
+
+>[!WARNING]
+> The padding bytes DO NOT represent pixels and MUST BE SKIPPED when moving from one row to the next
+
+- ❌ Without padding:
+  - **line_lenght** == **image_height**
+  - to get a pixel(x,y) position in buffer:
+    ```c
+    pix_add = img_add + (y * img_height) + (x * bpp / 8)`;
+    ```
+- ✅ With padding:
+  - **line_lenght** != **image_height**
+  - to get a pixel(x,y) position in buffer:
+    ```c
+    pix_add = img_add + (y * line_lenght) + (x * bpp / 8)`;
+    ```
+
+#### F.1.b | ❌ mlx_pixel_put(): (slower-->not recommended)
 -  To draw pixels, mlx have the `int mlx_pixel_put(void *mlx_ptr, void *win_ptr, int x, int y, int color)`
 
     ```c
@@ -393,6 +534,9 @@ They're several ways of representing colors, minilibx use the **true color (32-b
       */
     int		mlx_pixel_put(void *mlx_ptr, void *win_ptr, int x, int y, int color);
     ```
+
+>[!IMPORTANT]
+> `mlx_pixel_put()` draw directly on the window, whitout waiting for the frame to be entirely rendered...
 
 - **File**: [src/f_color_panel_PixByPix_slow.c](https://github.com/alterGNU/mlx_lab/blob/main/src/f_color_panel_PixByPix_slow.c)
   - **Objectifs**:
@@ -414,3 +558,11 @@ They're several ways of representing colors, minilibx use the **true color (32-b
   ```c
   valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t4_col_pan_slow
   ```
+
+>[!NOTE]
+> This can be fixed by buffering all of our pixels to an image, then pushing the image to the window will...
+
+#### F.1.c | ✅ drawing on an image, not directly on the window: (faster-->recommended but more complex to implement)
+- 1 | Create a image: `mlx_new_image()`
+- 2 | Draw pixel on the image:
+- 3 | Import/Push the edited image to the window: `mlx_put_image_to_window()`
