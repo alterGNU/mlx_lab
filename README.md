@@ -721,16 +721,8 @@ Now that we better understand **image-compression**, we can understand why **fil
 >[!CAUTION]
 > Encoders/Decoders transform File Format representation to and from raw pixel data in memory.
 
-Minilibx handles **PNG** and **XPM** file formats using the following utility functions:
-- `void	*mlx_png_file_to_image();` to convert **PNG file** to a new instance of **in-memory image structure**
+Minilibx handles **XPM** file formats using the following utility functions:
 - `void	*mlx_xpm_to_image();` to convert an instance of **in-memory XPM image structure** to a new **in-memory image structure**
 - `void	*mlx_xpm_file_to_image();` to convert **XPM file** to a new instance of **in-memory image structure**
 
-### G.2 | Minilibx with PNG File Format
-
-#### G.2.a | PNG FILE FORMAT:
-This file format stand for **P**ortable **N**etwork **G**raphics and describe image data with [lossless data compression](https://en.wikipedia.org/wiki/Lossless_compression)
-
-It's a more commun but more complexe image file format since the image data is compressed (size reduce due to image data redundancy).
-
-The image data in memory need to be rebuild (decompressed) to get the original/real image.
+### G.2 | Minilibx with XPM File Format
