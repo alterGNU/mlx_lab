@@ -350,56 +350,41 @@ It is usually expressed as `bpp` **(Bits-Per-Pixel):
   - 24-bits (3bytes) for the color components: R,G and B
   - 8-bits (1bytes) unused or used for the alpha (Transparency) channel
 
-- A pixel color is represented as a **32-bits integer**, *(4bytes == 32bits)*, usually written in **TRGB** format::
+- A pixel color is represented as a **32-bits integer**, *(4bytes == 32bits)*, usually written in **TRGB** format:
   - `int pixel_color = 0xTTRRGGBB;`
 
 >[!NOTE]
-> In minilibx, the transparency byte is generally left unchanged at value of `0x00`, 0,  means fully opaque *(while `0xFF`, 255, means fully transparent)*.
+> In minilibx, the transparency byte is generally left unchanged at value of `0x00` == 0,  means fully opaque *(while `0xFF` == 255, means fully transparent)*.
 
   - `int pixel_color = 0x00RRGGBB;`
 
 #### **F.1.b)** <ins>Convert TRGB to 32-bit integer:</ins>
 
-To convert our 3 RGB integer value into one 32-bit integer, we can use **bitshifting** operation in C *(left shift)*.
+To convert our 3 RGB integer value into one 32-bit integer, we can use **bitshifting** operation in C *(left shift)*, 
+
+Since R,G or B values are in range `base 10=[0:255]<=>base hex=[00:FF]--> 256 values`, they can each be represented/stored in one byte as we saw earlier.
 
 >[!WARNING]
 > R,G or B out of range values color bits combined with bit shifting can result in corrupts adjacent color bits
 
-- **LONG IMPLEMENTATION**:
+- **LONG IMPLEMENTATION**: makes sure R,G or B values are in `00` to `FF` range using **modulo operator**, then convert to a 4bytes integer
   ```c
-  /**
-   * shorter version is: val_not_in_range(int v){ return (v < 0 || v > 255);};
-   */
-  int val_not_in_range(int v)
-  {
-    if (0 <= v && v <= 255)
-      return (0);
-    return (1);
-  }
-  /**
-   * if bit color out of range, replace by 0 
-   */
+  // force x to be in [0:255] range (force to be a null or positive number lesser than 256)
+  int clamped_to_8bits(int x) { return (((x % 256) + 256) % 256)); }
+
+  // convert 3 int into 1 int (=4bytes) using bit shifting since 1Byte can store a R,G or B value
   int convert_to_rgb(int r, int g, int b)
   {
-    if (val_not_in_range(r))
-      r = 0;
-    if (val_not_in_range(g))
-      g = 0;
-    if (val_not_in_range(b))
-      b = 0;
-    return (r << 16 | g << 8 | b)
+    return (clamped_to_8bits(r) << 16 | clamped_8bits(g) << 8 | clamped_to_8bis(b));
   }
   ```
 
 >[!TIP]
 > Using masks can clamped to 8bits automatically-->safer, no adjacent color bits corruption when out of range.
 
-- **SHORT IMPLEMENTATION**: RGB components are masked to 8bits before shifting to prevent overflow and sign-extension issues leading to color corruption
+- **SHORT IMPLEMENTATION**: RGB components are **masked** to 8bits before shifting to prevent overflow and sign-extension issues leading to color corruption
   ```c
-  int convert_to_rgb(int r, int g, int b)
-  {
-    return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
-  }
+  int convert_to_rgb(int r, int g, int b) { return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF)); }
   ```
 
 #### **F.1.c)** <ins>Endianness:</ins>
@@ -409,9 +394,9 @@ To convert our 3 RGB integer value into one 32-bit integer, we can use **bitshif
 *We usually do not have to know an image's endianness...each computer is internally consistent for their own data and handle internally all image's access memory manipulations*
 
 >[!NOTE]
-> Endianness matters only if you are placing bytes manually *(access to the memory using `mlx_get_data_addr()`)*
+> Endianness matters only if you manually have to manipulates bytes *(getting or setting pixel's value bit-by-bit)*
 
-There are actually more than two ways to represent endianness, but we will only look at:
+Endianness is primarily expressed as:
 - **Big-Endian (BE)**: Left-to-Right
   - **Used by/for**: Network protocols
   - **Store**: **B**ig-**E**nd first:
@@ -457,12 +442,14 @@ Lets start by stating some obvious, but fundamental, ideas:
 - In a computer's world *(a binary world)*:
   - The most elementary unit is the **bits**, which can have only two values: `0` or `1`.
   - We, programmers, manipulate another units calls **bytes** which correspond of a **group of 8 bits**
-- For an image, the elementary units is called a **pixel**, and is seen as a **fixed-size set of bits** *(an int of 32-bits in our case)*
+- For a computer, an image's elementary units is called a **pixel**, and is seen as a **fixed-size set of bits** *(an int of 32-bits in our case)*
   - A pixel represents the **color of a single point** in the image.
+    - its position in the pixel's array correspond to the location in the 2D image representation of the **point:(x, y)**
+    - its value, a 4-bytes integer, correspond to **point**'s color.
 
 Although an image is conceptually **two-dimensional**, a computer memory is **linear**:
-- So, to represent an image in a computer's world as we do in real or math world, we can use a `int img[with][height]` *(2D object)*
-- But in memory it is a linear buffer of bytes `int *buff` *(1D object)*, the stored image is **pixels laid out line by line in a contiguous block of memory**.
+- So, to represent an image in a computer's world as we do in real or math world, we can use an array of integer: `int img[with][height]` *(2D int array)*
+- But a computer's memory is a linear buffer of bytes `int *buff` *(~ 1D int array)*, so there an image 2D integer array become a 1D integer array where **pixels laid out line by line in a contiguous block of memory**.
 
 >[!NOTE]
 >As we know, both of these two objects(pixel and integer array) need extra informations to be manipulated so a **raw memory buffer** alone is not enough to describe an image...
@@ -470,30 +457,37 @@ Although an image is conceptually **two-dimensional**, a computer memory is **li
 This ray memory buffer is not sufficient to describe an image, we also need **meta-data**:
 - Pixel-related information:
   - **B**ytes-**P**er-**P**ixel: size of a single pixel in memory *(size of the unit array memory block)* `bpp / 8`
-  - endianness: order to get/set color manually in memory
-- Image dimesions:
-  - width (x): number of pixels per line
-  - height(y): number of lines
+  - **Endianness**: order to get/set color manually in memory
+- Image dimesions *(~2D array of pixel)*:
+  - **width (x)**: number of pixels per line
+  - **height(y)**: number of lines
 - Memory layout:
-  - Number of bytes used to store a single row of pixels in memory (line len)
+  - **line len**: Number of bytes used to store a single row of pixels in memory
 
 >[!CAUTION]
-> Here **image height** and **array raw line len** seems to refere to the same dimension (y), but in practice, this two values differs due to the **structure padding**
+> Here **image's height** and **line len** seems to refere to the same dimension (y), but in practice, this two values differs due to the **structure optimisation concept called: PADDING**
 
-All these lead to our final abstaction of a image:
-- A basic image representation in memory can be described as a structure containing:
-  - A pointer to the **first byte of pixel data** *(know where the actual image 2d array start)*
-  - The **endianness**: *(order in which the RAM will access (read/write) the pixel's color representation)*
-  - The **Bytes-Per-Pixel**: *(in order to jump pixel by pixel in memory)* `bbp / 8`
-  - The **image width and height**
-  - The **line length**: *(in bytes)*
+All these lead to our final *(and very simply ^^)* digital image representation as a data structure composed of a **pixel array** and its **meta-data**:
+  ```c
+  typedef struct s_img
+  {
+    char *ptr_img;      // pointer to image data (first bit of the first image's pixel)
+    int endianness;     // data byte order
+    int bits_per_pixel; // bits per pixel
+    int img_width;      // image size (nb of line)
+    int img_height;     // image size (line size == column)
+    int bytes_per_line; // len(line) in byte == accelerator to next line
+  } t_img
+  ```
+
+*(This is a very simplified representation of how I mentally represent a digital image structure in a computer's memory.)*
 
 ##### <ins>**In conclusion**:</ins>
-- An image is a **linear memory buffer** composed of contiguous bytes. *(1D int array)*
-- But can be seen as a 2D structure through a **mathematical abstraction** that is reconstructed using calculations.
+- An image can also be seen as a 2D structure in the computer's world, but through a **mathematical abstraction** that is reconstructed using calculations.
+- In a computer's memory, an image is a structure stored as a **linear memory buffer** composed of contiguous bytes. *(1D int array)*
 
 >[!TIP]
-> What a coincidence...this is exaclty what `mlx_get_data_add()` provides, a way to correctly interpret a **linear memory bufffer (1D) as an image (2D)**
+> This is exaclty what `mlx_get_data_add()` provides, a way to extract the meta-data needed to manipulate the **linear memory buffer (1D)** like a **2D image representation**.
 
 #### **F.1.e)** <ins>Padding:</ins>
 In our image struct, **line length** and **image height** seems redondant...but it's not quit the same thing because:
@@ -512,12 +506,14 @@ The extra bytes at the end of each row are called **padding** and exists only to
   - **line_lenght** == **image_height**
   - to get a pixel(x,y) position in buffer:
     ```c
+    // line_lenght = image_height + 0 ...
     pix_add = img_add + (y * img_height) + (x * bpp / 8)`;
     ```
 - ✅ With padding:
-  - **line_lenght** != **image_height**
+  - **line_lenght** >= **image_height**
   - to get a pixel(x,y) position in buffer:
     ```c
+    // line_lenght = image_height + padding
     pix_add = img_add + (y * line_lenght) + (x * bpp / 8)`;
     ```
 
@@ -668,3 +664,73 @@ int	draw_randcolor_image(t_data *dt)
   ```c
   valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t4_randcol_fast
   ```
+
+## G | Minilibx and File-Formats
+
+### G.1 | File-Formats and compression
+
+Two important concepts for understanding digital images are **File Formats** and **Image Compression** *(data compression applied to digital images)*.
+
+- **File formats** are **specifications** that describe how image data and meta-data are **encoded and stored in a file**.
+
+>[!CAUTION]
+> File Formats describe how images are stored on DISK.
+
+As we can imagine:
+
+- The goal of **data compression** is to **reduce data size** by encoding information using **fewer bits than the original representation**
+- The goal of **image compression** is to **reduce the size of image data** using algorithms that take advantage of **statistical redundancy** in pixel values.
+
+They're two type of algorithms used for image-compression, **lossy** and **lossless**.
+*(here some examples of algorithms and the file formats that use them)*
+
+#### G.1.a | lossy compression:
+<ins>[lossy compression](https://en.wikipedia.org/wiki/Lossy_compression)</ins>: irreversible compression that results in **loss of information**.
+
+- [Discrete-Cosine-Transformation](https://en.wikipedia.org/wiki/Discrete_Cosine_Transform) use **fourier Transformation**, used in most digital media:
+  - [.jpeg](https://en.wikipedia.org/wiki/JPEG)
+  - [.heic](https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format)
+- [Color quantization](https://en.wikipedia.org/wiki/Color_quantization) reduces the number of colors used in an image:
+  - [.gif](https://en.wikipedia.org/wiki/GIF)
+  - [.png](https://en.wikipedia.org/wiki/PNG) *(optional, palette-based)*
+
+#### G.1.b | lossless compression:
+<ins>[lossless compression](https://en.wikipedia.org/wiki/Lossless_compression)</ins> : compression where decompression reconstructs the original image exactly.
+
+- [Run-Length encoding](https://en.wikipedia.org/wiki/Run-length_encoding): consecutive occurences are stored as a single occurence and a count -> `len("ABBCCCDDDDEEEEEFFFFFFGGGGGGGHHHHHHHH")=36`-->`len("A1B2C3D4E5F6G7H8")=16`
+  - [.xpm](https://en.wikipedia.org/wiki/X_PixMap)
+  - [.gif](https://en.wikipedia.org/wiki/GIF)
+  - [.png](https://en.wikipedia.org/wiki/PNG) *(optional)*
+  - [.tga](https://en.wikipedia.org/wiki/Truevision_TGA)
+  - [.tiff](https://en.wikipedia.org/wiki/TIFF)
+- [Entropy coding](https://en.wikipedia.org/wiki/Entropy_coding) a family of techniques that represent data using as few bits as possible, based on symbols frequency:
+  - [Arithmetic coding](https://en.wikipedia.org/wiki/Arithmetic_coding) encodes the entire message as a single number in the interval `[0, 1)`
+    - [.jpeg](https://en.wikipedia.org/wiki/JPEG)
+  - [Huffman coding](https://en.wikipedia.org/wiki/Huffman_coding) Based on the fact that not all bit have the same size, encoding using short bit codes to frequent symbols and longer for rarest --> lesser size.
+    - [.jpeg](https://en.wikipedia.org/wiki/JPEG)
+    - [.png](https://en.wikipedia.org/wiki/PNG)
+    - [.tiff](https://en.wikipedia.org/wiki/TIFF)
+
+#### G.1.c | Conversion file-format<-->image data structure
+Now that we better understand **image-compression**, we can understand why **file-format** provides:
+- A digital image representation (pixel array + meta-data)
+- **Compression-related data** allowing:
+  - A **decoder** to **decode and decompress** an image **file format** into an **in-memory image structure**.
+  - A **encoder** to **encode and compress** an **in-memory image structure** into an image **file format**
+
+>[!CAUTION]
+> Encoders/Decoders transform File Format representation to and from raw pixel data in memory.
+
+Minilibx handles **PNG** and **XPM** file formats using the following utility functions:
+- `void	*mlx_png_file_to_image();` to convert **PNG file** to a new instance of **in-memory image structure**
+- `void	*mlx_xpm_to_image();` to convert an instance of **in-memory XPM image structure** to a new **in-memory image structure**
+- `void	*mlx_xpm_file_to_image();` to convert **XPM file** to a new instance of **in-memory image structure**
+
+### G.2 | Minilibx with PNG File Format
+
+#### G.2.a | PNG FILE FORMAT:
+This file format stand for **P**ortable **N**etwork **G**raphics and describe image data with [lossless data compression](https://en.wikipedia.org/wiki/Lossless_compression)
+
+It's a more commun but more complexe image file format since the image data is compressed (size reduce due to image data redundancy).
+
+The image data in memory need to be rebuild (decompressed) to get the original/real image.
