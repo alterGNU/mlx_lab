@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 18:54:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/01 19:01:40 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/02 12:00:56 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ int	create_random_color(void)
 	return ((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
 }
 
-int	draw_color_panel(t_data *dt)
+int	draw_randcolor_image(t_data *dt)
 {
 	int	x;
 	int	y;
@@ -156,7 +156,7 @@ int	main(void)
 	t_data	dt;
 
 	dt = ft_init_data();
-	mlx_loop_hook(dt.mlx_ptr, &draw_color_panel, &dt);
+	mlx_loop_hook(dt.mlx_ptr, &draw_randcolor_image, &dt);
 	mlx_hook(dt.win_ptr, 17, 0, &mlx_loop_end, dt.mlx_ptr);
 	mlx_hook(dt.win_ptr, 2, (1L << 0), &handle_key, &dt);
 	mlx_loop(dt.mlx_ptr);

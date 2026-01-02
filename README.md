@@ -454,15 +454,15 @@ Lets start by stating some obvious, but fundamental, ideas:
 - An **image** can be seen as a **two dimentionnal** structure composed of **one dimensionnal elementary units**:
   - Real world: pigments(1D) distributed on a surface(2D)
   - Math world: points(actually 0D, but discret units ^^') arranged on a plane(2D)
-- In a computer's world, is a binary world:
+- In a computer's world *(a binary world)*:
   - The most elementary unit is the **bits**, which can have only two values: `0` or `1`.
   - We, programmers, manipulate another units calls **bytes** which correspond of a **group of 8 bits**
 - For an image, the elementary units is called a **pixel**, and is seen as a **fixed-size set of bits** *(an int of 32-bits in our case)*
   - A pixel represents the **color of a single point** in the image.
 
 Although an image is conceptually **two-dimensional**, a computer memory is **linear**:
-- So, to represent an image in a computer's world as we do in real or math world, we can use a `int img[with][height]`
-- But in memory it is a linear buffer of bytes `int *buff` *(stored image=pixels laid out line by line in a contiguous block of memory)*
+- So, to represent an image in a computer's world as we do in real or math world, we can use a `int img[with][height]` *(2D object)*
+- But in memory it is a linear buffer of bytes `int *buff` *(1D object)*, the stored image is **pixels laid out line by line in a contiguous block of memory**.
 
 >[!NOTE]
 >As we know, both of these two objects(pixel and integer array) need extra informations to be manipulated so a **raw memory buffer** alone is not enough to describe an image...
@@ -477,29 +477,33 @@ This ray memory buffer is not sufficient to describe an image, we also need **me
 - Memory layout:
   - Number of bytes used to store a single row of pixels in memory (line len)
 
+>[!CAUTION]
+> Here **image height** and **array raw line len** seems to refere to the same dimension (y), but in practice, this two values differs due to the **structure padding**
+
 All these lead to our final abstaction of a image:
 - A basic image representation in memory can be described as a structure containing:
   - A pointer to the **first byte of pixel data** *(know where the actual image 2d array start)*
-  - The **Bytes-Per-Pixel**: *(in order to jump pixel by pixel in memory)*
-  - The **line length**: *(in bytes)*
   - The **endianness**: *(order in which the RAM will access (read/write) the pixel's color representation)*
+  - The **Bytes-Per-Pixel**: *(in order to jump pixel by pixel in memory)* `bbp / 8`
   - The **image width and height**
+  - The **line length**: *(in bytes)*
 
 ##### <ins>**In conclusion**:</ins>
-- An image is a **linear memory buffer** composed of contiguous bytes.
-- The 2D structure of the image is a **mathematical abstraction** that is reconstructed using calculations.
+- An image is a **linear memory buffer** composed of contiguous bytes. *(1D int array)*
+- But can be seen as a 2D structure through a **mathematical abstraction** that is reconstructed using calculations.
 
 >[!TIP]
-> What a coincidence...this is exaclty what `mlx_get_data_add()` provides, a way to correctly interpret a **linear memory bufffer as a 2D image**
+> What a coincidence...this is exaclty what `mlx_get_data_add()` provides, a way to correctly interpret a **linear memory bufffer (1D) as an image (2D)**
 
 #### **F.1.e)** <ins>Padding:</ins>
 In our image struct, **line length** and **image height** seems redondant...but it's not quit the same thing because:
 - ✅ **pixels** inside a row **are** stored **contiguously**
-- ❌ **rows** themselves **are not** guaranted to be stored **contiguously** *(be tightly packed in memory...)*
+- ❌ **rows** themselves **are not** guaranted to be stored **contiguously** *(not be tightly packed in memory...)*:
+  - last bit of last pixel of N'th line not necessarly next to the first bit of the first pixel of the N+1'th line.
 
 In pratice, each row of pixels occupies a number of bytes calles **line length** *(a.k.a stride)* often **greater than** `image width * (bbp / 8)`.
 
-The extra bytes at the end of each row are called **padding** and exists only to **aligne memory correctly** to a multiples of 2^n bytes *(in order to improve CPU, GPU and cache performance)*
+The extra bytes at the end of each row are called **padding** and exists only to **aligne memory correctly** to a multiples of 4 bytes *(along with [struct. alignment and data-packing, padding](https://www.geeksforgeeks.org/c/structure-member-alignment-padding-and-data-packing/) are used in order to improve CPU, GPU and cache performance)*
 
 >[!WARNING]
 > The padding bytes DO NOT represent pixels and MUST BE SKIPPED when moving from one row to the next
@@ -559,22 +563,22 @@ The extra bytes at the end of each row are called **padding** and exists only to
   ```
 
 >[!TIP]
-> This can be fixed by buffering all of our pixels to an image, then pushing the image to the window will...
+> This can be fixed by buffering all of our pixels to an image, then pushing the image to the window
 
-### F.2 | ✅ using image and create our own put_pixel_to_img(): (faster-->recommended)
+### F.2 | ✅ using an image & create our own fun.(): (faster-->recommended)
 
 #### F.2.a | ADD image: Modify `t_data *dt` struct to store image's members
-As we saw previously, images are struct and mlx provides fun. to manipulates images:
+As we saw previously, images are struct and mlx provides fun. to manipulates them:
 
-1. In t_data add images struct members:
+1. In t_data add image's struct members:
   ```c
   typedef struct s_data
   {
   	void	*mlx_ptr;
   	void	*win_ptr;
   	void	*img_ptr;   // -> pointer to image's struct
-  	char	*addr;      // -> pointer to the first image's pixel (x, y)= (0, 0) --> top left corner
-  	int		bpp;        // -> Bytes-Per-Pixels (to get bits-per-pixels = bpp /8)
+  	char	*addr;      // -> pointer to the first image's pixel (x, y)= (0, 0) <=> first int array's cell <=> image's top left corner pixel
+  	int		bpp;        // -> Bits-Per-Pixels (to get bytes-per-pixels = bpp / 8)
   	int		size_line;  // -> size of array's line = (image_heigth + padding)
   	int		endian;     // -> 0 if little-endian, 1 if big-endian
   }	t_data;
@@ -594,7 +598,7 @@ As we saw previously, images are struct and mlx provides fun. to manipulates ima
 #### F.2.b | Create our own function to draw pixel on the image:
 
 >[!IMPORTANT]
-> Instead of drawing directly on windows, create a fun. that will put pixel-by-pixel in an image:
+> Instead of drawing directly on windows, create a fun. that will put pixel-by-pixel in an image.
 
 ```c
 void	put_pixel_to_image(t_data *dt, int x, int y, int color)
@@ -618,10 +622,10 @@ void	put_pixel_to_image(t_data *dt, int x, int y, int color)
 #### F.2.c | Import/Push the edited image to the window: `mlx_put_image_to_window()`
 
 >[!NOTE]
-> `draw_color_panel()` is called directly by `mlx_loop_hook()`--> exect a each loop
+> `draw_randcolor_image()` is called directly by `mlx_loop_hook()`--> exect a each loop
 
 ```c
-int	draw_color_panel(t_data *dt)
+int	draw_randcolor_image(t_data *dt)
 {
 	int	x;
 	int	y;
@@ -629,6 +633,7 @@ int	draw_color_panel(t_data *dt)
 
 	if (!dt->mlx_ptr || !dt->win_ptr)
 		return (printf("Error: Invalid data pointers\n"), 1);
+ // PART1: Create a random colored image
 	color = create_random_color();
 	x = -1;
 	while (++x < WIN_X)
@@ -637,6 +642,7 @@ int	draw_color_panel(t_data *dt)
 		while (++y < WIN_Y)
 			put_pixel_to_img(dt->mlx_ptr, dt->img_ptr, x, y, color);
 	}
+ // PART2: Put the newly created image to the window
 	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_ptr, 0, 0);
 	return (0);
 }
@@ -646,9 +652,9 @@ int	draw_color_panel(t_data *dt)
   - **Objectifs**:
     - Displays a random colors image without delay.
   - **Implementation**:
-    - Clean exit on `[ESC]` key or `[X]` window close (using `mlx_loop_end()`)
-    - Use `mlx_pixel_put()` in the `mlx_loop_hook()`:
-      - Instead of drawing the entire panel at once, it updates each pixel individually resulting in a slow rendering effect.
+    - Clean exit on `[ESC]` key or `[X]` window close (using `mlx_loop_end()`).
+    - Use `put_pixel_to_image()` that draw each pixel on the image and once done.
+    - Once entire image buffered, `draw_randcolor_image()` push the image to the window.
   - **Observations**:
     - This approach is more complex, but way faster for large images.
     - The drawing process is done in memory, then displayed in one go.
