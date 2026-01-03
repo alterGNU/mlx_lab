@@ -732,15 +732,16 @@ Minilibx handles **XPM** file formats using the following utility functions:
 
 - **File**: [src/g_2Dmaze_window.c](https://github.com/alterGNU/mlx_lab/blob/main/src/g_2Dmaze_window.c)
   - **Objectifs**:
-    - From a 2D maze represented as an array of integers, display a window where each type of cell in the array is represented by an XPM image _(the window is composed of several occurrences of XPM images)_.
+    - From a 2D maze given as a array of integer, display a window where each type of cell in the array is represented by an XPM image:
+      - in order to being able later to move a player's position, a conversion into an integer array is done internally
+      - the window is composed of several occurrences of XPM images
   - **Implementation**:
-    - Load floor and wall images from XPM files.
-    - Create a maze from a string array.
+    - Load floor and wall images from XPM files using `mlx_xpm_file_to_image()`
+    - Create a maze _(array of integer)_ from a string array.
     - Draw the maze directly onto the window using `mlx_put_image_to_window()`.
     - Clean exit on [ESC] key or window close (using `mlx_hook()` and `mlx_loop_end()`).
   - **Observations**:
-    - This approach is straightforward but may be slower for large mazes
-      since it draws directly to the window pixel by pixel.
+    - This approach is straightforward but may be slower for large mazes since it draws directly to the window pixel by pixel.
     - Without flag, images continiously draw into window:
       - For 02s exec-->  100000 images dawned -->  200000 malloc/free calls.
       - For 04s exec-->  300000 images dawned -->  600000 malloc/free calls.
@@ -752,4 +753,62 @@ Minilibx handles **XPM** file formats using the following utility functions:
 - **Valgrind**: 
   ```c
   valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t5_maze_win
+  ```
+
+#### G.2.b | Display a simple 2D maze using XPM images on a buffer image.
+
+The idear here is to create a buffer image by inserting images of the floor and walls, and then display this buffer image in the window once..._(limiting calls of fun. `mlx_put_image_to_window` that malloc a gogo)_
+
+To do this, we need to write a function that inserts one image into another by copying, pix-by-pix and at the correct coordinates, the pixels of the source image into the destination image...
+  ```c
+  int	mlx_xpm_cpy_src_in_dst(t_img *src, t_img *dst, int dst_x, int dst_y)
+  {
+  	int	x;
+  	int	y;
+  	int	bpp;
+  	int	src_pix;
+  
+  	if (!dst || !src || !dst->addr || !src->addr || dst_x < 0 || dst_y < 0)
+  		return (printf("Invalid arguments\n"), 1);
+  	if (dst_x + src->width > dst->width || dst_y + src->height > dst->height)
+  		return (printf("Source image exceeds destination bounds\n"), 1);
+  	if (src->bpp != dst->bpp)
+  		return (printf("Different bpp not supported\n"), 1);
+  	bpp = dst->bpp / 8;
+  	x = -1;
+  	while (++x < src->height)
+  	{
+  		y = -1;
+  		while (++y < src->width)
+  		{
+  			src_pix = *(int *)(src->addr + (x * src->size_line + y * bpp));
+  			*(int *)(dst->addr + ((dst_y + x) * \
+  				dst->size_line + (dst_x + y) * bpp)) = src_pix;
+  		}	
+  	}
+  	return (0);
+  }
+  ```
+
+- **File**: [src/g_2Dmaze_buffimg.c](https://github.com/alterGNU/mlx_lab/blob/main/src/g_2Dmaze_buffimg.c)
+  - **Objectifs**:
+    - Same as G.2.a but instead of drawning directly on window, use a buffer image
+  - **Implementation**:
+    - Load floor and wall images from XPM files using `mlx_xpm_file_to_image()`
+    - Create a maze from a string array and a buffer image with the right size
+    - Draw the maze on the buffer image, once done put buff_img on window using `mlx_put_image_to_window()`.
+    - Clean exit on [ESC] key or window close (using `mlx_hook()` and `mlx_loop_end()`).
+  - **Observations**:
+    - ...should be better..
+    - Without flag, images continiously draw but not directly into window:
+      - For 02s exec-->     300 images dawned -->    1500 malloc/free calls.
+      - For 04s exec-->     500 images dawned -->    3000 malloc/free calls.
+      - For 10s exec-->    1500 images dawned -->    8000 malloc/free calls.
+- **Compilation**: 
+  ```c
+  cc -Wall -Wextra -Werror -Imlx src/g_2Dmaze_buffimg.c mlx/libmlx.a -o t5_maze_buffimg -lXext -lX11 
+  ```
+- **Valgrind**: 
+  ```c
+  valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t5_maze_buffimg
   ```
