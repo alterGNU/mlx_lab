@@ -474,8 +474,8 @@ All these lead to our final *(and very simply ^^)* digital image representation 
     char *ptr_img;      // pointer to image data (first bit of the first image's pixel)
     int endianness;     // data byte order
     int bits_per_pixel; // bits per pixel
-    int img_width;      // image size (nb of line)
-    int img_height;     // image size (line size == column)
+    int img_width;      // image dim. [x] (nb of pixels per line)
+    int img_height;     // image dim. [y] (nb of line)
     int bytes_per_line; // len(line) in byte == accelerator to next line
   } t_img
   ```
@@ -483,8 +483,9 @@ All these lead to our final *(and very simply ^^)* digital image representation 
 *(This is a very simplified representation of how I mentally represent a digital image structure in a computer's memory.)*
 
 ##### <ins>**In conclusion**:</ins>
-- An image can also be seen as a 2D structure in the computer's world, but through a **mathematical abstraction** that is reconstructed using calculations.
-- In a computer's memory, an image is a structure stored as a **linear memory buffer** composed of contiguous bytes. *(1D int array)*
+- An image can also be seen as a 2D structure in the computer's world, but through a **mathematical abstraction**:
+  - this 2D object can be reconstructed using calculations.
+- In a computer's memory, an image is a structure stored as a **linear memory buffer** composed of contiguous bytes. *(~1D bit array)*
 
 >[!TIP]
 > This is exaclty what `mlx_get_data_add()` provides, a way to extract the meta-data needed to manipulate the **linear memory buffer (1D)** like a **2D image representation**.
@@ -497,7 +498,7 @@ In our image struct, **line length** and **image height** seems redondant...but 
 
 In pratice, each row of pixels occupies a number of bytes calles **line length** *(a.k.a stride)* often **greater than** `image width * (bbp / 8)`.
 
-The extra bytes at the end of each row are called **padding** and exists only to **aligne memory correctly** to a multiples of 4 bytes *(along with [struct. alignment and data-packing, padding](https://www.geeksforgeeks.org/c/structure-member-alignment-padding-and-data-packing/) are used in order to improve CPU, GPU and cache performance)*
+The extra bytes at the end of each row are called **padding** and exists only to **aligne memory correctly** to a **multiples of 4 bytes** *(along with [struct. alignment and data-packing, padding](https://www.geeksforgeeks.org/c/structure-member-alignment-padding-and-data-packing/) are used in order to improve CPU, GPU and cache performance)*
 
 >[!WARNING]
 > The padding bytes DO NOT represent pixels and MUST BE SKIPPED when moving from one row to the next
@@ -506,14 +507,14 @@ The extra bytes at the end of each row are called **padding** and exists only to
   - **line_lenght** == **image_height**
   - to get a pixel(x,y) position in buffer:
     ```c
-    // line_lenght = image_height + 0 ...
+    // line_length = image_height + 0 ...
     pix_add = img_add + (y * img_height) + (x * bpp / 8)`;
     ```
 - ✅ With padding:
   - **line_lenght** >= **image_height**
   - to get a pixel(x,y) position in buffer:
     ```c
-    // line_lenght = image_height + padding
+    // line_length = image_height + padding
     pix_add = img_add + (y * line_lenght) + (x * bpp / 8)`;
     ```
 
@@ -722,7 +723,33 @@ Now that we better understand **image-compression**, we can understand why **fil
 > Encoders/Decoders transform File Format representation to and from raw pixel data in memory.
 
 Minilibx handles **XPM** file formats using the following utility functions:
-- `void	*mlx_xpm_to_image();` to convert an instance of **in-memory XPM image structure** to a new **in-memory image structure**
 - `void	*mlx_xpm_file_to_image();` to convert **XPM file** to a new instance of **in-memory image structure**
+- `void	*mlx_xpm_to_image();` to convert an instance of **in-memory XPM image structure** to a new **in-memory image structure**
 
 ### G.2 | Minilibx with XPM File Format
+
+#### G.2.a | Display a simple 2D maze using XPM images directly on the window.
+
+- **File**: [src/g_2Dmaze_window.c](https://github.com/alterGNU/mlx_lab/blob/main/src/g_2Dmaze_window.c)
+  - **Objectifs**:
+    - From a 2D maze represented as an array of integers, display a window where each type of cell in the array is represented by an XPM image _(the window is composed of several occurrences of XPM images)_.
+  - **Implementation**:
+    - Load floor and wall images from XPM files.
+    - Create a maze from a string array.
+    - Draw the maze directly onto the window using `mlx_put_image_to_window()`.
+    - Clean exit on [ESC] key or window close (using `mlx_hook()` and `mlx_loop_end()`).
+  - **Observations**:
+    - This approach is straightforward but may be slower for large mazes
+      since it draws directly to the window pixel by pixel.
+    - Without flag, images continiously draw into window:
+      - For 02s exec-->  100000 images dawned -->  200000 malloc/free calls.
+      - For 04s exec-->  300000 images dawned -->  600000 malloc/free calls.
+      - For 10s exec--> 1000000 images dawned --> 2000000 malloc/free calls.
+- **Compilation**: 
+  ```c
+  cc -Wall -Wextra -Werror -Imlx src/g_2Dmaze_window.c mlx/libmlx.a -o t5_maze_win -lXext -lX11 
+  ```
+- **Valgrind**: 
+  ```c
+  valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t5_maze_win
+  ```

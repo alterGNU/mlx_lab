@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 18:54:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/01 18:29:38 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/03 16:22:49 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 #define ESC_KEY 65307
 #define WIN_X 1024
 #define WIN_Y 1024
-#define WIN_TITLE "Random Color Panel (Slow)"
+#define WIN_TITLE "Random Color Panel (SLOW)"
 #define COLOR_BLACK 0xFFFFFF
 
 typedef struct s_data
