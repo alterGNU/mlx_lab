@@ -850,7 +850,7 @@ What a wierd name:
     - `0 <= player.pos.x` && `player.pos.x < maze.width`
     - `0 <= player.pos.y` && `player.pos.y < maze.height`
 
-#### H.1.b | Implementations
+#### H.1.b | Implementations:
 
 - [header.h](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/header.h): header with struct def. and fun. signatures.
 - [t_pos_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_pos_struct.c)
@@ -863,7 +863,7 @@ What a wierd name:
 - [utils.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/utils.c)
 - [main.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/main.c)
 
-#### H.1.c | Commands
+#### H.1.c | Commands:
 - From pwd = `./mlx_lab/`:
   - Compile and Run Program with Valgrind
     ```c
@@ -873,7 +873,7 @@ What a wierd name:
     ```c
     make -C src/h1 fclean
     ```
-#### H.1.d | Observations
+#### H.1.d | Observations:
 - Exec for  2secondes -->   0 steps -->   1 image  drawn -->  45000allocs
 - Exec for  2secondes -->  49 steps -->  50 images drawn -->  55000allocs
 - Exec for  4secondes -->   0 steps -->   1 image  drawn --> 120000allocs
@@ -881,7 +881,7 @@ What a wierd name:
 - Exec for 10secondes -->   0 steps -->   1 image  drawn --> 300000allocs
 - Exec for 10secondes --> 249 steps --> 250 images drawn --> 250000allocs
 
-#### H.1.e | Conclusions
+#### H.1.e | Conclusions:
 Optimization fails poorly: **using a flag reduces drawing operations but not the memory allocations**:
 - Image are drawn only when needed, but busy-spin loop is worst than continiously re-drawing the same image when static:
   - When static, `mlx` allocates 30k allocs/second!!!
@@ -971,7 +971,19 @@ int	draw_buffer_image(t_data *dt)
 	if (gettimeofday(&dt->last_frame_time, NULL) < 0)
 		return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
 ```
-#### H.2.c | Observations
+
+#### H.1.c | Commands:
+- From pwd = `./mlx_lab/`:
+  - Compile and Run Program with Valgrind
+    ```c
+    make -C ./src/h2 v
+    ```
+  - Clean
+    ```c
+    make -C src/h2 fc
+    ```
+
+#### H.2.d | Observations:
 - FPS=30
   - Exec for  2secondes -->   0 steps -->  60 images drawn -->    600allocs
   - Exec for  2secondes -->  40 steps -->  60 images drawn -->    750allocs
@@ -994,7 +1006,7 @@ int	draw_buffer_image(t_data *dt)
   - Exec for 10secondes -->   0 steps --> 900 images drawn -->   4700allocs
   - Exec for 10secondes --> 275 steps --> 900 images drawn -->   5700allocs
 
-#### H.2.d | Conclusions:
+#### H.2.e | Conclusions:
 - The frame rate cap _(i.e **FPS limiter**)_  works as intended:
   - Memory allocations remain low and scale mainly with runtime, not with player movement.
   - Higher FPS values increas allocations as expected, but overall usage remains reasonable.
