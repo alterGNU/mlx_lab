@@ -888,3 +888,115 @@ Optimization fails poorly: **using a flag reduces drawing operations but not the
 
 >[!TIP]
 > Using `usleep(16000)` instead of returning could work...lets try to implement FPS limitation using `gettimeofday()`
+
+### H.2 | XPMaze_BresenhamGhost_GridBaseMov_FPSLim
+
+#### H.2.a | Objectifs:
+Improve H.1 program replacing the `int draw_needed` flag-based optimization with a **maximal Frames Per Second (FPS)** limit.
+
+The idea is to keep the fun. called by `mlx_hook_loop()` busy _(running continuously)_ , even when the player is static, but to **avoid redrawing the image until a fixed time delay has elapsed**  _(computed from the target FPS)_
+
+This ensures that no more than `FPS` frames per second are displayed, effectively limiting resource consumption while preserving responsiveness.
+
+#### H.2.b | Implementations overview:
+To achieve this, we use the `gettimeofday()` fun. to retrieve the current time.
+
+With a few **time-related utility fun.**, we can redraw the image **only when enough time has passed since the previous frame**.
+
+##### H.2.c.i | Add time utils fun `diff_time_in_ms(t1, t2)`
+This function returns the time difference between two `struct timeval` values expressed in milliseconds:
+```c
+int	diff_time_in_ms(struct timeval start, struct timeval end)
+{
+	int	sec_diff;
+	int	usec_diff;
+
+	sec_diff = end.tv_sec - start.tv_sec;
+	usec_diff = end.tv_usec - start.tv_usec;
+	return (sec_diff * 1000 + usec_diff / 1000);
+}
+```
+
+##### H.2.c.ii | Add time utils fun. `convert_fps_to_frams_delay(FPS)`
+This function returns the delay _(in milliseconds)_ between two frames in order to achieve the desired FPS.
+```c
+int	convert_fps_to_frame_delay(int fps)
+{
+	if (fps <= 0)
+		return (0);
+	return (1000 / fps);
+}
+```
+
+##### H.2.c.iii | In header
+- ADD: `#define FPS 60`
+  - This value can be modified to set the maximum allowed frames per second.
+- ADD: to `t_data` struct this two new members:
+  ```c
+  typedef struct s_data
+  {
+    ...
+  	// set once by init_data() by calling convert_fps_to_frams_delay(FPS)
+  	int				delay_between_frames_ms;
+  	// Updated each time mlx_put_image_to_window() is called
+  	struct timeval	last_frame_time;
+  }	t_data;
+  ```
+
+##### H.2.c.v | In `draw_buffer_image()` called by `mlx_loop_hook()`
+```c
+int	draw_buffer_image(t_data *dt)
+{
+  ...
+	struct timeval	act_time;
+  // STEP 1: Redraw dt->img_buffer
+  ...
+  // STEP 2: Get current time
+	if (gettimeofday(&act_time, NULL) < 0)
+		return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
+  // If this is the first frame --> SKIP THE WAITING LOOP...
+	if (dt->img_drawn) // if not the first frame, enforce the FPS delay == WAIT LOOP!
+	{
+    // if redrawing step took less time than the FPS corresponding delay....WAIT LOOP...
+		while (diff_time_in_ms(dt->last_frame_time, act_time) < dt->delay_between_frames_ms)
+		{
+			if (gettimeofday(&act_time, NULL) < 0)
+				return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
+		}
+	}
+  // STEP 3: Display the image (minimum delay has elapsed)
+	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_buffer.img_ptr, 0, 0);
+	dt->img_drawn++;
+  // UPDATE dt->last_frame_time at the right value for next loop!
+	if (gettimeofday(&dt->last_frame_time, NULL) < 0)
+		return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
+```
+#### H.2.c | Observations
+- FPS=30
+  - Exec for  2secondes -->   0 steps -->  60 images drawn -->    600allocs
+  - Exec for  2secondes -->  40 steps -->  60 images drawn -->    750allocs
+  - Exec for  4secondes -->   0 steps --> 120 images drawn -->    900allocs
+  - Exec for  4secondes -->  80 steps --> 120 images drawn -->   1200allocs
+  - Exec for 10secondes -->   0 steps --> 300 images drawn -->   1900allocs
+  - Exec for 10secondes --> 250 steps --> 300 images drawn -->   2900allocs
+- FPS=60
+  - Exec for  2secondes -->   0 steps --> 120 images drawn -->   1000allocs
+  - Exec for  2secondes -->  40 steps --> 120 images drawn -->   1150allocs
+  - Exec for  4secondes -->   0 steps --> 240 images drawn -->   1450allocs
+  - Exec for  4secondes -->  80 steps --> 240 images drawn -->   1800allocs
+  - Exec for 10secondes -->   0 steps --> 600 images drawn -->   3300allocs
+  - Exec for 10secondes --> 250 steps --> 600 images drawn -->   4300allocs
+- FPS=90
+  - Exec for  2secondes -->   0 steps --> 175 images drawn -->   1100allocs
+  - Exec for  2secondes -->  50 steps --> 180 images drawn -->   1400allocs
+  - Exec for  4secondes -->   0 steps --> 360 images drawn -->   2000allocs
+  - Exec for  4secondes -->  90 steps --> 350 images drawn -->   2400allocs
+  - Exec for 10secondes -->   0 steps --> 900 images drawn -->   4700allocs
+  - Exec for 10secondes --> 275 steps --> 900 images drawn -->   5700allocs
+
+#### H.2.d | Conclusions:
+- The frame rate cap _(i.e **FPS limiter**)_  works as intended:
+  - Memory allocations remain low and scale mainly with runtime, not with player movement.
+  - Higher FPS values increas allocations as expected, but overall usage remains reasonable.
+  - The number of rendered images closely matches `FPS x execution_time`, regardless of player movement.
+  - The cost of player movement is small compared to the baseline cost of the main `mlx_loop()`
