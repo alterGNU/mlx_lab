@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/04 15:23:08 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/04 17:27:10 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,8 @@ typedef struct s_data
 
 // draw_to_img.c
 void	put_pixel_to_image(t_img *img, int x, int y, int color);
-void	draw_line(t_img *img, int x1, int x2, int y, int color);
-void	draw_circle(t_img *img, int cx, int cy, int r, int color);
+void	draw_line(t_img *img, int x, t_pos pos, int color);
+void	draw_circle(t_img *img, t_pos c_pos, int r, int color);
 
 // hooked_funs.c
 int		handle_key(int keycode, t_data *dt);
@@ -105,7 +105,14 @@ void	print_maze(t_maze maze);
 
 // t_player_struct.c
 t_play	init_player(void);
+int		print_player(t_play play);
 void	draw_player(t_img *img, t_play *player);
+
+// t_pos_struct.c
+t_pos	init_pos(float x, float y);
+t_pos	set_pos(t_pos *pos, float x, float y);
+int		print_pos(t_pos pos);
+t_pos	dup_pos(t_pos src);
 
 // utils.c
 int		char_in_str(char c, const char *str);

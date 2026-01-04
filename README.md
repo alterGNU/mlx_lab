@@ -823,7 +823,7 @@ What a wierd name:
 - **BusySpin**: my tentative to optimize the drawing process failed poorly ending in a to speed loop
 
 >[!NOTE]
-> Makefile as a symbolic link rules to create a link to the docs/ folder --> solves relatif xpm file path variable.
+> Makefile has a symbolic link rules to create a link to the docs/ folder --> solves relatif xpm file path variable.
 
 #### H.1.a | Games Conditions:
 - **2D grid**:
@@ -852,16 +852,16 @@ What a wierd name:
 
 #### H.1.b | Implementations
 
-- [header.h](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/header.h)
-- [main.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/main.c)
-- [draw_to_img.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/draw_to_img.c)
-- [header.h](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/header.h)
-- [hooked_funs.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/hooked_funs.c)
-- [t_data_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_data_struct.c)
-- [t_img_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_img_struct.c)
-- [t_maze_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_maze_struct.c)
+- [header.h](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/header.h): header with struct def. and fun. signatures.
+- [t_pos_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_pos_struct.c)
 - [t_player_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_player_struct.c)
+- [t_maze_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_maze_struct.c)
+- [t_img_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_img_struct.c)
+- [t_data_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_data_struct.c)
+- [draw_to_img.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/draw_to_img.c)
+- [hooked_funs.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/hooked_funs.c)
 - [utils.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/utils.c)
+- [main.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/main.c)
 
 #### H.1.c | Commands
 - From pwd = `./mlx_lab/`:
@@ -873,3 +873,18 @@ What a wierd name:
     ```c
     make -C src/h1 fclean
     ```
+#### H.1.d | Observations
+- Exec for  2secondes -->   0 steps -->   1 image  drawn -->  45000allocs
+- Exec for  2secondes -->  49 steps -->  50 images drawn -->  55000allocs
+- Exec for  4secondes -->   0 steps -->   1 image  drawn --> 120000allocs
+- Exec for  4secondes -->  85 steps -->  86 images drawn -->  85000allocs
+- Exec for 10secondes -->   0 steps -->   1 image  drawn --> 300000allocs
+- Exec for 10secondes --> 249 steps --> 250 images drawn --> 250000allocs
+
+#### H.1.e | Conclusions
+Optimization fails poorly: **using a flag reduces drawing operations but not the memory allocations**:
+- Image are drawn only when needed, but busy-spin loop is worst than continiously re-drawing the same image when static:
+  - When static, `mlx` allocates 30k allocs/second!!!
+
+>[!TIP]
+> Using `usleep(16000)` instead of returning could work...lets try to implement FPS limitation using `gettimeofday()`

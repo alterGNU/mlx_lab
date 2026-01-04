@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:18:44 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/04 12:21:56 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/04 18:25:58 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,11 @@ t_img	ft_load_image(void *mlx_ptr, const char *filename)
 	img.endian = -1;
 	if (mlx_ptr && filename)
 	{
-		img.img_ptr = mlx_xpm_file_to_image(mlx_ptr, (char *)filename, &img.width, &img.height);
+		img.img_ptr = mlx_xpm_file_to_image(mlx_ptr, (char *)filename, \
+			&img.width, &img.height);
 		if (img.img_ptr)
-			img.addr = mlx_get_data_addr(img.img_ptr, &img.bpp, &img.size_line, &img.endian);
+			img.addr = mlx_get_data_addr(img.img_ptr, &img.bpp, \
+				&img.size_line, &img.endian);
 	}
 	return (img);
 }
@@ -47,7 +49,8 @@ t_img	ft_create_buffer_image(void *mlx_ptr, int width, int height)
 	{
 		img.img_ptr = mlx_new_image(mlx_ptr, width, height);
 		if (img.img_ptr)
-			img.addr = mlx_get_data_addr(img.img_ptr, &img.bpp, &img.size_line, &img.endian);
+			img.addr = mlx_get_data_addr(img.img_ptr, &img.bpp, \
+				&img.size_line, &img.endian);
 	}
 	return (img);
 }

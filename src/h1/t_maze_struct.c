@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:17:23 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/04 15:46:49 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/04 17:27:47 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,10 @@ void	print_maze(t_maze maze)
 	int	i;
 	int	tot_size;
 
+	printf("Maze [%d x %d]:\n", maze.width, maze.height);
 	tot_size = maze.width * maze.height;
 	if (!maze.mat || tot_size <= 0)
-		printf("Maze is empty.\n");
+		printf("(empty).\n");
 	else
 	{
 		i = -1;

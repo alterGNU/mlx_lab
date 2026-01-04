@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/04 15:50:12 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/04 17:33:22 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,16 +41,14 @@ static void	print_start_infos(t_data dt, const char **str_arr)
 	printf("\n======== STARTING INFOS ===========\n");
 	printf(" - String array:\n");
 	print_str_array(str_arr);
-	printf("\n - Maze: [%d x %d]\n", dt.maze.width, dt.maze.height);
+	printf("\n");
 	print_maze(dt.maze);
 	printf(" - Tile size: %d x %d pixels\n", TILE_X, TILE_Y);
 	printf(" - Window size: %d x %d pixels\n", dt.maze.width * TILE_X, \
 		dt.maze.height * TILE_Y);
-	printf(" - Player :\n  ->pos(%.2f, %.2f)\n", \
-		dt.player.pos.x, dt.player.pos.y);
-	printf("  ->radius: %d pixels\n", dt.player.radius);
-	printf("  ->color: 0x%06X\n", dt.player.color);
-	printf("====================================\n\n");
+	printf(" - Start ");
+	print_player(dt.player);
+	printf("\n====================================\n\n");
 }
 
 static void	print_end_infos(t_data dt, int duration, t_pos start_pos)
@@ -60,9 +58,11 @@ static void	print_end_infos(t_data dt, int duration, t_pos start_pos)
 	printf(" - Total Image: %d images drawn\n", dt.img_drawn);
 	printf(" - Player:\n");
 	printf("  - %d steps taken\n", dt.player.step_count);
-	printf("  - from pos(%.2f, %.2f)\n", start_pos.x, start_pos.y);
-	printf("  - to   pos(%.2f, %.2f)\n", dt.player.pos.x, dt.player.pos.y);
-	printf("====================================\n\n");
+	printf("  - from ");
+	print_pos(start_pos);
+	printf("\n  - to   ");
+	print_pos(dt.player.pos);
+	printf("\n====================================\n\n");
 }
 
 int	main(void)
@@ -89,8 +89,7 @@ int	main(void)
 	if (error_detected_after_init_data(&dt))
 		return (free_data(&dt), 1);
 	print_start_infos(dt, str_arr);
-	start_pos.x = dt.player.pos.x;
-	start_pos.y = dt.player.pos.y;
+	start_pos = dup_pos(dt.player.pos);
 	mlx_loop_hook(dt.mlx_ptr, &draw_buffer_image, &dt);
 	mlx_hook(dt.win_ptr, 17, 0, &mlx_loop_end, dt.mlx_ptr);
 	mlx_hook(dt.win_ptr, 2, (1L << 0), &handle_key, &dt);

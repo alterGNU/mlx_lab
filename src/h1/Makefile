@@ -36,6 +36,7 @@ SRC			=	draw_to_img.c \
 				t_img_struct.c \
 				t_maze_struct.c \
 				t_player_struct.c \
+				t_pos_struct.c \
 				utils.c
 OBJ			=	$(addprefix $(BUILD_DIR)/, $(SRC:.c=.o))
 # =[ RULES ]==================================================================================================
@@ -48,7 +49,7 @@ $(NAME): $(MLX_A) $(DOC_SYMLINK) $(OBJ) header.h
 	echo "     $(RED)\`$(END)$(CC) $(FLAGS) $(BUILD_DIR)/*.o $(MLX_A) -o $(NAME) $(F_ADD)$(RED)\`$(END)"
 
 $(MLX_A):
-	@if [ ! -d ${MLX_DIR} ];then echo "$(GREEN)🔘 $(TITLE)Clone repo. 'minilibx for linux'$(END)" && git clone $(MLX_URL) $(MLX_DIR) >> ${LOG_FILE} 2>&1 && echo "   $(GREEN)⤷ $(END)using command: $(RED)\`$(BLUE)git clone $(MLX_URL) $(MLX_DIR)$(END)$(RED)\`$(END)"; fi
+	@if [ ! -d ${MLX_DIR} ];then echo "$(GREEN)🔘 $(TITLE)Clone repo. 'minilibx for linux'$(END)" && git clone $(MLX_URL) $(MLX_DIR) && echo "   $(GREEN)⤷ $(END)using command: $(RED)\`$(BLUE)git clone $(MLX_URL) $(MLX_DIR)$(END)$(RED)\`$(END)"; fi
 	@echo "$(GREEN)🔘 $(TITLE)MLX make$(END)"
 	@echo "   $(GREEN)⤷ $(END)Create static lib:$(GREEN)$(MLX_A)$(END) using command: $(RED)\`$(BLUE)$(MAKE)$(END) -C $(BROWN)$(MLX_DIR)$(END)$(RED)\`$(END)"
 	@$(MAKE) -C $(MLX_DIR) > /dev/null 2>&1
