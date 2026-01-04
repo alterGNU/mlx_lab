@@ -739,7 +739,8 @@ Minilibx handles **XPM** file formats using the following utility functions:
     - Load floor and wall images from XPM files using `mlx_xpm_file_to_image()`
     - Create a maze _(array of integer)_ from a string array.
     - Draw the maze directly onto the window using `mlx_put_image_to_window()`.
-    - Clean exit on [ESC] key or window close (using `mlx_hook()` and `mlx_loop_end()`).
+    - **HOOK**: _(using `mlx_hook()`)_
+      - Clean exit on `[ESC]` key or window close _(calling `mlx_loop_end()`)_
   - **Observations**:
     - This approach is straightforward but may be slower for large mazes since it draws directly to the window pixel by pixel.
     - Without flag, images continiously draw into window:
@@ -767,7 +768,7 @@ To do this, we need to write a function that inserts one image into another by c
   	int	y;
   	int	bpp;
   	int	src_pix;
-  
+
   	if (!dst || !src || !dst->addr || !src->addr || dst_x < 0 || dst_y < 0)
   		return (printf("Invalid arguments\n"), 1);
   	if (dst_x + src->width > dst->width || dst_y + src->height > dst->height)
@@ -797,9 +798,9 @@ To do this, we need to write a function that inserts one image into another by c
     - Load floor and wall images from XPM files using `mlx_xpm_file_to_image()`
     - Create a maze from a string array and a buffer image with the right size
     - Draw the maze on the buffer image, once done put buff_img on window using `mlx_put_image_to_window()`.
-    - Clean exit on [ESC] key or window close (using `mlx_hook()` and `mlx_loop_end()`).
+    - **HOOK**: _(using `mlx_hook()`)_
+      - Clean exit on `[ESC]` key or window close _(calling `mlx_loop_end()`)_
   - **Observations**:
-    - ...should be better..
     - Without flag, images continiously draw but not directly into window:
       - For 02s exec-->     300 images dawned -->    1500 malloc/free calls.
       - For 04s exec-->     500 images dawned -->    3000 malloc/free calls.
@@ -811,4 +812,111 @@ To do this, we need to write a function that inserts one image into another by c
 - **Valgrind**: 
   ```c
   valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t5_maze_buffimg
+  ```
+
+#### G.2.c | Add a player that can move and a flag to draw only when needed (not continuously)
+
+Lets create a 'playable' 2D game where we can move the player in our maze _(without collision->ghost mode)_.
+
+>[!TIP]
+> Anticipating that I will later have to use 2D vectors, I choose to use a `t_pos` struct to represent player position.
+
+- ADD new struct:
+  ```c
+  typedef struct s_pos
+  {
+    float x;
+    float y;
+  } t_pos;
+  ```
+
+- ADD a player, which is:
+	- in the `const char	*str_arr[]` given in main, a player can be represented by the `char 'P'`
+  - in out data, a `t_play` struct
+    ```c
+    typedef struct s_play
+    {
+      t_pos pos;
+      int   color; // color of the bresenham circle
+      int   rayon; // in pixel, r of bresenham circle
+    } t_play;
+    ```
+
+- DRAW a player (with a nice red circle using bresenham circle ^^')
+  ```c
+  static void	draw_hline(t_img *img, int x1, int x2, int y, int color)
+  {
+  	while (x1 <= x2)
+  	{
+  		if (x1 >= 0 && x1 < img->width && y >= 0 && y < img->height)
+  			put_pixel_to_image(img, x1, y, color);
+  		x1++;
+  	}
+  }
+
+  static void	draw_filled_circle_bresenham(t_img *img, int cx, int cy, int r, int color)
+  {
+  	int	x;
+  	int	y;
+  	int	d;
+
+  	x = 0;
+  	y = r;
+  	d = 1 - r;
+
+  	while (x <= y)
+  	{
+  		draw_hline(img, cx - x, cx + x, cy + y, color);
+  		draw_hline(img, cx - x, cx + x, cy - y, color);
+  		draw_hline(img, cx - y, cx + y, cy + x, color);
+  		draw_hline(img, cx - y, cx + y, cy - x, color);
+
+  		if (d < 0)
+  			d += 2 * x + 3;
+  		else
+  		{
+  			d += 2 * (x - y) + 5;
+  			y--;
+  		}
+  		x++;
+  	}
+  }
+
+  void	draw_player(t_img *img, t_play *player)
+  {
+  	int	cx;
+  	int	cy;
+  	int	r;
+
+  	cx = player->pos.x * TILE_X;
+  	cy = player->pos.y * TILE_Y;
+  	r = player->size / 2;
+  	draw_filled_circle_bresenham(img, cx, cy, r, player->color);
+  }
+  ```
+
+- **File**: [src/g_bresenhamdot_ghostmode_busy_spin.c](https://github.com/alterGNU/mlx_lab/blob/main/src/g_bresenhamdot_ghostmode_busy_spin.c)
+- **Objectifs**:
+  - being able to move a player in the maze (red dot chilling player).
+  - draw only when needed: _(~optimization->less mallocs when player static)_
+    - at start.
+    - when player's position changes.
+- **Implementation**:
+  - Add a player structure with position, color, and rayon.
+  - Add Keyboard hook: _(while being pressed)_
+    - `[W]` -> step forward
+    - `[S]` -> step backward.
+    - `[D]` -> step on the right.
+    - `[A]` -> step on the left.
+- **Observations**:
+  - Everything works as expected, except for the flag optimization:
+  - Unfortunately, even with the optimization to reduce drawing calls when the player is static, the program still makes a significant number of malloc and free calls.
+  - This is likely due to the way the MiniLibX library handles image rendering and window updates, which may involve internal mem. alloc. regardless of the drawing frequency.
+- **Compilation**: 
+  ```c
+  cc -Wall -Wextra -Werror -Imlx src/g_bresenhamdot_ghostmode_busy_spin.c mlx/libmlx.a -o t5_dot_ghost_busy -lXext -lX11 
+  ```
+- **Valgrind**: 
+  ```c
+  valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t5_dot_ghost_busy
   ```
