@@ -1012,3 +1012,41 @@ int	draw_buffer_image(t_data *dt)
   - Higher FPS values increas allocations as expected, but overall usage remains reasonable.
   - The number of rendered images closely matches `FPS x execution_time`, regardless of player movement.
   - The cost of player movement is small compared to the baseline cost of the main `mlx_loop()`
+
+### H.3 | Gridmaze_BresenhamGhost_GridBaseMov_FPSLim
+
+We used XPM images to represent the cells of our maze to use `mlx_xpm_file_to_img()` fun.
+
+For our next mini-game, we will learn out to draw directly square with variable size as maze's tiles.
+
+>[!NOTES]
+> Its a 2D Maze drawn layer-by-layer with Bresenham Circle Player Moving discretely with FPS Limitation.
+
+#### H.3.a | Objectifs:
+The goal is to be able to draw the image layer-by-layer:
+- 1. First layer
+  - Draw the cells/tils representation
+  - Draw the text area
+- 2. Second layer
+  - Draw the player circle
+  - Draw the player orientation
+  - Draw the text (position, orientation, FPS)
+
+#### H.3.b | Implementations overview:
+##### H.3.b.i | In header
+- `#define GRID_X 10` in pixel, width of a cell
+- `#define GRID_Y 10` in pixel, height of a cell
+- `t_data` remove img
+
+#### H.3.c | Commands:
+- From pwd = `./mlx_lab/`:
+  - Compile and Run Program with Valgrind
+    ```c
+    make -C ./src/h3 v
+    ```
+  - Clean
+    ```c
+    make -C src/h3 fc
+    ```
+#### H.3.d | Observations:
+#### H.3.e | Conclusions:

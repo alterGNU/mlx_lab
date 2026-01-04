@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/04 21:43:18 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/04 22:31:53 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # define A_KEY 97
 # define S_KEY 115
 # define D_KEY 100
-# define WIN_TITLE "Moving player with int flag (busy-spin-loop)"
+# define WIN_TITLE "Moving player with FPS limitation"
 # define TILE_X 32
 # define TILE_Y 32
 # define FLOOR_XPM "./docs/floor.xpm"

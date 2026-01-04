@@ -6,33 +6,9 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/04 20:51:55 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/04 22:32:16 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-/**
- * FEATURES:
- * Movable player represented by a red dot (bresenham red circle) using [AWSD]:
- * - Grid-Based-movement: no-orientation param.
- * - Ghost-mode: no-collision detection.
- * - Drawing optimization flag to draw only when needed (FAILURE:busy-spin-loop)
- * OBJECTIFS:
- *  - being able to move a player in the maze (red dot silly player).
- *  - draw only when needed: _(~optimization->less mallocs when player static)_
- *    - at start.
- *    - when player's position changes.
- * IMPLEMENTATION:
- *  - Add a t_play struct with a t_pos member, an int color and radius.
- *  - Add Keyboard hook: _(while being pressed)_
- *    - `[W]` -> step forward
- *    - `[S]` -> step backward.
- *    - `[D]` -> step on the right.
- *    - `[A]` -> step on the left.
- * - OBSERVATIONS:
- *  - Everything works as intended, except for the flag optimization...
- *  - Unfortunately, using a simple int flag to indicate whether to redraw create
- *    a to speed loop increasing significantly the memory allocations usage.
- */
 
 #include "header.h"
 
