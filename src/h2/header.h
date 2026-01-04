@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/04 21:08:18 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/04 21:43:18 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # define RED_COLOR 0xFF0000
 # define CIRCLE_RADIUS 8
 # define STEP 0.1f
-# define FPS 90
+# define FPS 60
 
 # include "mlx.h"
 # include <stdio.h>
