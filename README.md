@@ -908,10 +908,13 @@ Lets create a 'playable' 2D game where we can move the player in our maze _(with
     - `[S]` -> step backward.
     - `[D]` -> step on the right.
     - `[A]` -> step on the left.
+  - Add dt->draw_needed flag:
+    - init at 1 _(first image need to be build)_
+    - set at 1 when player position is changed
+    - set at 0 when image drawned
 - **Observations**:
-  - Everything works as expected, except for the flag optimization:
-  - Unfortunately, even with the optimization to reduce drawing calls when the player is static, the program still makes a significant number of malloc and free calls.
-  - This is likely due to the way the MiniLibX library handles image rendering and window updates, which may involve internal mem. alloc. regardless of the drawing frequency.
+  - Everything works except for the flag optimization:
+    - Static player do more malloc than moving player cause the loop turn too fast xD
 - **Compilation**: 
   ```c
   cc -Wall -Wextra -Werror -Imlx src/g_bresenhamdot_ghostmode_busy_spin.c mlx/libmlx.a -o t5_dot_ghost_busy -lXext -lX11 
