@@ -28,7 +28,7 @@ cd mlx_lab && ./clean.sh
   - step 2: Remove sub-folders in list `SUB_FOLDERS_TO_DEL=( "mlx" )`
   - step 3: Remove binary tests files (pattern:`t[0-9]_*`)
 
-## B | Add mlx to project's Makefile:
+## B | Add mlx to another project's Makefile:
 - B.1 | Rules to git clone mlx and make minilibx.
     ```bash
     MLX_DIR =	./mlx
@@ -814,112 +814,62 @@ To do this, we need to write a function that inserts one image into another by c
   valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t5_maze_buffimg
   ```
 
-#### G.2.c | Add a player that can move and a flag to draw only when needed (not continuously)
+## H | MGP-MLX: Mini Games Projects with MiniLibX
+### H.1 | XPMaze_BresenhamGhost_GridBasedMov_BusySpin
+What a wierd name:
+- **XPMaze**: 2D grid's cells are represented by XMP tiles images.
+- **BresenhamGhost**: player is represented by a bresenham circle and can walk through walls like a ghost
+- **GridBaseMov**: player movement are Grid-Based
+- **BusySpin**: my tentative to optimize the drawing process failed poorly ending in a to speed loop
 
-Lets create a 'playable' 2D game where we can move the player in our maze _(without collision->ghost mode)_.
+>[!NOTE]
+> Makefile as a symbolic link rules to create a link to the docs/ folder --> solves relatif xpm file path variable.
 
->[!TIP]
-> Anticipating that I will later have to use 2D vectors, I choose to use a `t_pos` struct to represent player position.
+#### H.1.a | Games Conditions:
+- **2D grid**:
+  - User write the grid has a `const char *grid` first _(user-friendly --> easier to write)_
+  - String grid convert to an integer array: `t_maze` struct:
+    - 1D integer array: `int		*mat;` _(That can be seen as a 2D array through mathematical calculations)_
+    - line len        : `int width;`
+    - number of lines : `int height;`
+  - The grid representation use for each cell, an **XPM** files as tiles. _(~ so long johnson)_
+- **Player**:
+  - Start position given in string array with the char:`'P'`.
+  - A player struct has
+    - a position member:`t_pos(float x, float y)` --> 2D position
+    - a color member:`int color` --> pixel color `0x00RRGGBB` value
+    - a circle radius member:`int radius` --> circle radius in pixel
+  - Player representation is a fill color circle. _(The algorithm used to draw a circle in pixels is: **Bresenham**)_
+- **Movements**:
+  - Player's movement are Grid-Based, meaning that the player moves in **discrete steps aligned to the grid**:
+    - Pressing `[W]` key--> increase `player.pos.x` by on **step** <-> Moving North on grid
+    - Pressing `[D]` key--> increase `player.pos.y` by on **step** <-> Moving East on grid
+    - Pressing `[S]` key--> decrease `player.pos.x` by on **step** <-> Moving South on grid
+    - Pressing `[A]` key--> decrease `player.pos.y` by on **step** <-> Moving West on grid
+  - They're **NO COLLISIONS** inside grid with walls ==> **GHOST MODE**, but a player can **not move outside the grid**:
+    - `0 <= player.pos.x` && `player.pos.x < maze.width`
+    - `0 <= player.pos.y` && `player.pos.y < maze.height`
 
-- ADD new struct:
-  ```c
-  typedef struct s_pos
-  {
-    float x;
-    float y;
-  } t_pos;
-  ```
+#### H.1.b | Implementations
 
-- ADD a player, which is:
-	- in the `const char	*str_arr[]` given in main, a player can be represented by the `char 'P'`
-  - in out data, a `t_play` struct
+- [header.h](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/header.h)
+- [main.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/main.c)
+- [draw_to_img.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/draw_to_img.c)
+- [header.h](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/header.h)
+- [hooked_funs.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/hooked_funs.c)
+- [t_data_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_data_struct.c)
+- [t_img_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_img_struct.c)
+- [t_maze_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_maze_struct.c)
+- [t_player_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_player_struct.c)
+- [utils.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/utils.c)
+
+#### H.1.c | Commands
+- From pwd = `./mlx_lab/`:
+  - Compile and Run Program with Valgrind
     ```c
-    typedef struct s_play
-    {
-      t_pos pos;
-      int   color; // color of the bresenham circle
-      int   rayon; // in pixel, r of bresenham circle
-    } t_play;
+    make -C ./src/h1 valgrind
     ```
-
-- DRAW a player (with a nice red circle using bresenham circle ^^')
-  ```c
-  static void	draw_hline(t_img *img, int x1, int x2, int y, int color)
-  {
-  	while (x1 <= x2)
-  	{
-  		if (x1 >= 0 && x1 < img->width && y >= 0 && y < img->height)
-  			put_pixel_to_image(img, x1, y, color);
-  		x1++;
-  	}
-  }
-
-  static void	draw_filled_circle_bresenham(t_img *img, int cx, int cy, int r, int color)
-  {
-  	int	x;
-  	int	y;
-  	int	d;
-
-  	x = 0;
-  	y = r;
-  	d = 1 - r;
-
-  	while (x <= y)
-  	{
-  		draw_hline(img, cx - x, cx + x, cy + y, color);
-  		draw_hline(img, cx - x, cx + x, cy - y, color);
-  		draw_hline(img, cx - y, cx + y, cy + x, color);
-  		draw_hline(img, cx - y, cx + y, cy - x, color);
-
-  		if (d < 0)
-  			d += 2 * x + 3;
-  		else
-  		{
-  			d += 2 * (x - y) + 5;
-  			y--;
-  		}
-  		x++;
-  	}
-  }
-
-  void	draw_player(t_img *img, t_play *player)
-  {
-  	int	cx;
-  	int	cy;
-  	int	r;
-
-  	cx = player->pos.x * TILE_X;
-  	cy = player->pos.y * TILE_Y;
-  	r = player->size / 2;
-  	draw_filled_circle_bresenham(img, cx, cy, r, player->color);
-  }
-  ```
-
-- **File**: [src/g_bresenhamdot_ghostmode_busy_spin.c](https://github.com/alterGNU/mlx_lab/blob/main/src/g_bresenhamdot_ghostmode_busy_spin.c)
-- **Objectifs**:
-  - being able to move a player in the maze (red dot chilling player).
-  - draw only when needed: _(~optimization->less mallocs when player static)_
-    - at start.
-    - when player's position changes.
-- **Implementation**:
-  - Add a player structure with position, color, and rayon.
-  - Add Keyboard hook: _(while being pressed)_
-    - `[W]` -> step forward
-    - `[S]` -> step backward.
-    - `[D]` -> step on the right.
-    - `[A]` -> step on the left.
-  - Add dt->draw_needed flag:
-    - init at 1 _(first image need to be build)_
-    - set at 1 when player position is changed
-    - set at 0 when image drawned
-- **Observations**:
-  - Everything works except for the flag optimization:
-    - Static player do more malloc than moving player cause the loop turn too fast xD
-- **Compilation**: 
-  ```c
-  cc -Wall -Wextra -Werror -Imlx src/g_bresenhamdot_ghostmode_busy_spin.c mlx/libmlx.a -o t5_dot_ghost_busy -lXext -lX11 
-  ```
-- **Valgrind**: 
-  ```c
-  valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --undef-value-errors=no ./t5_dot_ghost_busy
-  ```
+  - Clean
+    ```c
+    make -C src/h1 fclean
+    ```
