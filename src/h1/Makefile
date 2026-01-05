@@ -58,7 +58,7 @@ $(DOC_SYMLINK):
 	@echo "$(GREEN)🔘 $(TITLE)Create symlinks for xpm files"
 	@ln -s ../../docs ./docs
 
-$(BUILD_DIR)/%.o: %.c
+$(BUILD_DIR)/%.o: %.c header.h
 	@if [ ! -d $(BUILD_DIR) ];then $(MKDP) $(BUILD_DIR);fi
 	@if [ -z "$$(ls -A $(BUILD_DIR) 2>/dev/null)" ];then echo "$(GREEN)🔘 $(TITLE)Create object files$(END)";fi
 	@$(CC) $(FLAGS) -c $< -o $@ && printf "   $(GREEN)⤷ $(BROWN)%-38s $(YELLOW)⟹  $(BROWN)%s$(END)\n" "$<" "$@"

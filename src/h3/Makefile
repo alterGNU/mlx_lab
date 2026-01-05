@@ -1,15 +1,14 @@
 # ============================================================================================================
-# 2D Maze of XPM tiles with Bresenham Circle Player Moving discretely on Grid with FPS Limit (better opti)
+# 2D Maze drawn layer-by-layer with Bresenham Circle Player Moving discretely with FPS-Limit
 # ============================================================================================================
 # =[ VARIABLES ]==============================================================================================
-NAME		=	xpm_bresenham_ghost_fpslimit
+NAME		=	layerGrid_bresenham_ghost_fps
 # -[ MLX ]----------------------------------------------------------------------------------------------------
 MLX_DIR		=	../../mlx
 MLX_A		=	$(MLX_DIR)/libmlx.a
 MLX_URL		=	https://github.com/42Paris/minilibx-linux.git
 # -[ FOLDERS ]------------------------------------------------------------------------------------------------
 BUILD_DIR	=	./build
-DOC_SYMLINK	=	./docs
 # -[ COLORS ]-------------------------------------------------------------------------------------------------
 BLACK		=	\033[2;30m
 BLUE		=	\033[1;36m
@@ -42,7 +41,7 @@ OBJ			=	$(addprefix $(BUILD_DIR)/, $(SRC:.c=.o))
 # =[ RULES ]==================================================================================================
 all: $(NAME)
 
-$(NAME): $(MLX_A) $(DOC_SYMLINK) $(OBJ) header.h
+$(NAME): $(MLX_A) $(OBJ) header.h
 	@echo "$(GREEN)🔘 $(TITLE)make $(NAME)$(END)"
 	@$(CC) $(FLAGS) $(OBJ) $(MLX_A) -o $(NAME) $(F_ADD) && \
 	echo "   $(GREEN)⤷ $(END)Create programm :$(GREEN)$(NAME)$(END) using command:" && \
@@ -53,10 +52,6 @@ $(MLX_A):
 	@echo "$(GREEN)🔘 $(TITLE)MLX make$(END)"
 	@echo "   $(GREEN)⤷ $(END)Create static lib:$(GREEN)$(MLX_A)$(END) using command: $(RED)\`$(BLUE)$(MAKE)$(END) -C $(BROWN)$(MLX_DIR)$(END)$(RED)\`$(END)"
 	@$(MAKE) -C $(MLX_DIR) > /dev/null 2>&1
-
-$(DOC_SYMLINK):
-	@echo "$(GREEN)🔘 $(TITLE)Create symlinks for xpm files"
-	@ln -s ../../docs ./docs
 
 $(BUILD_DIR)/%.o: %.c header.h
 	@if [ ! -d $(BUILD_DIR) ];then $(MKDP) $(BUILD_DIR);fi
