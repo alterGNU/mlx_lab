@@ -1057,8 +1057,8 @@ With this program, we will study and compare different memory-copy strategies to
 3. **Measure real-world performance** using `gettimeofday()` to track frame times and achieved FPS.
 4. **Provide a command-line interface** to easily switch between different copy strategies for comparison.
 
-- [!WARNING]
-- Our Target is: 60 FPS with minimal frame drops. _(this is a really simple program with no big calculation)_
+>[!WARNING]
+> Our Target is: 60 FPS with minimal frame drops. _(this is a really simple program with no big calculation)_
 
 #### H.3.b | Implementations overview:
 - Four duplicate methods implemented in `t_img_duplicate.c`:
