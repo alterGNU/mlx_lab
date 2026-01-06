@@ -9,9 +9,9 @@ git clone https://github.com/alterGNU/mlx_lab.git && cd mlx_lab && ./install_mlx
 ```
 - Main steps:
   - step 0: Exec the script as sudo
-  - step 1: Check and install this script's dependancies (cmds:date, git, perl, sed, yes).
+  - step 1: Check and install this script's dependencies (cmds:date, git, perl, sed, yes).
   - step 2: Update and Upgrade the system (skippable step, but good practice before any installation).
-  - step 3: Check and install mlx's dependancies (MLX_DEPS var. , check minilibx README to update list).
+  - step 3: Check and install mlx's dependencies (MLX_DEPS var. , check minilibx README to update list).
   - step 4: Clone and Make minilibx (MLX_PATH var. can be change to modify path and mlx folder's name).
   - step 5: Create a env_file, sourcing this file will add mlx's doc to man cmd (using MANPATH env-var).
 
@@ -72,7 +72,7 @@ cd mlx_lab && ./clean.sh
 
 ### C.1 | Starting point of any MLX program: `void *mlx_init()`
 
-This function create a **connection** between your program and your computer's **display server**.
+This function creates a **connection** between your program and your computer's **display server**.
 
 - **Return value**:
   - ON FAILURE return NULL --> do not forget to protect with `if (!*mlx_ptr)...PANIC`
@@ -107,7 +107,7 @@ This function asks the **display server** to create a new window.
     - Call display's `mlx_init()` and `mlx_destroy_display()` fun.
     - Call window's `mlx_new_window()` and `mlx_destroy_window()` fun.
   - **Observations**:
-    - `mlx_destroy_display()` **do not frees** `mlx_ptr` pointer var., setting at null needed too.
+    - `mlx_destroy_display()` **does not free** `mlx_ptr` pointer var., setting to null is also needed.
     - `mlx_destroy_window()` **frees** `win_ptr` pointer var., but setting at null needed.
     - Without a loop, nothing displayed on screen (too fast/quick).
 - **Compilation**:
@@ -154,13 +154,13 @@ This function creates a new image in memory.
   ```
 
 ## D | Display image `mlx_loop()`
-In previous code example, our newly create window or image are not displayed on screen
+In previous code examples, our newly created window or image are not displayed on screen
 
-_(Actually, they're displayed, but too quickly to being seen and then are destroyed)._
+_(Actually, they're displayed, but too quickly to be seen and then are destroyed)._
 
-To fix this, a **'naive approch'** would have been to use a `while (true){...}` loop between init. and destruction.
+To fix this, a **'naive approach'** would have been to use a `while (true){...}` loop between init. and destruction.
 
-A better way is to use the Minilibx provided `int mlx_loop(void *mlx_ptr)` function that handle events while looping infinitely.
+A better way is to use the Minilibx provided `int mlx_loop(void *mlx_ptr)` function that handles events while looping infinitely.
 
 _(This way, we can associate user-defined functions with events (exit loop when `[ESC]` key is pressed...)_
 
@@ -173,7 +173,7 @@ _(This way, we can associate user-defined functions with events (exit loop when 
   - **Implementation**:
     - Calls `mlx_loop()` between window's creation and destruction funs.
   - **Observations**:
-    - This time, a window is displayed, but wihtout hook on clean-exit fun., only `Ctrl+C` can kill the program, leading to leaks!
+    - This time, a window is displayed, but without hook on clean-exit fun., only `Ctrl+C` can kill the program, leading to leaks!
 - **Compilation**:
   ```c
   cc -Wall -Wextra -Werror -Imlx src/d_display_window.c mlx/libmlx.a -o t2_win -lXext -lX11 
@@ -188,11 +188,11 @@ _(This way, we can associate user-defined functions with events (exit loop when 
 
 ## E | Events
 ### E.1 | X11 Interface - Events
-X-Window system is **bi-directionnal**:
+X-Window system is **bi-directional**:
   - The program sends orders to the screen to display pixels/images/...
-  - The program can get information from keyboard/mouse associated to the screen by receving **events** from keyboard/mouse
+  - The program can get information from keyboard/mouse associated to the screen by receiving **events** from keyboard/mouse
 
-Each event have an **int ID** and can be combined with a mask (int ID too) to whitelist or blacklist events.
+Each event has an **int ID** and can be combined with a mask (int ID too) to whitelist or blacklist events.
 
 - [Off. Docs: X11 events](https://tronche.com/gui/x/xlib/events/)
 
@@ -250,7 +250,7 @@ MLX therefore handle event with **mlx_hook aliases**:
 #### E.3.1 | Call `mlx_loop_end()` directly
 
 >[!NOTE]
-> This way is simplier, it will just stop the loop: just call cleaning functions in main after `mlx_loop()` calls.
+> This way is simpler, it will just stop the loop: just call cleaning functions in main after `mlx_loop()` calls.
 
 ##### E.3.1.a | On event Window's `[X]` Button.
 
@@ -338,13 +338,13 @@ To understand and manipulate pixels, a few concepts need to be clarified:
 The **color depth** describes how many **bits are used to represent the color of a single pixel**
 
 It is usually expressed as `bpp` **(Bits-Per-Pixel):
-- `bpp` determines how many **disctinct colors** a pixel can represent:
-  - bpp = 1 --> 2**1 = 2 colors (monochrome)
-  - bpp = 2 --> 2**2 = 4 colors
-  - bpp = 4 --> 2**4 = 16 colors
-  - bpp = 8 --> 2**8 = 256 colors
-  - bpp = 16 --> 2**5 = 65 536 colors (Highcolor)
-  - bpp = 24 --> 2**5 = 16 777 216colors (Truecolor)
+- `bpp` determines how many **distinct colors** a pixel can represent:
+  - bpp = 1 --> 2^1 = 2 colors (monochrome)
+  - bpp = 2 --> 2^2 = 4 colors
+  - bpp = 4 --> 2^4 = 16 colors
+  - bpp = 8 --> 2^8 = 256 colors
+  - bpp = 16 --> 2^16 = 65,536 colors (Highcolor)
+  - bpp = 24 --> 2^24 = 16,777,216 colors (Truecolor)
 
 - According to the Minilibx's README, images that we use are in the color depth:**32-bit Truecolor format**:
   - 24-bits (3bytes) for the color components: R,G and B
@@ -436,7 +436,7 @@ Endianness is primarily expressed as:
 
 Lets start by stating some obvious, but fundamental, ideas:
 
-- An **image** can be seen as a **two dimentionnal** structure composed of **one dimensionnal elementary units**:
+- An **image** can be seen as a **two-dimensional** structure composed of **one-dimensional elementary units**:
   - Real world: pigments(1D) distributed on a surface(2D)
   - Math world: points(actually 0D, but discret units ^^') arranged on a plane(2D)
 - In a computer's world *(a binary world)*:
@@ -458,14 +458,14 @@ This ray memory buffer is not sufficient to describe an image, we also need **me
 - Pixel-related information:
   - **B**ytes-**P**er-**P**ixel: size of a single pixel in memory *(size of the unit array memory block)* `bpp / 8`
   - **Endianness**: order to get/set color manually in memory
-- Image dimesions *(~2D array of pixel)*:
+- Image dimensions *(~2D array of pixel)*:
   - **width (x)**: number of pixels per line
   - **height(y)**: number of lines
 - Memory layout:
   - **line len**: Number of bytes used to store a single row of pixels in memory
 
 >[!CAUTION]
-> Here **image's height** and **line len** seems to refere to the same dimension (y), but in practice, this two values differs due to the **structure optimisation concept called: PADDING**
+> Here **image's height** and **line len** seem to refer to the same dimension (y), but in practice, these two values differ due to the **structure optimization concept called: PADDING**
 
 All these lead to our final *(and very simply ^^)* digital image representation as a data structure composed of a **pixel array** and its **meta-data**:
   ```c
@@ -493,12 +493,12 @@ All these lead to our final *(and very simply ^^)* digital image representation 
 #### **F.1.e)** <ins>Padding:</ins>
 In our image struct, **line length** and **image height** seems redondant...but it's not quit the same thing because:
 - ✅ **pixels** inside a row **are** stored **contiguously**
-- ❌ **rows** themselves **are not** guaranted to be stored **contiguously** *(not be tightly packed in memory...)*:
+- ❌ **rows** themselves **are not** guaranteed to be stored **contiguously** *(not be tightly packed in memory...)*:
   - last bit of last pixel of N'th line not necessarly next to the first bit of the first pixel of the N+1'th line.
 
-In pratice, each row of pixels occupies a number of bytes calles **line length** *(a.k.a stride)* often **greater than** `image width * (bbp / 8)`.
+In practice, each row of pixels occupies a number of bytes called **line length** *(a.k.a stride)* often **greater than** `image width * (bpp / 8)`.
 
-The extra bytes at the end of each row are called **padding** and exists only to **aligne memory correctly** to a **multiples of 4 bytes** *(along with [struct. alignment and data-packing, padding](https://www.geeksforgeeks.org/c/structure-member-alignment-padding-and-data-packing/) are used in order to improve CPU, GPU and cache performance)*
+The extra bytes at the end of each row are called **padding** and exist only to **align memory correctly** to a **multiple of 4 bytes** *(along with [struct. alignment and data-packing, padding](https://www.geeksforgeeks.org/c/structure-member-alignment-padding-and-data-packing/) are used in order to improve CPU, GPU and cache performance)*
 
 >[!WARNING]
 > The padding bytes DO NOT represent pixels and MUST BE SKIPPED when moving from one row to the next
@@ -536,7 +536,7 @@ The extra bytes at the end of each row are called **padding** and exists only to
     ```
 
 >[!IMPORTANT]
-> `mlx_pixel_put()` draw directly on the window, whitout waiting for the frame to be entirely rendered...
+> `mlx_pixel_put()` draws directly on the window, without waiting for the frame to be entirely rendered...
 
 - **File**: [src/f_pixBypix_randcolor_slow.c](https://github.com/alterGNU/mlx_lab/blob/main/src/f_pixBypix_randcolor_slow.c)
   - **Objectifs**:
@@ -547,7 +547,7 @@ The extra bytes at the end of each row are called **padding** and exists only to
       - Instead of drawing the entire panel at once, it updates each pixel individually resulting in a slow rendering effect.
   - **Observations**:
     - This approach is **inefficient** and results in a very slow rendering.
-    - Hook like Clean-Exit can be **ignored** if occured during the drawing process. 
+    - Hook like Clean-Exit can be **ignored** if occurred during the drawing process. 
 
 - **Compilation**: 
   ```c
@@ -619,7 +619,7 @@ void	put_pixel_to_image(t_data *dt, int x, int y, int color)
 #### F.2.c | Import/Push the edited image to the window: `mlx_put_image_to_window()`
 
 >[!NOTE]
-> `draw_randcolor_image()` is called directly by `mlx_loop_hook()`--> exect a each loop
+> `draw_randcolor_image()` is called directly by `mlx_loop_hook()`--> executed at each loop
 
 ```c
 int	draw_randcolor_image(t_data *dt)
@@ -682,13 +682,13 @@ As we can imagine:
 - The goal of **data compression** is to **reduce data size** by encoding information using **fewer bits than the original representation**
 - The goal of **image compression** is to **reduce the size of image data** using algorithms that take advantage of **statistical redundancy** in pixel values.
 
-They're two type of algorithms used for image-compression, **lossy** and **lossless**.
+There are two types of algorithms used for image-compression, **lossy** and **lossless**.
 *(here some examples of algorithms and the file formats that use them)*
 
 #### G.1.a | lossy compression:
 <ins>[lossy compression](https://en.wikipedia.org/wiki/Lossy_compression)</ins>: irreversible compression that results in **loss of information**.
 
-- [Discrete-Cosine-Transformation](https://en.wikipedia.org/wiki/Discrete_Cosine_Transform) use **fourier Transformation**, used in most digital media:
+- [Discrete-Cosine-Transformation](https://en.wikipedia.org/wiki/Discrete_Cosine_Transform) uses **fourier Transformation**, used in most digital media:
   - [.jpeg](https://en.wikipedia.org/wiki/JPEG)
   - [.heic](https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format)
 - [Color quantization](https://en.wikipedia.org/wiki/Color_quantization) reduces the number of colors used in an image:
@@ -698,7 +698,7 @@ They're two type of algorithms used for image-compression, **lossy** and **lossl
 #### G.1.b | lossless compression:
 <ins>[lossless compression](https://en.wikipedia.org/wiki/Lossless_compression)</ins> : compression where decompression reconstructs the original image exactly.
 
-- [Run-Length encoding](https://en.wikipedia.org/wiki/Run-length_encoding): consecutive occurences are stored as a single occurence and a count -> `len("ABBCCCDDDDEEEEEFFFFFFGGGGGGGHHHHHHHH")=36`-->`len("A1B2C3D4E5F6G7H8")=16`
+- [Run-Length encoding](https://en.wikipedia.org/wiki/Run-length_encoding): consecutive occurrences are stored as a single occurrence and a count -> `len("ABBCCCDDDDEEEEEFFFFFFGGGGGGGHHHHHHHH")=36`-->`len("A1B2C3D4E5F6G7H8")=16`
   - [.xpm](https://en.wikipedia.org/wiki/X_PixMap)
   - [.gif](https://en.wikipedia.org/wiki/GIF)
   - [.png](https://en.wikipedia.org/wiki/PNG) *(optional)*
@@ -732,8 +732,8 @@ Minilibx handles **XPM** file formats using the following utility functions:
 
 - **File**: [src/g_2Dmaze_window.c](https://github.com/alterGNU/mlx_lab/blob/main/src/g_2Dmaze_window.c)
   - **Objectifs**:
-    - From a 2D maze given as a array of integer, display a window where each type of cell in the array is represented by an XPM image:
-      - in order to being able later to move a player's position, a conversion into an integer array is done internally
+    - From a 2D maze given as an array of integers, display a window where each type of cell in the array is represented by an XPM image:
+      - in order to be able later to move a player's position, a conversion into an integer array is done internally
       - the window is composed of several occurrences of XPM images
   - **Implementation**:
     - Load floor and wall images from XPM files using `mlx_xpm_file_to_image()`
@@ -743,7 +743,7 @@ Minilibx handles **XPM** file formats using the following utility functions:
       - Clean exit on `[ESC]` key or window close _(calling `mlx_loop_end()`)_
   - **Observations**:
     - This approach is straightforward but may be slower for large mazes since it draws directly to the window pixel by pixel.
-    - Without flag, images continiously draw into window:
+    - Without flag, images continuously draw into window:
       - For 02s exec-->  100000 images dawned -->  200000 malloc/free calls.
       - For 04s exec-->  300000 images dawned -->  600000 malloc/free calls.
       - For 10s exec--> 1000000 images dawned --> 2000000 malloc/free calls.
@@ -758,7 +758,7 @@ Minilibx handles **XPM** file formats using the following utility functions:
 
 #### G.2.b | Display a simple 2D maze using XPM images on a buffer image.
 
-The idear here is to create a buffer image by inserting images of the floor and walls, and then display this buffer image in the window once..._(limiting calls of fun. `mlx_put_image_to_window` that malloc a gogo)_
+The idea here is to create a buffer image by inserting images of the floor and walls, and then display this buffer image in the window once..._(limiting calls of fun. `mlx_put_image_to_window` that malloc a gogo)_
 
 To do this, we need to write a function that inserts one image into another by copying, pix-by-pix and at the correct coordinates, the pixels of the source image into the destination image...
   ```c
@@ -793,7 +793,7 @@ To do this, we need to write a function that inserts one image into another by c
 
 - **File**: [src/g_2Dmaze_buffimg.c](https://github.com/alterGNU/mlx_lab/blob/main/src/g_2Dmaze_buffimg.c)
   - **Objectifs**:
-    - Same as G.2.a but instead of drawning directly on window, use a buffer image
+    - Same as G.2.a but instead of drawing directly on window, use a buffer image
   - **Implementation**:
     - Load floor and wall images from XPM files using `mlx_xpm_file_to_image()`
     - Create a maze from a string array and a buffer image with the right size
@@ -801,7 +801,7 @@ To do this, we need to write a function that inserts one image into another by c
     - **HOOK**: _(using `mlx_hook()`)_
       - Clean exit on `[ESC]` key or window close _(calling `mlx_loop_end()`)_
   - **Observations**:
-    - Without flag, images continiously draw but not directly into window:
+    - Without flag, images continuously drawn, but not directly into window:
       - For 02s exec-->     300 images dawned -->    1500 malloc/free calls.
       - For 04s exec-->     500 images dawned -->    3000 malloc/free calls.
       - For 10s exec-->    1500 images dawned -->    8000 malloc/free calls.
@@ -816,7 +816,7 @@ To do this, we need to write a function that inserts one image into another by c
 
 ## H | MGP-MLX: Mini Games Projects with MiniLibX
 ### H.1 | XPMaze_BresenhamGhost_GridBasedMov_BusySpin
-What a wierd name:
+What a weird name:
 - **XPMaze**: 2D grid's cells are represented by XMP tiles images.
 - **BresenhamGhost**: player is represented by a bresenham circle and can walk through walls like a ghost
 - **GridBaseMov**: player movement are Grid-Based
@@ -1009,13 +1009,13 @@ int	draw_buffer_image(t_data *dt)
 #### H.2.e | Conclusions:
 - The frame rate cap _(i.e **FPS limiter**)_  works as intended:
   - Memory allocations remain low and scale mainly with runtime, not with player movement.
-  - Higher FPS values increas allocations as expected, but overall usage remains reasonable.
+  - Higher FPS values increase allocations as expected, but overall usage remains reasonable.
   - The number of rendered images closely matches `FPS x execution_time`, regardless of player movement.
   - The cost of player movement is small compared to the baseline cost of the main `mlx_loop()`
 
 ### H.3 | GridMaze_BresenhamGhost_GridBaseMov_FPSLim
 
->[!NOTES]
+>[!NOTE]
 > XPMaze --becomes--> GridMaze: want to represent maze as a grid, drawing buffer image layer-by-layer.
 
 Until now, we have used images in XPM file format to represent the grids of our maze.
