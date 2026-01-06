@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/06 19:32:44 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/06 20:16:51 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@
 # define A_KEY 97
 # define S_KEY 115
 # define D_KEY 100
+# define Q_KEY 113
+# define E_KEY 101
+# define LA_KEY 65361
+# define RA__KEY 65363
 //-[ Variables ]----------------------------------------------------------------
 # define VALID_MAZE_CHARS "01NSEW"
 //-[ Window ]-------------------------------------------------------------------
@@ -36,7 +40,8 @@
 //-[ Player ]-------------------------------------------------------------------
 # define CIRCLE_RADIUS 4 // size of the player representation
 // -[ Engine ]------------------------------------------------------------------
-# define STEP 0.1f // movement step size in grid units
+# define STEP 0.1f // movement step size in grid units 
+# define ROT_STEP 1.f // rotation step size in degrees
 # define FPS 60 // desired frames per second
 // =[ Include ]=================================================================
 # include "mlx.h"
@@ -92,6 +97,7 @@ typedef struct s_data
 	int				img_drawn;
 	int				delay_between_frames_ms;
 	struct timeval	last_frame_time;
+	//char			*play_dir;
 }	t_data;
 // =[ Files & Fun. Signatures ]=================================================
 // -[ draw_to_img.c ]----------------------------------------------------------3

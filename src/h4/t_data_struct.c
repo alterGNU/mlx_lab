@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/06 19:41:02 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/06 20:16:51 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,14 @@ t_data	init_data(const char **str_arr)
 	dt.img_grid = create_image(dt.mlx_ptr, win_x, win_y);
 	dt.img_buffer = create_image(dt.mlx_ptr, win_x, win_y);
 	dt.img_drawn = 0;
+	//dt.play_dir = NULL;
 	return (dt);
 }
 
 void	free_data(t_data *dt)
 {
+	// if (dt->play_dir)
+	// 	free(dt->play_dir);
 	free_maze(&dt->maze);
 	free_image(dt->img_floor, dt->mlx_ptr);
 	free_image(dt->img_wall, dt->mlx_ptr);
