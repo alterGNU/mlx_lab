@@ -27,6 +27,7 @@ cd mlx_lab && ./clean.sh
   - step 1: Remove scripts generated files (`env_file` and `*.log` files)
   - step 2: Remove sub-folders in list `SUB_FOLDERS_TO_DEL=( "mlx" )`
   - step 3: Remove binary tests files (pattern:`t[0-9]_*`)
+  - step 4: For `src/<folders>` with Makefile, run `make -C ./src/<folders> fclean`
 
 ## B | Add mlx to another project's Makefile:
 - B.1 | Rules to git clone mlx and make minilibx.

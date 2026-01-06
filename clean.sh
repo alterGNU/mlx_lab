@@ -6,6 +6,7 @@
 # - step 1: Remove scripts generated files (`env_file` and `*.log` files)
 # - step 2: Remove sub-folders in list `SUB_FOLDERS_TO_DEL=( "mlx" )`
 # - step 3: Remove tests compiled files (pattern:t[0-9]_*)`
+# - step 4: Clean projects folders (if ./src/<folder>/Makefile exists, run `make -C ./src/<folder> fclean`
 #
 #                                                                                                 by alterGNU
 # ============================================================================================================
@@ -115,3 +116,28 @@ else
         rm -rf ${test_file} && echo -e " ✅" || echo -e " ❌"
     done
 fi
+
+# =[ Clean project's folders ]===============================================================================
+title_1 "4  | Clean project's folders:"
+for project_folder in ./src/*/ ; do
+    if [ -f "${project_folder}/Makefile" ]; then
+        folder_name=$(basename "${project_folder}")
+        txt_clean_folder="⤷ make -C ./src/${folder_name} fclean"
+        len_clean_folder=$(get_len "${txt_clean_folder}")
+        echo -en "${txt_clean_folder}"
+        s_before=$(ls -1 ./src/${folder_name} | wc -l)
+        if make -C "./src/${folder_name}" fclean > /dev/null 2>&1; then
+            s_after=$(ls -1 ./src/${folder_name} | wc -l)
+            if [ ${s_after} -lt ${s_before} ]; then
+                txt_make=" ✅"
+            else
+                txt_make="${G}(already clean) ${E}☑️"
+            fi
+        else
+            txt_make="${R}(make cmd failed)${E} ❌"
+        fi
+        len_txt_make=$(get_len "${txt_make}")
+        pnt "${SEP}" $((LEN - len_clean_folder - len_txt_make ))
+        echo -e "${txt_make}"
+    fi
+done
