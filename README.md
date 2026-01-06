@@ -816,12 +816,20 @@ To do this, we need to write a function that inserts one image into another by c
   ```
 
 ## H | MGP-MLX: Mini Games Projects with MiniLibX
-### H.1 | XPMaze_BresenhamGhost_GridBasedMov_BusySpin
-What a weird name:
-- **XPMaze**: 2D grid's cells are represented by XMP tiles images.
-- **BresenhamGhost**: player is represented by a bresenham circle and can walk through walls like a ghost
-- **GridBaseMov**: player movement are Grid-Based
-- **BusySpin**: my tentative to optimize the drawing process failed poorly ending in a to speed loop
+
+We will now start from the `src/g_2Dmaze_buffimg.c` program and try to improve it:
+- optimization: use less resources
+- add features: such as limFPS, raycasting etc...
+
+As our code grows, we will create a folder per major update using multi-files, headers and Makefiles to simplify and organise the code.
+
+### H.1 | ...Optimize image creation by re-drawing image only if player move...
+
+- Program's name        : **xpmMaze_bresenhamGhost_gridBaseMov_busySpin**
+  - **xpmMaze**         : The first layer, our maze, is represented use xpm images as tiles.
+  - **bresenhameGhost** : The second layer, our player, is represented by a bresenhame circle.
+  - **gridBaseMove**    : The player moves **Discretly** : `new_pos(x, y) = old_pos(x +- step, y +- step)`
+  - **busySpin**        : _(Spoiler Alert)_ using a flag to draw image only when player moved ended poorly in a **busy-spin**!
 
 >[!NOTE]
 > Makefile has a symbolic link rules to create a link to the docs/ folder --> solves relatif xpm file path variable.
@@ -890,7 +898,13 @@ Optimization fails poorly: **using a flag reduces drawing operations but not the
 >[!TIP]
 > Using `usleep(16000)` instead of returning could work...lets try to implement FPS limitation using `gettimeofday()`
 
-### H.2 | XPMaze_BresenhamGhost_GridBaseMov_FPSLim
+### H.2 | Add FPS limitation to avoid busy-loop consumming ressources
+
+- Program's name        : **xpmMaze_bresenhamGhost_gridBaseMov_limFPS**
+  - **xpmMaze**         : The first layer, our maze, is represented by xpm tiles.
+  - **bresenhameGhost** : The second layer, our player, is represented by a bresenhame circle.
+  - **gridBaseMove**    : The player moves **Discretly** : `new_pos(x, y) = old_pos(x +- step, y +- step)`
+  - **limFPS**          : To avoid busy-loop, a minimum FramePerSecond value instored
 
 #### H.2.a | Objectifs:
 Improve H.1 program replacing the `int draw_needed` flag-based optimization with a **maximal Frames Per Second (FPS)** limit.
@@ -973,7 +987,7 @@ int	draw_buffer_image(t_data *dt)
 		return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
 ```
 
-#### H.1.c | Commands:
+#### H.2.c | Commands:
 - From pwd = `./mlx_lab/`:
   - Compile and Run Program with Valgrind
     ```c
@@ -1014,10 +1028,14 @@ int	draw_buffer_image(t_data *dt)
   - The number of rendered images closely matches `FPS x execution_time`, regardless of player movement.
   - The cost of player movement is small compared to the baseline cost of the main `mlx_loop()`
 
-### H.3 | GridMaze_BresenhamGhost_GridBaseMov_FPSLim
+### H.3 | Search for a better memory manipulations (try diff. memcpy...() functions)
 
->[!NOTE]
-> XPMaze --becomes--> GridMaze: want to represent maze as a grid, drawing buffer image layer-by-layer.
+- Program's name        : **gridMaze_bresenhamGhost_gridBaseMov_limFPS_diffMemcpy**
+  - **gridMaze**        : The first layer, our maze, is represented by a grid.
+  - **bresenhameGhost** : The second layer, our player, is represented by a bresenhame circle.
+  - **gridBaseMove**    : The player moves **Discretly** : `new_pos(x, y) = old_pos(x +- step, y +- step)`
+  - **limFPS**          : To avoid busy-loop, a minimum FramePerSecond value instored
+  - **diffMemcpy**      : Implement multiple `memcpy...()` fun. to find the best one...
 
 Until now, we have used images in XPM file format to represent the grids of our maze.
 
@@ -1122,4 +1140,14 @@ With this program, we will study and compare different memory-copy strategies to
    - **memcpy()** (method 3): ~10ms per frame → ~60 FPS (best, **6.5× faster** than bits, 2× faster than words).
 
 >[!NOTE]
-> memcpy() wins cause comp. opti. using vectorized instructions (SSE/AVX) where our approch suffer from loop overhead without CPU vectorization.
+> memcpy() wins cause comp. opti. using vectorized instructions (SSE/AVX) _(~Vector-Based Access/Mov.)_ where our approch suffer from loop overhead without CPU vectorization _(~Grid-Based Access/Mov.)_ .
+
+### H.4 | Add Vector-Based Movements to the player.
+
+- Program's name        : **GridMaze_BresenHamGhost_VectBaseMove_limFPS_memcpyOpti**
+  - **GridMaze**        : The first layer, our maze, is represented by a grid.
+  - **BresenHameGhost** : The second layer, our player, is represented by a bresenhame circle.
+  - **VectBaseMove**    : The player's movements are now **vector-based**: `pos(x, y) += vect(dir) * int(speed);`
+  - **limFPS**          : To avoid busy-loop, a minimum FramePerSecond value instored
+  - **memcpyOpti**      : image's manip. used words as memory units _(`size_t`)_
+   

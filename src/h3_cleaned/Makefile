@@ -1,8 +1,5 @@
-# ============================================================================================================
-# 2D Maze drawn layer-by-layer with Bresenham Circle Player Moving discretely with FPS-Limit
-# ============================================================================================================
 # =[ VARIABLES ]==============================================================================================
-NAME		=	layerGrid_discretghost_fpsLimit_optiMemcpy
+NAME		=	gridMaze_bresenhamGhost_gridBaseMov_limFPS_optiMemcpy
 # -[ MLX ]----------------------------------------------------------------------------------------------------
 MLX_DIR		=	../../mlx
 MLX_A		=	$(MLX_DIR)/libmlx.a
