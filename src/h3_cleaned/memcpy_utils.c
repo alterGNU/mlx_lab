@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 23:34:19 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/05 23:47:14 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/06 18:47:18 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,33 +30,6 @@ void	*ft_memcpy(void *dst, const void *src, size_t length)
 	{
 		dst_uc[i] = src_uc[i];
 		i++;
-	}
-	return (dst);
-}
-
-/**
- * Copy byte-by-byte from src to dst for length bytes.
- */
-void	*ft_memcpy_by_bytes(void *dst, const void *src, size_t len)
-{
-	int			i;
-	int			byte_count;
-	int			*dst_word;
-	const int	*src_word;
-	int			remaining_bytes;	
-
-	byte_count = (int) len / sizeof(int);
-	dst_word = (int *) dst;
-	src_word = (const int *) src;
-	i = -1;
-	while (++i < byte_count)
-		dst_word[i] = src_word[i];
-	remaining_bytes = len % sizeof(int);
-	if (remaining_bytes > 0)
-	{
-		ft_memcpy((unsigned char *)dst + (byte_count * sizeof(int)), \
-			(const unsigned char *)src + (byte_count * sizeof(int)), \
-			remaining_bytes);
 	}
 	return (dst);
 }

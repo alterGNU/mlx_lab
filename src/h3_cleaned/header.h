@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/06 02:20:29 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/06 18:47:29 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,8 @@ void	draw_circle(t_img *img, t_pos c_pos, int r, int color);				// ✅
 // -[ hooked_funs.c ]----------------------------------------------------------2
 int		handle_key(int keycode, t_data *dt);								// ❌
 int		draw_buffer_image(t_data *dt);										// ❌
-// -[ memcpy_utils.c ]--------------------------------------------------------3
+// -[ memcpy_utils.c ]--------------------------------------------------------2
 void	*ft_memcpy(void *dst, const void *src, size_t len);					// ✅
-void	*ft_memcpy_by_bytes(void *dst, const void *src, size_t len);		// ✅
 void	*ft_memcpy_by_words(void *dst, const void *src, size_t len);		// ✅
 // -[ t_data_struct.c ]--------------------------------------------------------5
 t_data	init_data(const char **str_arr);									// ✅

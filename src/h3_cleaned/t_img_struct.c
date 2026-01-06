@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:18:44 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/05 23:55:05 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/06 18:48:00 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,9 @@ int	is_img_valid(t_img *img)
 		return (0);
 	if (img->width <= 0 || img->height <= 0)
 		return (0);
-	if (img->bpp <= 0 || img->size_line <= 0 || img->endian < 0)
+	if (img->bpp <= 0 || img->size_line <= 0)
+		return (0);
+	if (img->endian < 0 || img->endian > 1)
 		return (0);
 	return (1);
 }
