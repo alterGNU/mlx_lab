@@ -1,0 +1,73 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   t_img_struct.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/04 12:18:44 by lagrondi          #+#    #+#             */
+/*   Updated: 2026/01/05 23:55:05 by lagrondi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "header.h"
+
+void	memset_zero_img(t_img *img)
+{
+	img->img_ptr = NULL;
+	img->addr = NULL;
+	img->width = 0;
+	img->height = 0;
+	img->bpp = 0;
+	img->size_line = 0;
+	img->endian = 0;
+}
+
+t_img	create_image(void *mlx_ptr, int width, int height)
+{
+	t_img	img;
+
+	memset_zero_img(&img);
+	img.endian = -1;
+	if (mlx_ptr && width > 0 && height > 0)
+	{
+		img.img_ptr = mlx_new_image(mlx_ptr, width, height);
+		if (img.img_ptr)
+			img.addr = mlx_get_data_addr(img.img_ptr, &img.bpp, \
+				&img.size_line, &img.endian);
+		img.width = width;
+		img.height = height;
+	}
+	return (img);
+}
+
+void	print_t_img(t_img img)
+{
+	printf("\n   - img_ptr:   %p", img.img_ptr);
+	printf("\n   - addr:      %p", img.addr);
+	printf("\n   - width:     %d", img.width);
+	printf("\n   - height:    %d", img.height);
+	printf("\n   - bpp:       %d", img.bpp);
+	printf("\n   - size_line: %d", img.size_line);
+	printf("\n   - endian:    %d\n", img.endian);
+}
+
+void	free_image(t_img img, void *mlx_ptr)
+{
+	if (mlx_ptr && img.img_ptr)
+		mlx_destroy_image(mlx_ptr, img.img_ptr);
+	memset_zero_img(&img);
+}
+
+int	is_img_valid(t_img *img)
+{
+	if (!img)
+		return (0);
+	if (!img->img_ptr || !img->addr)
+		return (0);
+	if (img->width <= 0 || img->height <= 0)
+		return (0);
+	if (img->bpp <= 0 || img->size_line <= 0 || img->endian < 0)
+		return (0);
+	return (1);
+}

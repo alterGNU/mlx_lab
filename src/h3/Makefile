@@ -31,7 +31,11 @@ VAL			=	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --undef
 SRC			=	draw_to_img.c \
 				hooked_funs.c \
 				main.c \
+				memcpy_utils.c \
 				t_data_struct.c \
+				t_img_builders.c \
+				t_img_duplicate.c \
+				t_img_insertion.c \
 				t_img_struct.c \
 				t_maze_struct.c \
 				t_player_struct.c \
@@ -72,7 +76,7 @@ re: fclean all
 
 v val valgrind: $(NAME)
 	@echo "$(GREEN)🔘 $(TITLE)make valgrind$(END)"
-	$(VAL) ./$(NAME)
+	$(VAL) ./$(NAME) $(filter-out $@,$(MAKECMDGOALS))
 
 h help:
 	@echo "\033[2;47m 🔘    $(BLACK)|$(GREEN)make commands      $(BLACK)|$(GREY)~(abreviation)$(BLACK)| $(BROWN)make commands definitions/explanations                                      $(BLACK)|$(END)"

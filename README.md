@@ -1013,40 +1013,112 @@ int	draw_buffer_image(t_data *dt)
   - The number of rendered images closely matches `FPS x execution_time`, regardless of player movement.
   - The cost of player movement is small compared to the baseline cost of the main `mlx_loop()`
 
-### H.3 | Gridmaze_BresenhamGhost_GridBaseMov_FPSLim
-
-We used XPM images to represent the cells of our maze to use `mlx_xpm_file_to_img()` fun.
-
-For our next mini-game, we will learn out to draw directly square with variable size as maze's tiles.
+### H.3 | GridMaze_BresenhamGhost_GridBaseMov_FPSLim
 
 >[!NOTES]
-> Its a 2D Maze drawn layer-by-layer with Bresenham Circle Player Moving discretely with FPS Limitation.
+> XPMaze --becomes--> GridMaze: want to represent maze as a grid, drawing buffer image layer-by-layer.
+
+Until now, we have used images in XPM file format to represent the grids of our maze.
+
+This has allowed us to use the `mlx_xpm_file_to_img()` fun. and easily convert from an integer array to an elegant image representation:
+
+- We had a static image that was copied every frame into a buffer image before adding dynamic layers (player, etc)
+
+- This copy operation (use to calls `mlx_xpm_cpy_src_in_dst()`) iterates pixel-by-pixel across the entire image buffer, which becomes a performance bottleneck at ~20 FPS for larger grids...
+
+>[!TIP]
+> Our goal in this project is to **entirely draw** the buffer image by decomposing it **layer-by-layer**:
 
 #### H.3.a | Objectifs:
-The goal is to be able to draw the image layer-by-layer:
-- 1. First layer
-  - Draw the cells/tils representation
-  - Draw the text area
-- 2. Second layer
-  - Draw the player circle
-  - Draw the player orientation
-  - Draw the text (position, orientation, FPS)
+
+With this program, we will study and compare different memory-copy strategies to identify the most efficient approach for duplicating image buffers:
+
+1. **Benchmark different memory-copy implementations** to find the fastest approach for duplicating `t_img` buffers.
+2. **Eliminate XPM dependency** by building the grid layer programmatically using simple colored rectangles (`img_floor` and `img_wall`).
+3. **Measure real-world performance** using `gettimeofday()` to track frame times and achieved FPS.
+4. **Provide a command-line interface** to easily switch between different copy strategies for comparison.
+
+- [!WARNING]
+- Our Target is: 60 FPS with minimal frame drops. _(this is a really simple program with no big calculation)_
 
 #### H.3.b | Implementations overview:
-##### H.3.b.i | In header
-- `#define GRID_X 10` in pixel, width of a cell
-- `#define GRID_Y 10` in pixel, height of a cell
-- `t_data` remove img
+- Four duplicate methods implemented in `t_img_duplicate.c`:
+  - `dup_t_img_by_bits()`: Byte-by-byte copy using a manual while loop.
+  - `dup_t_img_by_bytes()`: Copy in 4-byte (int) chunks with remainder handling.
+  - `dup_t_img_by_words()`: Copy in 8-byte (size_t) chunks with remainder handling.
+  - `dup_t_img_memcpy()`: Standard library `memcpy()` (baseline comparison).
+
+**Architecture Changes**:
+1. **Removed XPM dependency**:
+   - Replaced `mlx_xpm_file_to_image()` with programmatically-built tile images.
+   - `build_img_floor()`: Fills a `TILE_X × TILE_Y` image with `FLOOR_COLOR`.
+   - `build_img_wall()`: Fills a `TILE_X × TILE_Y` image with `WALL_COLOR`.
+   - `build_img_grid()`: Assembles the full grid by copying floor/wall tiles based on the maze array.
+
+2. **Global variable for runtime configuration**:
+   - Declared `extern int dup_method;` in `header.h` (defined in `main.c`).
+   - Parsed from command-line args: `0=bits`, `1=bytes`, `2=words`, `3=memcpy`.
+   - Used in `draw_buffer_image()` via `switch_duplicate_method()` to select the copy function.
+
+3. **Memory-copy implementations** (`memcpy_utils.c`):
+   - `ft_memcpy()`: Basic byte-by-byte loop (baseline).
+   - `ft_memcpy_by_bytes()`: Copies in `int` (4-byte) chunks, then remainder.
+   - `ft_memcpy_by_words()`: Copies in `size_t` (8-byte) chunks, then remainder.
+   - Each function validates pointers and handles alignment edge cases.
+
+4. **Performance measurement**:
+   - Frame timing: `gettimeofday()` before and after `dup_t_img()` calls.
+   - FPS calculation: `(total_frames / elapsed_time)`.
+   - Results printed at program exit with frame count and average FPS.
 
 #### H.3.c | Commands:
 - From pwd = `./mlx_lab/`:
-  - Compile and Run Program with Valgrind
-    ```c
-    make -C ./src/h3 v
-    ```
-  - Clean
-    ```c
-    make -C src/h3 fc
-    ```
+  - **Test duplicate functions**:
+    - Run using unit memory: **bit** _(works with arg={"0","bit","bits"})_
+      ```c
+      make -C ./src/h3 valgrind 0
+      ```
+    - Run using unit memory: **byte**_(works with arg={"1","byte","bytes"})_
+      ```c
+      make -C ./src/h3 valgrind 1
+      ```
+    - Run using unit memory: **words**_(works with arg={"2","word","words"})_
+      ```c
+      make -C ./src/h3 valgrind 2
+      ```
+    - Run using real `memcpy()` _(works with arg={"3","fast","memcpy"})_
+      ```c
+      make -C ./src/h3 valgrind 3
+      ```
+
 #### H.3.d | Observations:
+- **Test duplicate functions**:
+  - MEM_BLOCK=0 --> **bits**
+    - Exec for 10secondes -->   0 steps --> 200 images drawn -->   1500allocs --> **~65ms** --> **~20FPS** 
+    - Exec for 10secondes --> 300 steps --> 200 images drawn -->   2500allocs --> **~65ms** --> **~20FPS**
+  - MEM_BLOCK=1 --> **bytes**
+    - Exec for 10secondes -->   0 steps --> 600 images drawn -->   3500allocs --> **~25ms** --> **~60FPS** 
+    - Exec for 10secondes --> 300 steps --> 600 images drawn -->   4500allocs --> **~25ms** --> **~60FPS**
+  - MEM_BLOCK=2 --> **words**
+    - Exec for 10secondes -->   0 steps --> 600 images drawn -->   3500allocs --> **~20ms** --> **~60FPS** 
+    - Exec for 10secondes --> 300 steps --> 600 images drawn -->   4500allocs --> **~20ms** --> **~60FPS**
+  - MEM_BLOCK=3 --> **memcpy()**
+    - Exec for 10secondes -->   0 steps --> 600 images drawn -->   3500allocs --> **~10ms** --> **~60FPS** 
+    - Exec for 10secondes --> 300 steps --> 600 images drawn -->   4500allocs --> **~10ms** --> **~60FPS**
+
 #### H.3.e | Conclusions:
+
+**Performance Impact Analysis**:
+0. **Memory allocation remains stable**:
+   - Alloc count scales primarily with runtime and FPS, not with copy method.
+   - Player movement adds minimal overhead (~1000 extra allocs per 250 steps over 10s).
+   - The FPS limiter effectively prevents runaway allocations.
+
+1. **Copy granularity matters significantly**:
+   - **Bit-by-bit** (method 0): ~65ms per frame → **3.25× slower** than target → ~20 FPS (unplayable).
+   - **4-byte chunks** (method 1): ~25ms per frame → ~60 FPS (acceptable, 2.5× faster than bits).
+   - **8-byte chunks** (method 2): ~20ms per frame → ~60 FPS (good, 3.25× faster than bits).
+   - **memcpy()** (method 3): ~10ms per frame → ~60 FPS (best, **6.5× faster** than bits, 2× faster than words).
+
+>[!NOTE]
+> memcpy() wins cause comp. opti. using vectorized instructions (SSE/AVX) where our approch suffer from loop overhead without CPU vectorization.
