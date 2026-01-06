@@ -6,11 +6,16 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/06 20:16:51 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/06 20:59:48 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
+
+static float	radian(float degree)
+{
+	return (degree * (M_PI / 180.0f));
+}
 
 int	handle_key(int keycode, t_data *dt)
 {
@@ -18,35 +23,27 @@ int	handle_key(int keycode, t_data *dt)
 		return (mlx_loop_end(dt->mlx_ptr), 1);
 	else if (keycode == W_KEY)
 	{
-		if (dt->player.pos.y - STEP >= 0)
-		{
-			dt->player.step_count++;
-			dt->player.pos.y -= STEP;
-		}
+		dt->player.pos.x += cosf(radian(dt->player.dir)) * SPEED;
+		dt->player.pos.y -= sinf(radian(dt->player.dir)) * SPEED;
+		dt->player.step_count++;
 	}
 	else if (keycode == S_KEY)
 	{
-		if (dt->player.pos.y < (float)dt->maze.height)
-		{
-			dt->player.step_count++;
-			dt->player.pos.y += STEP;
-		}
+		dt->player.pos.x += cosf(radian(dt->player.dir)) * -SPEED;
+		dt->player.pos.y -= sinf(radian(dt->player.dir)) * -SPEED;
+		dt->player.step_count++;
 	}
 	else if (keycode == A_KEY)
 	{
-		if (dt->player.pos.x - STEP >= 0)
-		{
-			dt->player.step_count++;
-			dt->player.pos.x -= STEP;
-		}
+		dt->player.pos.x += cosf(radian(dt->player.dir - 90)) * -SPEED;
+		dt->player.pos.y += sinf(radian(dt->player.dir - 90)) * -SPEED;
+		dt->player.step_count++;
 	}
 	else if (keycode == D_KEY)
 	{
-		if (dt->player.pos.x < (float)dt->maze.width)
-		{
-			dt->player.step_count++;
-			dt->player.pos.x += STEP;
-		}
+		dt->player.pos.x += cosf(radian(dt->player.dir + 90)) * -SPEED;
+		dt->player.pos.y += sinf(radian(dt->player.dir + 90)) * -SPEED;
+		dt->player.step_count++;
 	}
 	else if (keycode == Q_KEY || keycode == LA_KEY)
 	{
