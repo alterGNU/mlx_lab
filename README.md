@@ -1151,3 +1151,8 @@ With this program, we will study and compare different memory-copy strategies to
   - **limFPS**          : To avoid busy-loop, a minimum FramePerSecond value instored
   - **memcpyOpti**      : image's manip. used words as memory units _(`size_t`)_
    
+- From pwd = `./mlx_lab/`:
+  - Run using unit memory: **bit** _(works with arg={"0","bit","bits"})_
+    ```c
+    make -C ./src/h4 v
+    ```
