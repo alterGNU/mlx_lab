@@ -1151,6 +1151,26 @@ With this program, we will study and compare different memory-copy strategies to
   - **limFPS**          : To avoid busy-loop, a minimum FramePerSecond value instored
   - **memcpyOpti**      : image's manip. used words as memory units _(`size_t`)_
    
+#### H.4.a | Implementation overview:
+##### H.4.a.i | Vector Base Movement
+The vector base movement are based on this trigo-formulas:
+- `next_x = actual_x + cos(radian(dir)) * speed`
+- `next_y = actual_y - sin(radian(dir)) * speed`
+
+##### H.4.a.ii | Display player's infos in window
+- 1. Build a window with extra 20 pixels height (leave a black line to writte debugs infos)
+- 2. Convert players position and direction into string
+- 3. Display text_information
+
+##### H.4.a.iii | Add a instant FPS mecanism 
+- 1. Implement a FPS calculation (not average displayed at the end)
+- 2. Display this information (text)
+
+##### H.4.a.v | Add a better hook (pressed `[W]+[D]` should move in diagonal)
+- 1. Implement a FPS calculation (not average displayed at the end)
+- 2. Display this information (text)
+
+#### H.4.c | Commands
 - From pwd = `./mlx_lab/`:
   - Run using unit memory: **bit** _(works with arg={"0","bit","bits"})_
     ```c

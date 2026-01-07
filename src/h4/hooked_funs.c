@@ -6,69 +6,60 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/06 20:59:48 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/07 18:49:20 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-static float	radian(float degree)
+static void	move_player(t_data *dt, float rot, float speed)
 {
-	return (degree * (M_PI / 180.0f));
+	float	next_x;
+	float	next_y;
+
+	next_x = dt->player.pos.x + cosf(radian(dt->player.dir + rot)) * speed;
+	next_y = dt->player.pos.y - sinf(radian(dt->player.dir + rot)) * speed;
+	if (0 <= next_x && next_x < dt->maze.width && \
+		0 <= next_y && next_y < dt->maze.height)
+		set_player(&dt->player, next_x, next_y, dt->player.dir);
 }
 
 int	handle_key(int keycode, t_data *dt)
 {
+	float	tmp_dir;
+
 	if (keycode == ESC_KEY)
 		return (mlx_loop_end(dt->mlx_ptr), 1);
 	else if (keycode == W_KEY)
-	{
-		dt->player.pos.x += cosf(radian(dt->player.dir)) * SPEED;
-		dt->player.pos.y -= sinf(radian(dt->player.dir)) * SPEED;
-		dt->player.step_count++;
-	}
+		move_player(dt, 0, SPEED);
 	else if (keycode == S_KEY)
-	{
-		dt->player.pos.x += cosf(radian(dt->player.dir)) * -SPEED;
-		dt->player.pos.y -= sinf(radian(dt->player.dir)) * -SPEED;
-		dt->player.step_count++;
-	}
+		move_player(dt, 0, -SPEED);
 	else if (keycode == A_KEY)
-	{
-		dt->player.pos.x += cosf(radian(dt->player.dir - 90)) * -SPEED;
-		dt->player.pos.y += sinf(radian(dt->player.dir - 90)) * -SPEED;
-		dt->player.step_count++;
-	}
+		move_player(dt, 90, SPEED);
 	else if (keycode == D_KEY)
-	{
-		dt->player.pos.x += cosf(radian(dt->player.dir + 90)) * -SPEED;
-		dt->player.pos.y += sinf(radian(dt->player.dir + 90)) * -SPEED;
-		dt->player.step_count++;
-	}
+		move_player(dt, -90, SPEED);
 	else if (keycode == Q_KEY || keycode == LA_KEY)
 	{
-		dt->player.dir += ROT_STEP;
-		if (dt->player.dir >= 360.0)
-			dt->player.dir -= 360.0;
+		tmp_dir = dt->player.dir + ROT_STEP;
+		if (tmp_dir >= 360.0)
+			tmp_dir -= 360.0;
+		set_player(&dt->player, dt->player.pos.x, dt->player.pos.y, tmp_dir);
 	}
 	else if (keycode == E_KEY || keycode == RA__KEY)
 	{
-		dt->player.dir -= ROT_STEP;
-		if (dt->player.dir < 0.0)
-			dt->player.dir += 360.0;
+		tmp_dir = dt->player.dir - ROT_STEP;
+		if (tmp_dir < 0.0)
+			tmp_dir += 360.0;
+		set_player(&dt->player, dt->player.pos.x, dt->player.pos.y, tmp_dir);
 	}
 	return (0);
 }
 
-//static void	update_play_dir_string(t_data *dt)
-//{
-//	if (dt->play_dir)
-//		free(dt->play_dir);
-//	dt->play_dir = strdup("000 degrees");
-//	dt->play_dir[0] = '0' + ((int)dt->player.dir / 100) % 10;
-//	dt->play_dir[1] = '0' + ((int)dt->player.dir / 10) % 10;
-//	dt->play_dir[2] = '0' + ((int)dt->player.dir) % 10;
-//}
+static void	display_debug_infos(t_data *dt)
+{
+	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_info.img_ptr, 0, 0);
+	mlx_string_put(dt->mlx_ptr, dt->win_ptr, 10, 12, WHITE_COLOR, dt->player.play_str);
+}
 
 int	draw_buffer_image(t_data *dt)
 {
@@ -89,9 +80,8 @@ int	draw_buffer_image(t_data *dt)
 				return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
 		}
 	}
-	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_buffer.img_ptr, 0, 0);
-	//update_play_dir_string(dt);
-	//mlx_string_put(dt->mlx_ptr, dt->win_ptr, 10, 10, WHITE_COLOR, dt->play_dir);
+	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_buffer.img_ptr, 5, 20);
+	display_debug_infos(dt);
 	dt->img_drawn++;
 	if (gettimeofday(&dt->last_frame_time, NULL) < 0)
 		return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/06 20:59:48 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/07 18:48:12 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # define RA__KEY 65363
 //-[ Variables ]----------------------------------------------------------------
 # define VALID_MAZE_CHARS "01NSEW"
-# define M_PI 3.141592
+# define M_PI 3.14159265
 //-[ Window ]-------------------------------------------------------------------
 # define WIN_TITLE "Discret Ghost on grid with fps limitation and memcpy opti"
 # define TILE_X 56 // width of one cell in pixels
@@ -66,6 +66,7 @@ typedef struct s_play
 	int		color;
 	int		radius;
 	int		step_count;
+	char	*play_str;
 }	t_play;
 
 typedef struct s_maze
@@ -92,6 +93,7 @@ typedef struct s_data
 	t_maze			maze;
 	void			*mlx_ptr;
 	void			*win_ptr;
+	t_img			img_info;
 	t_img			img_floor;
 	t_img			img_wall;
 	t_img			img_grid;
@@ -99,7 +101,6 @@ typedef struct s_data
 	int				img_drawn;
 	int				delay_between_frames_ms;
 	struct timeval	last_frame_time;
-	//char			*play_dir;
 }	t_data;
 // =[ Files & Fun. Signatures ]=================================================
 // -[ draw_to_img.c ]----------------------------------------------------------3
@@ -135,11 +136,12 @@ int		t_img_insert_rows_by_words(\
 t_maze	set_maze_and_player(const char **str_arr, t_play *player);			// ❌
 void	free_maze(t_maze *maze);											// ✅
 void	print_maze(t_maze maze);											// ✅
-// -[ t_player_struct.c ]------------------------------------------------------3
+// -[ t_player_struct.c ]------------------------------------------------------5
 t_play	init_player(void);													// ✅
-void	set_player(t_play *play, int x, int y, float dir);					// ✅
+void	set_player(t_play *play, float x, float y, float dir);				// ✅
 int		print_player(t_play play);											// ✅
 void	draw_player(t_img *img, t_play *player);							// ✅
+void	free_player(t_play *player);										// ✅
 // -[ t_pos_struct.c ]---------------------------------------------------------4
 t_pos	init_pos(float x, float y);											// ✅
 t_pos	set_pos(t_pos *pos, float x, float y);								// ✅
@@ -150,4 +152,5 @@ int		char_in_str(char c, const char *str);								// ✅
 void	print_str_array(const char **str_arr);								// ✅
 int		diff_time_in_ms(struct timeval start, struct timeval end);			// ✅
 int		convert_fps_to_frame_delay(int fps);								// ✅
+float	radian(float degree);												// ✅
 #endif

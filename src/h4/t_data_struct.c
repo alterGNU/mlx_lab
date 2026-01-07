@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/06 20:59:48 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/07 18:53:29 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 
 static void	zero_memset_data(t_data *dt)
 {
-	dt->player = (t_play){{0.0f, 0.0f}, 0.0f, 0, 0, 0};
+	dt->player = (t_play){{0.0f, 0.0f}, 0.0f, 0, 0, -1, NULL};
 	dt->maze = (t_maze){NULL, 0, 0};
 	dt->mlx_ptr = NULL;
 	dt->win_ptr = NULL;
+	dt->img_info = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
 	dt->img_floor = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
 	dt->img_wall = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
 	dt->img_grid = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
@@ -43,23 +44,23 @@ t_data	init_data(const char **str_arr)
 	win_y = dt.maze.height * TILE_Y;
 	if (win_x <= 0 || win_y <= 0)
 		return (dt);
-	dt.win_ptr = mlx_new_window(dt.mlx_ptr, win_x, win_y, WIN_TITLE);
+	dt.win_ptr = mlx_new_window(dt.mlx_ptr, win_x + 10, win_y + 25, WIN_TITLE);
 	if (!dt.win_ptr)
 		return (dt);
+	dt.img_info = create_image(dt.mlx_ptr, win_x + 10, 20);
 	dt.img_floor = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
 	dt.img_wall = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
 	dt.img_grid = create_image(dt.mlx_ptr, win_x, win_y);
 	dt.img_buffer = create_image(dt.mlx_ptr, win_x, win_y);
 	dt.img_drawn = 0;
-	//dt.play_dir = NULL;
 	return (dt);
 }
 
 void	free_data(t_data *dt)
 {
-	// if (dt->play_dir)
-	// 	free(dt->play_dir);
+	free_player(&dt->player);
 	free_maze(&dt->maze);
+	free_image(dt->img_info, dt->mlx_ptr);
 	free_image(dt->img_floor, dt->mlx_ptr);
 	free_image(dt->img_wall, dt->mlx_ptr);
 	free_image(dt->img_grid, dt->mlx_ptr);
@@ -91,10 +92,15 @@ int	error_detected_after_init_data(t_data *dt)
 	int	error;
 
 	error = 0;
-	if (dt->player.pos.x < 0.0 || dt->player.pos.y < 0.0 || \
-		dt->player.radius <= 0 || dt->player.step_count)
+	if (!dt->player.play_str)
 	{
-		fprintf(stderr, "data->player init invalid: play{pos(%f, %f), ", \
+		fprintf(stderr, "data->player.play_str=NULL, calloc() failed\n");
+		error++;
+	}
+	if (dt->player.pos.x < 0.0 || dt->player.pos.y < 0.0 || \
+		dt->player.radius <= 0 || dt->player.step_count < 0)
+	{
+		fprintf(stderr, "data->player init invalid: play{pos(%.2f, %.2f), ", \
 			dt->player.pos.x, dt->player.pos.y);
 		fprintf(stderr, "radius:%d, step_count:%d}\n", \
 			dt->player.radius, dt->player.step_count);
