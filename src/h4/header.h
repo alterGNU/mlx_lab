@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/07 18:48:12 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/07 20:46:33 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,9 @@ typedef struct s_data
 	int				img_drawn;
 	int				delay_between_frames_ms;
 	struct timeval	last_frame_time;
+	struct timeval	time_start_fps_inter;
+	int				nbf_start_fps_inter;
+	char			fps_str[32];
 }	t_data;
 // =[ Files & Fun. Signatures ]=================================================
 // -[ draw_to_img.c ]----------------------------------------------------------3

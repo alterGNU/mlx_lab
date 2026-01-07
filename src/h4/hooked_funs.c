@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/07 18:49:20 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/07 20:44:29 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,18 @@ int	handle_key(int keycode, t_data *dt)
 
 static void	display_debug_infos(t_data *dt)
 {
+	int	win_x;
+
+	win_x = dt->maze.width * TILE_X + 10;
 	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_info.img_ptr, 0, 0);
 	mlx_string_put(dt->mlx_ptr, dt->win_ptr, 10, 12, WHITE_COLOR, dt->player.play_str);
+	mlx_string_put(dt->mlx_ptr, dt->win_ptr, win_x - 70, 12, WHITE_COLOR, dt->fps_str);
 }
 
 int	draw_buffer_image(t_data *dt)
 {
 	struct timeval	act_time;
+	float			fps;
 
 	if (!dt->mlx_ptr || !dt->win_ptr)
 		return (printf("Error: Invalid data pointers\n"), 1);
@@ -80,6 +85,17 @@ int	draw_buffer_image(t_data *dt)
 				return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
 		}
 	}
+	// UDPATE FPS INFO------------
+	if (dt->img_drawn % FPS == 0)
+	{
+		// diff_time_in_ms returns milliseconds; convert to seconds for FPS
+		fps = FPS * 1000.f / diff_time_in_ms(dt->time_start_fps_inter, act_time);
+		snprintf(dt->fps_str, sizeof(dt->fps_str), "FPS: %.2f", fps);
+		if (gettimeofday(&dt->time_start_fps_inter, NULL) < 0) // same as: dt->time_start_fps_inter = act_time;
+			return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
+		dt->nbf_start_fps_inter = dt->img_drawn;
+	}
+	//----------------------------
 	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_buffer.img_ptr, 5, 20);
 	display_debug_infos(dt);
 	dt->img_drawn++;

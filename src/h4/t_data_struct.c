@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/07 18:53:29 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/07 20:29:28 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,9 @@ static void	zero_memset_data(t_data *dt)
 	dt->img_drawn = 0;
 	dt->delay_between_frames_ms = convert_fps_to_frame_delay(FPS);
 	memset(&dt->last_frame_time, 0, sizeof(struct timeval));
+	memset(&dt->time_start_fps_inter, 0, sizeof(struct timeval));
+	dt->nbf_start_fps_inter = 0;
+	memset(dt->fps_str, 0, sizeof(dt->fps_str));
 }
 
 t_data	init_data(const char **str_arr)
