@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/07 20:44:29 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/08 15:01:12 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,23 +31,23 @@ int	handle_key(int keycode, t_data *dt)
 	if (keycode == ESC_KEY)
 		return (mlx_loop_end(dt->mlx_ptr), 1);
 	else if (keycode == W_KEY)
-		move_player(dt, 0, SPEED);
+		move_player(dt, 0, POS_SPEED);
 	else if (keycode == S_KEY)
-		move_player(dt, 0, -SPEED);
+		move_player(dt, 0, -POS_SPEED);
 	else if (keycode == A_KEY)
-		move_player(dt, 90, SPEED);
+		move_player(dt, 90, POS_SPEED);
 	else if (keycode == D_KEY)
-		move_player(dt, -90, SPEED);
+		move_player(dt, -90, POS_SPEED);
 	else if (keycode == Q_KEY || keycode == LA_KEY)
 	{
-		tmp_dir = dt->player.dir + ROT_STEP;
+		tmp_dir = dt->player.dir + ANG_SPEED;
 		if (tmp_dir >= 360.0)
 			tmp_dir -= 360.0;
 		set_player(&dt->player, dt->player.pos.x, dt->player.pos.y, tmp_dir);
 	}
 	else if (keycode == E_KEY || keycode == RA__KEY)
 	{
-		tmp_dir = dt->player.dir - ROT_STEP;
+		tmp_dir = dt->player.dir - ANG_SPEED;
 		if (tmp_dir < 0.0)
 			tmp_dir += 360.0;
 		set_player(&dt->player, dt->player.pos.x, dt->player.pos.y, tmp_dir);

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/08 02:54:48 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/08 15:01:48 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@
 # define RA__KEY 65363
 //-[ Variables ]----------------------------------------------------------------
 # define VALID_MAZE_CHARS "01NSEW"
-# define M_PI 3.14159265
+# define M_PI 3.1415926535
 //-[ Window ]-------------------------------------------------------------------
-# define WIN_TITLE "Discret Ghost on grid with fps limitation and memcpy opti"
-# define TILE_X 56 // width of one cell in pixels
-# define TILE_Y 56 // height of one cell in pixels
+# define WIN_TITLE "Ray-Charle's Ghost: blind red-dot (No ray-casting)"
+# define TILE_X 64 // width of one cell in pixels
+# define TILE_Y 64 // height of one cell in pixels
 //-[ Colors ]-------------------------------------------------------------------
 # define BLACK_COLOR 0x000000
 # define RED_COLOR 0xFF0000
@@ -41,8 +41,8 @@
 //-[ Player ]-------------------------------------------------------------------
 # define CIRCLE_RADIUS 8 // size of the player representation
 // -[ Engine ]------------------------------------------------------------------
-# define SPEED 0.1f // movement step size in grid units 
-# define ROT_STEP 1.f // rotation step size in degrees
+# define POS_SPEED 0.1f	// Position Var. Speed==movement-speed:step/move
+# define ANG_SPEED 3.1f	// Angle Var. Speed==rotation-speed:degree/move
 # define FPS 60 // desired frames per second
 // =[ Include ]=================================================================
 # include "mlx.h"

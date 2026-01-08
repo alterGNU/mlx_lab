@@ -1,5 +1,5 @@
 # =[ VARIABLES ]==============================================================================================
-NAME		=	gridMaze_bresenhamGhost_vectBaseMov_limFPS_optiMemcpy
+NAME		=	gridMaze_vectGhost_vectBaseMove_fpsMecs_memOpti
 # -[ MLX ]----------------------------------------------------------------------------------------------------
 MLX_DIR		=	../../mlx
 MLX_A		=	$(MLX_DIR)/libmlx.a

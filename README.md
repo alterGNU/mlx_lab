@@ -1142,20 +1142,23 @@ With this program, we will study and compare different memory-copy strategies to
 >[!NOTE]
 > memcpy() wins cause comp. opti. using vectorized instructions (SSE/AVX) _(~Vector-Based Access/Mov.)_ where our approch suffer from loop overhead without CPU vectorization _(~Grid-Based Access/Mov.)_ .
 
-### H.4 | Add Vector-Based Movements to the player.
+### H.4 | Add Vector-Based Movements to the player _(polar-coord. system & trigo. formulas)_
 
-- Program's name        : **GridMaze_BresenHamGhost_VectBaseMove_limFPS_memcpyOpti**
-  - **GridMaze**        : The first layer, our maze, is represented by a grid.
-  - **BresenHameGhost** : The second layer, our player, is represented by a bresenhame circle.
-  - **VectBaseMove**    : The player's movements are now **vector-based**: `pos(x, y) += vect(dir) * int(speed);`
-  - **limFPS**          : To avoid busy-loop, a minimum FramePerSecond value instored
-  - **memcpyOpti**      : image's manip. used words as memory units _(`size_t`)_
+- Program's name      : **gridMaze_vectGhost_vectBaseMove_fpsMecs_memOpti**
+  - **gridMaze**      : first layer, our **maze**, is represented by a **grid**.
+  - **vectGhost**     : second layer, our **player**, is represented by a **red dot(position)** with a **blue arrow(direction)**: **VECTOR**
+  - **vectBaseMove**  : player's movements are **vector-based**: `pos(x, y) += vect(dir) * int(speed);` _(using polar coord. syst. and trigo. formulas)_
+  - **fpsMecs**       : FPS mecanismes:
+    - **FPS limit**   to avoid busy-loop
+    - **FPS counter** to mesure and display on window the program efficienci.
+  - **memOpti**       : image's manipulation fun. use optimized memory fun. _(using words as memory units `size_t`)_
    
 #### H.4.a | Implementation overview:
 ##### H.4.a.i | Vector Base Movement
-The vector base movement are based on this trigo-formulas:
-- `next_x = actual_x + cos(radian(dir)) * speed`
-- `next_y = actual_y - sin(radian(dir)) * speed`
+The vector base movement are based on polar-coord-system using trigo-formulas.
+- In our code, it can be resume as this:
+  - `next_x = actual_x + cos(radian(dir)) * speed`
+  - `next_y = actual_y - sin(radian(dir)) * speed`
 
 ##### H.4.a.ii | Display player's infos in window
 - 1. Build a window with extra 20 pixels height (leave a black line to writte debugs infos)
@@ -1167,13 +1170,9 @@ The vector base movement are based on this trigo-formulas:
 - 2. Display this information on window. (update each FPS images)
 
 ##### H.4.a.v | First use of DDA to draw lines
-- 1. Implement a drawing line function using DDA
+- 1. Implement a drawing line function using DDA _(draw arrows when called multiple times ^^)_
 - 2. Use this function to display player's direction as a blue line (blue arrow)
 - 3. Use this function to display player's field of vision (green lines)
-
-##### H.4.a.vi | Add a better hook (pressed `[W]+[D]` should move in diagonal)
-- 1. Implement a FPS calculation (not average displayed at the end)
-- 2. Display this information (text)
 
 #### H.4.c | Commands
 - From pwd = `./mlx_lab/`:
