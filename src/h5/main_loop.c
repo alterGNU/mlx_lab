@@ -1,0 +1,78 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_loop.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
+/*   Updated: 2026/01/08 18:34:47 by lagrondi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "header.h"
+
+static int	move_player_pos(t_data *dt, float rot, float speed)
+{
+	float	next_x;
+	float	next_y;
+
+	next_x = dt->player.pos.x + cosf(radian(dt->player.dir + rot)) * speed;
+	next_y = dt->player.pos.y - sinf(radian(dt->player.dir + rot)) * speed;
+	if (0 <= next_x && next_x < dt->maze.width && \
+		0 <= next_y && next_y < dt->maze.height)
+		return (set_player(&dt->player, next_x, next_y, dt->player.dir), 1);
+	return (0);
+}
+
+/**
+ * Use set_player() instead of directly modifying dt->player.{pos, dir} 'cause:
+ * -> set_player() is the function that updates dt->player.step_count
+ * -> set_player() is the function that updates dt->player.play_str
+ */
+static void	move_player(t_data *dt)
+{
+	if (dt->mv_flags[0] == 'Q')
+		set_player(&dt->player, dt->player.pos.x, dt->player.pos.y, \
+			norm_angle(dt->player.dir + ANG_SPEED));
+	if (dt->mv_flags[2] == 'E')
+		set_player(&dt->player, dt->player.pos.x, dt->player.pos.y, \
+			norm_angle(dt->player.dir - ANG_SPEED));
+	if (dt->mv_flags[1] == 'W')
+		move_player_pos(dt, 0, POS_SPEED);
+	if (dt->mv_flags[4] == 'S')
+		move_player_pos(dt, 0, -POS_SPEED);
+	if (dt->mv_flags[3] == 'A')
+		move_player_pos(dt, 90, POS_SPEED);
+	if (dt->mv_flags[5] == 'D')
+		move_player_pos(dt, -90, POS_SPEED);
+}
+
+int	player_moved(t_data *dt)
+{
+	float	old_dir;
+	float	old_x;
+	float	old_y;
+
+	old_dir = dt->player.dir;
+	old_x = dt->player.pos.x;
+	old_y = dt->player.pos.y;
+	move_player(dt);
+	if (old_dir != dt->player.dir || \
+		old_x != dt->player.pos.x || \
+		old_y != dt->player.pos.y)
+		return (1);
+	return (0);
+}
+
+int	main_loop(t_data *dt)
+{
+	if (dt->img_drawn == 0 || player_moved(dt))
+	{
+		if (draw_buffer_image(dt))
+			return (free_data(dt), exit(1), 1);
+		//display_debug_infos(dt);
+		//display_fps_infos(dt);
+	}
+	return (0);
+}

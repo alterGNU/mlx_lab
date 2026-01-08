@@ -1180,3 +1180,36 @@ The vector base movement are based on polar-coord-system using trigo-formulas.
     ```c
     make -C ./src/h4 v
     ```
+### H.5 | Add Flag-Based-Movs and 2D-Raycasting:
+
+- Program's name        : **gridMaze_rayCastGhost_flagBasedMovs_fps_opti**
+  - **gridMaze**        : first layer, our **maze**, is represented by a **grid**.
+  - **rayCastGhost**    : 
+    - second layer, our player, is **caster the ghost**: **red dot(position)** with a **blue arrow(direction)**
+    - third layer, our ray-casted lines, represent our playe's vision : **green lines**
+  - **flagBasedMovs**   : add to existing **vect.base movements** implementation a **Flag-Based-Moving Engine**:
+    - player's movements still **vector-based**: `pos(x, y) += vect(dir) * int(speed);` _(using polar coord. syst. and trigo. formulas)_
+    - add **engine** that based on **key-pressed-flags** in order to **handle key-combos**: `[W]+[Q]--> doing donuts`
+  - **fpsMecs**         : FPS mecanismes:
+    - **FPS limit**   to avoid busy-loop
+    - **FPS counter** to mesure and display on window the program efficienci.
+  - **memOpti**       : image's manipulation fun. use optimized memory fun. _(using words as memory units `size_t`)_
+
+##### H.5.a.i | Add a better movement engine _(handle key-combos)_
+
+- For a smoother movement control, add flags in order to handle key pressed combinations _(combos)_ such as:
+  - `[W]+[D]` = NORTH/EAST diagonal movement
+  - `[W]+[A]` = NORTH/WEST diagonal movement
+  - `[S]+[D]` = SOUTH/EAST diagonal movement
+  - `[S]+[A]` = SOUTH/WEST diagonal movement
+  - `[W]+[Q]` = Draw a circle clock-wise
+  - `[W]+[E]` = Draw a circle anti-clock-wise
+  - `[S]+[Q]` = Draw a circle anti-clock-wise
+  - `[S]+[E]` = Draw a circle clock-wise
+
+**Implementation overview**:
+- 1. Add: in `t_data` struct `char flags[7]; //"QWEASD\0"` :
+  - 1.1 : flags is a string init to qweasd (nothing pressed)
+  - 1.2 : when key pressed, corresponding index key are toggle to UPPER `key[w]`--pressed-->`flags[1]='W'`
+  - 1.2 : when key release, corresponding index key are toggle to LOWER `key[e]`--unpress-->`flags[2]='e'`
+- 2. Add: fun. hooked to press and release that toggle flags
