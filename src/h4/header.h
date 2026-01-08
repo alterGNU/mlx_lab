@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/07 20:46:33 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/08 02:54:48 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 # define FLOOR_COLOR 0xAAAAAA
 # define WALL_COLOR 0x333333
 //-[ Player ]-------------------------------------------------------------------
-# define CIRCLE_RADIUS 4 // size of the player representation
+# define CIRCLE_RADIUS 8 // size of the player representation
 // -[ Engine ]------------------------------------------------------------------
 # define SPEED 0.1f // movement step size in grid units 
 # define ROT_STEP 1.f // rotation step size in degrees
@@ -106,9 +106,11 @@ typedef struct s_data
 	char			fps_str[32];
 }	t_data;
 // =[ Files & Fun. Signatures ]=================================================
-// -[ draw_to_img.c ]----------------------------------------------------------3
+// -[ draw_to_img.c ]----------------------------------------------------------5
 void	put_pixel_to_image(t_img *img, int x, int y, int color);			// ✅
 void	draw_circle(t_img *img, t_pos c_pos, int r, int color);				// ✅
+void	draw_dda_line(t_img *img, t_pos a_pos, t_pos b_pos, int color);		// ✅
+void	draw_vector(t_img *img, t_pos start, t_pos vec, int color);			// ✅
 // -[ hooked_funs.c ]----------------------------------------------------------2
 int		handle_key(int keycode, t_data *dt);								// ❌
 int		draw_buffer_image(t_data *dt);										// ❌
@@ -150,10 +152,13 @@ t_pos	init_pos(float x, float y);											// ✅
 t_pos	set_pos(t_pos *pos, float x, float y);								// ✅
 int		print_pos(t_pos pos);												// ✅
 t_pos	dup_pos(t_pos src);													// ✅
-// -[ utils.c ]----------------------------------------------------------------4
+// -[ utils.c ]----------------------------------------------------------------3
 int		char_in_str(char c, const char *str);								// ✅
 void	print_str_array(const char **str_arr);								// ✅
 int		diff_time_in_ms(struct timeval start, struct timeval end);			// ✅
 int		convert_fps_to_frame_delay(int fps);								// ✅
+// -[ utils_math.c ]-----------------------------------------------------------3
 float	radian(float degree);												// ✅
+int		ft_max(int a, int b);												// ✅
+int		norm_angle(int angle);												// ✅
 #endif

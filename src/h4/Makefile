@@ -37,6 +37,7 @@ SRC			=	draw_to_img.c \
 				t_maze_struct.c \
 				t_player_struct.c \
 				t_pos_struct.c \
+				utils_math.c \
 				utils.c
 OBJ			=	$(addprefix $(BUILD_DIR)/, $(SRC:.c=.o))
 # =[ RULES ]==================================================================================================

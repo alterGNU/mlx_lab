@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:34:13 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/07 18:37:10 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/08 02:54:02 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,15 @@ int	print_player(t_play play)
 	return (psf);
 }
 
-void	draw_player(t_img *img, t_play *player)
+void	draw_player(t_img *img, t_play *p)
 {
-	t_pos	c_pos;
+	t_pos	center;
+	t_pos	angle_speed;
 
-	c_pos = init_pos(player->pos.x * TILE_X, player->pos.y * TILE_Y);
-	draw_circle(img, c_pos, player->radius, player->color);
+	center = init_pos(p->pos.x * TILE_X, p->pos.y * TILE_Y);
+	angle_speed = init_pos(p->dir, p->radius * 3);
+	draw_circle(img, center, p->radius, p->color);
+	draw_vector(img, center, angle_speed, BLUE_COLOR);
 }
 
 void	free_player(t_play *player)

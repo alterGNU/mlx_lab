@@ -1160,13 +1160,18 @@ The vector base movement are based on this trigo-formulas:
 ##### H.4.a.ii | Display player's infos in window
 - 1. Build a window with extra 20 pixels height (leave a black line to writte debugs infos)
 - 2. Convert players position and direction into string
-- 3. Display text_information
+- 3. Display this information on window. (update each time player pos or dir changes)
 
 ##### H.4.a.iii | Add a instant FPS mecanism 
 - 1. Implement a FPS calculation (not average displayed at the end)
-- 2. Display this information (text)
+- 2. Display this information on window. (update each FPS images)
 
-##### H.4.a.v | Add a better hook (pressed `[W]+[D]` should move in diagonal)
+##### H.4.a.v | First use of DDA to draw lines
+- 1. Implement a drawing line function using DDA
+- 2. Use this function to display player's direction as a blue line (blue arrow)
+- 3. Use this function to display player's field of vision (green lines)
+
+##### H.4.a.vi | Add a better hook (pressed `[W]+[D]` should move in diagonal)
 - 1. Implement a FPS calculation (not average displayed at the end)
 - 2. Display this information (text)
 

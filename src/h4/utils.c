@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:11:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/06 23:26:46 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/08 00:52:27 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,4 @@ int	convert_fps_to_frame_delay(int fps)
 	if (fps <= 0)
 		return (0);
 	return (1000 / fps);
-}
-
-float	radian(float degree)
-{
-	return (degree * (M_PI / 180.0f));
 }
