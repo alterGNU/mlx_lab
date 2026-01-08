@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:13:33 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/08 02:59:46 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/08 17:08:38 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,15 +95,15 @@ void	draw_vector(t_img *img, t_pos origin, t_pos angle_speed, int color)
 	t_pos	end;
 	t_pos	left;
 	t_pos	right;
-	int		angle_left;
-	int		angle_right;
+	float	angle_left;
+	float	angle_right;
 
 	end = init_pos(origin.x + cosf(radian(angle_speed.x)) * angle_speed.y, \
 		origin.y - sinf(radian(angle_speed.x)) * angle_speed.y);
-	angle_left = norm_angle(180 + angle_speed.x - 45);
+	angle_left = norm_angle(180.0f + angle_speed.x - 45.0f);
 	left = init_pos(end.x + cosf(radian(angle_left)) * angle_speed.y / 2, \
 		end.y - sinf(radian(angle_left)) * angle_speed.y / 2);
-	angle_right = norm_angle(180 + angle_speed.x + 45);
+	angle_right = norm_angle(180.0f + angle_speed.x + 45.0f);
 	right = init_pos(end.x + cosf(radian(angle_right)) * angle_speed.y / 2, \
 		end.y - sinf(radian(angle_right)) * angle_speed.y / 2);
 	draw_dda_line(img, origin, end, color);

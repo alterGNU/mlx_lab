@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 00:52:18 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/08 02:23:17 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/08 17:07:15 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,12 @@ int	ft_max(int a, int b)
 	return (b);
 }
 
-int	norm_angle(int angle)
+	float	norm_angle(float angle)
 {
-	int	res;
+	float	res;
 
-	res = angle % 360;
+	res = fmodf(angle, 360.0f);
 	if (res < 0)
-		res += 360;
+		res += 360.0f;
 	return (res);
 }

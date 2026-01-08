@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/08 15:01:48 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/08 17:07:40 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,5 +160,5 @@ int		convert_fps_to_frame_delay(int fps);								// ✅
 // -[ utils_math.c ]-----------------------------------------------------------3
 float	radian(float degree);												// ✅
 int		ft_max(int a, int b);												// ✅
-int		norm_angle(int angle);												// ✅
+float	norm_angle(float angle);											// ✅
 #endif
