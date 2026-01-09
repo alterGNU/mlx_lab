@@ -6,40 +6,26 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/08 18:34:59 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:50:38 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-// TODO: rename to display_player_infos()
-void	display_debug_infos(t_data *dt)
+void	draw_all_hit_lines(t_data *dt)
 {
-	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_erase_txt.img_ptr, 0, 0);
-	mlx_string_put(dt->mlx_ptr, dt->win_ptr, 10, 12, WHITE_COLOR, dt->player.play_str);
-}
+	int		i;
+	t_pos	play_pos;
+	t_pos	hit_tpos;
 
-int	display_fps_infos(t_data *dt)
-{
-	struct timeval	act_time;
-	int				win_x;
-	float			fps;
-
-	if (gettimeofday(&act_time, NULL) < 0)
-		return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
-	if (dt->img_drawn % FPS == 0)
+	play_pos = init_pos(dt->player.pos.x * TILE_X, dt->player.pos.y * TILE_Y);
+	i = -1;
+	while (dt->hit_tpos[++i])
 	{
-		// diff_time_in_ms returns milliseconds; convert to seconds for FPS
-		fps = FPS * 1000.f / diff_time_in_ms(dt->time_start_fps_inter, act_time);
-		snprintf(dt->fps_str, sizeof(dt->fps_str), "FPS: %.2f", fps);
-		if (gettimeofday(&dt->time_start_fps_inter, NULL) < 0) // same as: dt->time_start_fps_inter = act_time;
-			return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
-		dt->nbf_start_fps_inter = dt->img_drawn;
-		win_x = dt->maze.width * TILE_X + 10;
-		mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_erase_txt.img_ptr, win_x - 70, 0);
-		mlx_string_put(dt->mlx_ptr, dt->win_ptr, win_x - 70, 12, WHITE_COLOR, dt->fps_str);
+		hit_tpos = init_pos(dt->hit_tpos[i]->x * TILE_X, dt->hit_tpos[i]->y * TILE_Y);
+		draw_vector(dt->img_buffer.img_ptr, play_pos, hit_tpos, BLUE_COLOR);
+		i++;
 	}
-	return (0);
 }
 
 int	draw_buffer_image(t_data *dt)
@@ -53,6 +39,7 @@ int	draw_buffer_image(t_data *dt)
 	if (!dup_t_img_by_words(&dt->img_grid, &dt->img_buffer))
 		return (fprintf(stderr, "Error: dup_t_img() failed\n"), free_data(dt), 1);
 	draw_player(&dt->img_buffer, &dt->player); // second layer:player
+	//draw_all_hit_lines(dt); // third layer:ray-cast hit lines
 	// FPS control to avoid busy-spinning
 	if (dt->img_drawn)
 	{
@@ -62,12 +49,8 @@ int	draw_buffer_image(t_data *dt)
 				return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
 		}
 	}
-	//----------------------------
 	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_buffer.img_ptr, 5, 20);
-	display_debug_infos(dt);
-	display_fps_infos(dt);
 	dt->img_drawn++;
-	// same as dt->last_frame_time = act_time;
 	if (gettimeofday(&dt->last_frame_time, NULL) < 0)
 		return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
 	return (0);

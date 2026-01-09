@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/08 18:33:49 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:20:30 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,12 @@ static void	zero_memset_data(t_data *dt)
 	dt->img_buffer = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
 	dt->img_drawn = 0;
 	dt->delay_between_frames_ms = convert_fps_to_frame_delay(FPS);
+	memset(&dt->fps_arr, 0, sizeof(struct timeval) * FPS_IMG_NB);
 	memset(&dt->last_frame_time, 0, sizeof(struct timeval));
-	memset(&dt->time_start_fps_inter, 0, sizeof(struct timeval));
-	dt->nbf_start_fps_inter = 0;
+	memset(dt->fps_arr, 0, sizeof(dt->fps_arr));
 	memset(dt->fps_str, 0, sizeof(dt->fps_str));
 	memset(dt->mv_flags, 0, sizeof(dt->mv_flags));
+	dt->hit_tpos = NULL;
 }
 
 t_data	init_data(const char **str_arr)
@@ -57,12 +58,12 @@ t_data	init_data(const char **str_arr)
 	dt.img_wall = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
 	dt.img_grid = create_image(dt.mlx_ptr, win_x, win_y);
 	dt.img_buffer = create_image(dt.mlx_ptr, win_x, win_y);
-	dt.img_drawn = 0;
-	return (dt);
+	return (dt.hit_tpos = create_pos_array((int)(FOV / FOV_PRE)), dt);
 }
 
 void	free_data(t_data *dt)
 {
+	free_pos_array(&dt->hit_tpos);
 	free_player(&dt->player);
 	free_maze(&dt->maze);
 	free_image(dt->img_erase_txt, dt->mlx_ptr);
@@ -124,5 +125,6 @@ int	error_detected_after_init_data(t_data *dt)
 	check_ptr_not_null(dt->img_wall.img_ptr, "img_wall", &error);
 	check_ptr_not_null(dt->img_grid.img_ptr, "img_grid", &error);
 	check_ptr_not_null(dt->img_buffer.img_ptr, "img_buffer", &error);
+	check_ptr_not_null(dt->hit_tpos, "hit_tpos", &error);
 	return (error);
 }

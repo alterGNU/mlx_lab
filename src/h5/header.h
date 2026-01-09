@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/08 18:33:49 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/09 13:02:55 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,10 @@
 // -[ Engine ]------------------------------------------------------------------
 # define POS_SPEED 0.1f	// Position Var. Speed==movement-speed:step/move
 # define ANG_SPEED 3.1f	// Angle Var. Speed==rotation-speed:degree/move
-# define FPS 60 // desired frames per second
+# define FPS 160		// Desired frames per second
+# define FPS_IMG_NB 60	// Number of images to consider for FPS calculation
+# define FOV 45.f		// Player's Field of View angle in degrees
+# define FOV_PRE .1f	// Field of View Precision in degrees
 // -[ FAILURES ]----------------------------------------------------------------
 # define MAIN_LOOP_FAILURE 2
 // =[ Include ]=================================================================
@@ -102,16 +105,18 @@ typedef struct s_data
 	t_img			img_buffer;
 	int				img_drawn;
 	int				delay_between_frames_ms;
+	struct timeval	fps_arr[FPS_IMG_NB];
 	struct timeval	last_frame_time;
-	struct timeval	time_start_fps_inter;
-	int				nbf_start_fps_inter;
 	char			fps_str[32];
 	char			mv_flags[7];
+	t_pos			**hit_tpos;
 }	t_data;
 // =[ Files & Fun. Signatures ]=================================================
+// -[ display_infos.c ]--------------------------------------------------------2
+void	display_player_infos(t_data *dt);									// ✅
+void	display_fps_infos(t_data *dt);										// ✅
 // -[ draw_frame.c ]-----------------------------------------------------------2
-void	display_debug_infos(t_data *dt);									// ❌
-int		display_fps_infos(t_data *dt);										// ❌
+void	draw_all_hit_lines(t_data *dt);										// ❌
 int		draw_buffer_image(t_data *dt);										// ❌
 // -[ draw_to_img.c ]----------------------------------------------------------5
 void	put_pixel_to_image(t_img *img, int x, int y, int color);			// ✅
@@ -123,10 +128,12 @@ int		main_loop(t_data *dt);												// ❌
 // -[ memcpy_utils.c ]---------------------------------------------------------2
 void	*ft_memcpy(void *dst, const void *src, size_t len);					// ✅
 void	*ft_memcpy_by_words(void *dst, const void *src, size_t len);		// ✅
-// -[ movements.c ]------------------------------------------------------------3
+// -[ mov_flags.c ]------------------------------------------------------------3
 void	init_movement_flags(t_data *dt);									// ✅
 int		key_pressed(int keycode, t_data *dt);								// ✅
 int		key_released(int keycode, t_data *dt);								// ✅
+// -[ ray_casting.c ]---------------------------------------------------------1
+void	update_hit_tpos(t_data *dt);										// ✅
 // -[ t_data_struct.c ]--------------------------------------------------------5
 t_data	init_data(const char **str_arr);									// ✅
 void	free_data(t_data *dt);												// ✅
@@ -157,6 +164,10 @@ void	set_player(t_play *play, float x, float y, float dir);				// ✅
 int		print_player(t_play play);											// ✅
 void	draw_player(t_img *img, t_play *player);							// ✅
 void	free_player(t_play *player);										// ✅
+// -[ t_pos_arr.c ]-----------------------------------------------------------3
+t_pos	**create_pos_array(int size);										// ✅
+void	free_pos_array(t_pos ***pos_arr);									// ✅
+int		print_pos_array(t_pos **pos_arr);									// ✅
 // -[ t_pos_struct.c ]---------------------------------------------------------4
 t_pos	init_pos(float x, float y);											// ✅
 t_pos	set_pos(t_pos *pos, float x, float y);								// ✅

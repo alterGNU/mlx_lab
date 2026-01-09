@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/08 18:33:49 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:22:03 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@ static void	print_start_infos(t_data dt, const char **str_arr, int bui_delay_ms)
 	printf(" - Start ");
 	print_player(dt.player);
 	printf("\n - Flags =[%s] ", dt.mv_flags);
+	printf("\n - FOV=%.2f / FOV_PRE=%.2f --> %d\n", FOV, FOV_PRE, (int)(FOV / FOV_PRE));
+	//printf(" - dt.hit_tpos = ", FOV, FOV_PRE, (int)(FOV / FOV_PRE));
+	//print_pos_array(dt.hit_tpos);
 	printf("\n====================================\n\n");
 }
 
@@ -94,6 +97,7 @@ int	main(void)
 	bui_delay_ms = diff_time_in_ms(start_bui, end_bui);
 	print_start_infos(dt, str_arr, bui_delay_ms);
 	start_pos = dup_pos(dt.player.pos);
+	update_hit_tpos(&dt);
 	mlx_loop_hook(dt.mlx_ptr, &main_loop, &dt);
 	mlx_hook(dt.win_ptr, 17, 0, &mlx_loop_end, dt.mlx_ptr);
 	mlx_hook(dt.win_ptr, 2, (1L << 0), &key_pressed, &dt);

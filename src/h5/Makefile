@@ -25,12 +25,14 @@ F_ADD		=	-lX11 -lXext -lm
 FLAGS		=	-Wall -Wextra -Werror -I. -I$(MLX_DIR)
 VAL			=	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --undef-value-errors=no
 # =[ OBJECTS ]================================================================================================
-SRC			=	draw_frame.c \
+SRC			=	display_infos.c \
+				draw_frame.c \
 				draw_to_img.c \
 				main.c \
 				main_loop.c \
 				memcpy_utils.c \
 				move_flags.c \
+				ray_casting.c \
 				t_data_struct.c \
 				t_img_builders.c \
 				t_img_duplicate.c \
@@ -38,6 +40,7 @@ SRC			=	draw_frame.c \
 				t_img_struct.c \
 				t_maze_struct.c \
 				t_player_struct.c \
+				t_pos_arr.c \
 				t_pos_struct.c \
 				utils_math.c \
 				utils.c

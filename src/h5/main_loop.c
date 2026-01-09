@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/08 18:34:47 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:59:20 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,31 +48,16 @@ static void	move_player(t_data *dt)
 		move_player_pos(dt, -90, POS_SPEED);
 }
 
-int	player_moved(t_data *dt)
-{
-	float	old_dir;
-	float	old_x;
-	float	old_y;
-
-	old_dir = dt->player.dir;
-	old_x = dt->player.pos.x;
-	old_y = dt->player.pos.y;
-	move_player(dt);
-	if (old_dir != dt->player.dir || \
-		old_x != dt->player.pos.x || \
-		old_y != dt->player.pos.y)
-		return (1);
-	return (0);
-}
-
 int	main_loop(t_data *dt)
 {
-	if (dt->img_drawn == 0 || player_moved(dt))
-	{
-		if (draw_buffer_image(dt))
-			return (free_data(dt), exit(1), 1);
-		//display_debug_infos(dt);
-		//display_fps_infos(dt);
-	}
+	if (gettimeofday(&dt->fps_arr[dt->img_drawn % FPS_IMG_NB], NULL) < 0)
+		return (perror("main_loop: gettimeofday() failed"), free_data(dt), 1);
+	move_player(dt);
+	display_player_infos(dt);
+	// update_hit_tpos(dt);
+	if (draw_buffer_image(dt))
+		return (free_data(dt), exit(1), 1);
+	if (dt->img_drawn % (FPS_IMG_NB - 1) == 0)
+		display_fps_infos(dt);
 	return (0);
 }

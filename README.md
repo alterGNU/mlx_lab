@@ -1208,8 +1208,35 @@ The vector base movement are based on polar-coord-system using trigo-formulas.
   - `[S]+[E]` = Draw a circle clock-wise
 
 **Implementation overview**:
-- 1. Add: in `t_data` struct `char flags[7]; //"QWEASD\0"` :
+- 1. Add: in `t_data` struct `char flags[7]; //"qweasd\0"` :
   - 1.1 : flags is a string init to qweasd (nothing pressed)
   - 1.2 : when key pressed, corresponding index key are toggle to UPPER `key[w]`--pressed-->`flags[1]='W'`
   - 1.2 : when key release, corresponding index key are toggle to LOWER `key[e]`--unpress-->`flags[2]='e'`
 - 2. Add: fun. hooked to press and release that toggle flags
+
+##### H.5.a.ii | Fix display infos (FPS and player's position)
+- 1. Add: `FPS_IMG_NB` Number of images to consider for FPS calculation:
+  - size of time array that store each start interval value
+  - rate of FPS value update/display _(number of images used to compute and display new FPS value)_
+  - Ex :`FPS_IMG_NB = 10`-->the FPS displayed every 10 * FPS seconds correspond to the average FPS over the last 10 images
+- 2. Add: in struct a `struct timeval	fps_arr[FPS_IMG_NB]` member _(array of timeval that store starting interval's times)_
+- 3. Mecanics:
+  - 3.1 `main_loop()` set each starting interval's times values:
+    ```c
+    gettimeofday(&dt->fps_arr[dt->img_drawn % FPS_IMG_NB]);
+    ```
+  - 3.2 `draw_buffer()` set each ending interval's times values:
+    ```c
+    gettimeofday(&dt->last_frame_time, NULL);
+    ```
+  - 3.3 if enough images drawned, `display_fps_infos()` that update and display fps value is called:
+    ```c
+    if (dt->img_drawn % (FPS_IMG_NB - 1) == 0)
+		  display_fps_infos(dt);
+    ```
+
+##### H.5.a.iii | Add one 2D-Ray-casting
+- 1. Add: `FOV` angle in degree and `FOV_PRE` rotation step (~xrays precision) _(both same type as `player->dir`, float so far...could be double)_
+- 2. Add: in `t_data->dt->hit_tpos[(int)FOV/FOV_PRE]` struct to store points --> in file `t_pos_arr.c`--> array of `t_pos`
+- 3. Add: Fun. to compute all `dt->hit_tpos[++i]` points
+- 4. Add: Fun. to draw all `dt->hit_tpos[++i]` points
