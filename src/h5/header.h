@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/09 13:02:55 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/09 14:30:19 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@
 # define POS_SPEED 0.1f	// Position Var. Speed==movement-speed:step/move
 # define ANG_SPEED 3.1f	// Angle Var. Speed==rotation-speed:degree/move
 # define FPS 160		// Desired frames per second
-# define FPS_IMG_NB 60	// Number of images to consider for FPS calculation
+# define FPS_DELTA 80	// Number of images to consider for FPS calculation
 # define FOV 45.f		// Player's Field of View angle in degrees
 # define FOV_PRE .1f	// Field of View Precision in degrees
 // -[ FAILURES ]----------------------------------------------------------------
@@ -105,8 +105,8 @@ typedef struct s_data
 	t_img			img_buffer;
 	int				img_drawn;
 	int				delay_between_frames_ms;
-	struct timeval	fps_arr[FPS_IMG_NB];
 	struct timeval	last_frame_time;
+	struct timeval	fps_start_inter;
 	char			fps_str[32];
 	char			mv_flags[7];
 	t_pos			**hit_tpos;

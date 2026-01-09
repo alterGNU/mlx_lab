@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/09 12:59:20 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/09 14:29:26 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,20 @@ static void	move_player(t_data *dt)
 
 int	main_loop(t_data *dt)
 {
-	if (gettimeofday(&dt->fps_arr[dt->img_drawn % FPS_IMG_NB], NULL) < 0)
-		return (perror("main_loop: gettimeofday() failed"), free_data(dt), 1);
+	if (!dt->img_drawn)
+	{
+		if (gettimeofday(&dt->fps_start_inter, NULL) < 0)
+			return (perror("main_loop: !gettimeofday()"), free_data(dt), 1);
+	}
 	move_player(dt);
 	display_player_infos(dt);
 	// update_hit_tpos(dt);
 	if (draw_buffer_image(dt))
 		return (free_data(dt), exit(1), 1);
-	if (dt->img_drawn % (FPS_IMG_NB - 1) == 0)
+	if (dt->img_drawn % FPS_DELTA == 0)
+	{
 		display_fps_infos(dt);
+		dt->fps_start_inter = dt->last_frame_time;
+	}
 	return (0);
 }
