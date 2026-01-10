@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 10:14:41 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/09 14:29:33 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/10 13:44:45 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,23 @@ void	display_fps_infos(t_data *dt)
 	snprintf(dt->fps_str, sizeof(dt->fps_str), "FPS: %.2f", fps);
 	mlx_string_put(dt->mlx_ptr, dt->win_ptr, win_x - 70, 12, WHITE_COLOR, \
 		dt->fps_str);
+}
+
+void	display_hits_infos(t_data *dt)
+{
+	int		i;
+	char	xray_str[64];
+	int		txt_x;
+	int		txt_y;
+
+	txt_x = dt->player.pos.x * TILE_X - 270;
+	txt_y = dt->player.pos.y * TILE_Y - 3 * get_nb_of_rays();
+	i = -1;
+	while (dt->hits[++i].valid)
+	{
+		snprintf(xray_str, sizeof(xray_str), "hits[%d]:pos(%.2f, %.2f), angle: %.2f", \
+			i, dt->hits[i].pos.x, dt->hits[i].pos.y, dt->hits[i].angle);
+		mlx_string_put(dt->mlx_ptr, dt->win_ptr, txt_x, txt_y + 12 * (i + 1), \
+			RED_COLOR, xray_str);
+	}
 }

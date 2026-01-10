@@ -28,19 +28,19 @@ VAL			=	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --undef
 SRC			=	display_infos.c \
 				draw_frame.c \
 				draw_to_img.c \
-				main.c \
 				main_loop.c \
+				main.c \
 				memcpy_utils.c \
 				move_flags.c \
 				ray_casting.c \
 				t_data_struct.c \
+				t_hit_struct.c \
 				t_img_builders.c \
 				t_img_duplicate.c \
 				t_img_insertion.c \
 				t_img_struct.c \
 				t_maze_struct.c \
 				t_player_struct.c \
-				t_pos_arr.c \
 				t_pos_struct.c \
 				utils_math.c \
 				utils.c

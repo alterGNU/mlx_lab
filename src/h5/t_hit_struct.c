@@ -1,65 +1,62 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   t_pos_arr.c                                        :+:      :+:    :+:   */
+/*   t_hit_struct.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 19:24:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/08 21:46:32 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/10 12:42:16 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-t_pos	**create_pos_array(int size)
+t_hit	set_hit(t_hit *hit, float x, float y, float angle)
 {
-	t_pos	**pos_arr;
+	hit->valid = 1;
+	hit->pos = init_pos(x, y);
+	hit->angle = angle;
+	return (*hit);
+}
+
+t_hit	*create_hit_array(int size)
+{
+	t_hit	*array;
 	int		i;
 
-	pos_arr = (t_pos **)calloc(size + 1, sizeof(t_pos *));
-	if (!pos_arr)
+	array = (t_hit *)calloc(size + 1, sizeof(t_hit));
+	if (!array)
 		return (NULL);
 	i = -1;
-	while (++i < size)
-	{
-		pos_arr[i] = (t_pos *)malloc(sizeof(t_pos));
-		if (!pos_arr[i])
-			return (free_pos_array(&pos_arr), NULL);
-		*pos_arr[i] = init_pos(0.0f, 0.0f);
-	}
-	return (pos_arr);
+	while (++i <= size)
+		set_hit(&array[i], -1.f, -1.f, -1.f);
+	array[size].valid = 0;
+	return (array);
 }
 
-void	free_pos_array(t_pos ***pos_arr)
+void	free_hit_array(t_hit **hit_arr)
 {
-	int	i;
-
-	if (!pos_arr || !*pos_arr)
+	if (!hit_arr || !*hit_arr)
 		return ;
-	i = -1;
-	while ((*pos_arr)[++i])
-	{
-		free((*pos_arr)[i]);
-		(*pos_arr)[i] = NULL;
-	}
-	free(*pos_arr);
-	*pos_arr = NULL;
+	free(*hit_arr);
+	*hit_arr = NULL;
 }
 
-int	print_pos_array(t_pos **pos_arr)
+int	print_hit_array(t_hit *hit_arr)
 {
 	int	i;
 	int	psf;
 
-	psf = printf("pos_arr:");
-	if (!pos_arr)
-		return (psf += printf("NULL\n"), psf);
-	psf += printf("[");
+	if (!hit_arr)
+		return (printf("NULL\n"));
+	psf = printf("[");
 	i = 0;
-	while (pos_arr[i])
+	while (hit_arr[i].valid)
 	{
-		psf += print_pos(*pos_arr[i]);
+		psf += printf("{");
+		psf += print_pos(hit_arr[i].pos);
+		psf += printf(", angle: %.2f}", hit_arr[i].angle);
 		psf += printf(", ");
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/09 13:38:38 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/10 17:20:05 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	zero_memset_data(t_data *dt)
 {
+	dt->big_ben = 0;
 	dt->player = (t_play){{0.0f, 0.0f}, 0.0f, 0, 0, -1, NULL};
 	dt->maze = (t_maze){NULL, 0, 0};
 	dt->mlx_ptr = NULL;
@@ -29,7 +30,8 @@ static void	zero_memset_data(t_data *dt)
 	memset(&dt->fps_start_inter, 0, sizeof(struct timeval));
 	memset(dt->fps_str, 0, sizeof(dt->fps_str));
 	memset(dt->mv_flags, 0, sizeof(dt->mv_flags));
-	dt->hit_tpos = NULL;
+	dt->nb_of_rays = 0;
+	dt->hits = NULL;
 }
 
 t_data	init_data(const char **str_arr)
@@ -57,12 +59,16 @@ t_data	init_data(const char **str_arr)
 	dt.img_wall = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
 	dt.img_grid = create_image(dt.mlx_ptr, win_x, win_y);
 	dt.img_buffer = create_image(dt.mlx_ptr, win_x, win_y);
-	return (dt.hit_tpos = create_pos_array((int)(FOV / FOV_PRE)), dt);
+	dt.nb_of_rays = get_nb_of_rays();
+	dt.hits = create_hit_array(dt.nb_of_rays);
+	dt.big_ben = (int)(tpos_dist(init_pos(0.0f, 0.0f), \
+		init_pos(dt.maze.width + 1, dt.maze.height))) + 1;
+	return (dt);
 }
 
 void	free_data(t_data *dt)
 {
-	free_pos_array(&dt->hit_tpos);
+	free_hit_array(&dt->hits);
 	free_player(&dt->player);
 	free_maze(&dt->maze);
 	free_image(dt->img_erase_txt, dt->mlx_ptr);
@@ -124,6 +130,6 @@ int	error_detected_after_init_data(t_data *dt)
 	check_ptr_not_null(dt->img_wall.img_ptr, "img_wall", &error);
 	check_ptr_not_null(dt->img_grid.img_ptr, "img_grid", &error);
 	check_ptr_not_null(dt->img_buffer.img_ptr, "img_buffer", &error);
-	check_ptr_not_null(dt->hit_tpos, "hit_tpos", &error);
+	check_ptr_not_null(dt->hits, "hits", &error);
 	return (error);
 }

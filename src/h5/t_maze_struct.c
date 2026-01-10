@@ -6,13 +6,13 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:17:23 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/06 19:39:28 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/10 13:32:04 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-static void	set_init_player(t_play *play, char c, int x, int y)
+static void	set_init_player(t_play *play, char c, float x, float y)
 {
 	if (c == 'E')
 		set_player(play, x, y, 0.0);

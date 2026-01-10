@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/09 14:29:26 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/10 12:51:10 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,16 +48,30 @@ static void	move_player(t_data *dt)
 		move_player_pos(dt, -90, POS_SPEED);
 }
 
+static int	player_moved(t_play *old_play, t_play *new_play)
+{
+	if (old_play->pos.x != new_play->pos.x || \
+		old_play->pos.y != new_play->pos.y || \
+		old_play->dir != new_play->dir || \
+		old_play->step_count != new_play->step_count)
+		return (1);
+	return (0);
+}
+
 int	main_loop(t_data *dt)
 {
+	t_play	old_player;
+
 	if (!dt->img_drawn)
 	{
 		if (gettimeofday(&dt->fps_start_inter, NULL) < 0)
 			return (perror("main_loop: !gettimeofday()"), free_data(dt), 1);
 	}
+	old_player = dt->player;
 	move_player(dt);
 	display_player_infos(dt);
-	// update_hit_tpos(dt);
+	if (player_moved(&old_player, &dt->player))
+		update_hit_tpos(dt);
 	if (draw_buffer_image(dt))
 		return (free_data(dt), exit(1), 1);
 	if (dt->img_drawn % FPS_DELTA == 0)
@@ -65,5 +79,6 @@ int	main_loop(t_data *dt)
 		display_fps_infos(dt);
 		dt->fps_start_inter = dt->last_frame_time;
 	}
+	display_hits_infos(dt);
 	return (0);
 }
