@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 08:44:10 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:58:52 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,15 @@ int		key_pressed(int keycode, t_data *dt);								// ✅
 int		key_released(int keycode, t_data *dt);								// ✅
 // -[ ray_casting.c ]----------------------------------------------------------1
 void	update_hit_tpos(t_data *dt);										// ✅
-// -[ t_data_struct.c ]--------------------------------------------------------5
+// -[ raycast_coll_vert.c ]----------------------------------------------------1
+t_pos	v_found_hit_dda(t_data dt, t_pos start_pos, t_hit hit);				// ✅
+// -[ raycast_coll_hori.c ]----------------------------------------------------1
+t_pos	h_found_hit_dda(t_data dt, t_pos start_pos, t_hit hit);				// ✅
+// -[ raycast_collisions.c ]---------------------------------------------------3
+int		collision_detected(t_maze maze, float fx, float fy, float angle);	// ✅
+t_pos	found_hit_dda(t_data dt, t_pos start_pos, t_hit hit);				// ✅
+void	update_hit_tpos(t_data *dt);										// ✅
+// -[ t_data_struct.c ]-------------------------------------------------------5
 t_data	init_data(const char **str_arr);									// ✅
 void	free_data(t_data *dt);												// ✅
 int		error_detected_after_init_data(t_data *dt);							// ✅

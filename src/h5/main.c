@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 09:55:33 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:40:11 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,17 +126,17 @@ int	main(void)
 		NULL};
 	*/
 	const char	*str_arr[] = { \
-		"000110", \
-		"001001", \
-		"010000", \
-		"10E100", \
-		"000000", \
+		"011001", \
+		"100100", \
+		"00E010", \
+		"000001", \
+		"000111", \
 		NULL };
 	gettimeofday(&prog_start_time, NULL);
 	dt = init_data(str_arr);
 	//------------------------------------------------------TODO REMOVE
-	//set_player(&dt.player, 2.5f, 1.4f, 10.0f);
-	set_player(&dt.player, 3.f, 3.f, 0.0f);
+	//set_player(&dt.player, 5.6f, .4f, 270.0f);
+	set_player(&dt.player, .5f, .5f, 135.0f);
 	//set_player(&dt.player, 0.0f, dt.maze.height, 45.0f);
 	//set_player(&dt.player, 1.6f, 2.6f, 250.0f);
 	//set_player(&dt.player, 1.3f, 3.3f, 45.0f);

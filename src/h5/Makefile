@@ -32,7 +32,9 @@ SRC			=	display_infos.c \
 				main.c \
 				memcpy_utils.c \
 				move_flags.c \
-				ray_casting.c \
+				raycast_coll_hori.c \
+				raycast_coll_vert.c \
+				raycast_collision.c \
 				t_data_struct.c \
 				t_hit_struct.c \
 				t_img_builders.c \
