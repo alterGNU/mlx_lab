@@ -22,7 +22,10 @@ MKDP		=	mkdir -p
 RM			=	rm -rf
 CC			=	cc
 F_ADD		=	-lX11 -lXext -lm
+#FLAGS		=	-Wall -Wextra -Werror -I. -I$(MLX_DIR) -O2 -march=native
+#FLAGS		=	-Wall -Wextra -Werror -I. -I$(MLX_DIR) -O2 -fno-builtin -march=native
 FLAGS		=	-Wall -Wextra -Werror -I. -I$(MLX_DIR)
+# -[ VALGRIND ]-----------------------------------------------------------------------------------------------
 VAL			=	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --undef-value-errors=no
 # =[ OBJECTS ]================================================================================================
 SRC			=	display_infos.c \

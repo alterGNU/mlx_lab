@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 15:50:40 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 19:26:32 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,12 @@
 // -[ Engine ]------------------------------------------------------------------
 # define POS_SPEED .1f	// Position Var. Speed==movement-speed:step/move
 # define ANG_SPEED 1.f	// Angle Var. Speed==rotation-speed:degree/move
-# define FPS 200		// Desired frames per second
+# define FPS 1000		// Desired frames per second
 # define FPS_DELTA 10	// Number of images to consider for FPS calculation
 # define FOV 60.f		// 0<FOV Player's Field of View angle in degrees
 # define FOV_PRE 1.f	// 0<FOV_PRE Field of View Precision in degrees
+// -[ Debug/UI toggles ]--------------------------------------------------------
+# define DRAW_HITS_TEXT 0 // 1: enable hit positions display; 0: disable
 // -[ FAILURES ]----------------------------------------------------------------
 # define MAIN_LOOP_FAILURE 2
 // =[ Include ]=================================================================
@@ -68,7 +70,7 @@ typedef struct s_hit
 {
 	int		valid;	//sentinel-> valid_hit = 1; invalid_hit = 0
 	t_pos	pos;
-	float	angle;
+	t_pos	angle; // x: degree, y: tan(radian)
 }	t_hit;
 
 typedef struct s_play
@@ -86,6 +88,7 @@ typedef struct s_maze
 	int		*mat;
 	int		width;
 	int		height;
+	int		cell_nb;
 }	t_maze;
 
 typedef struct s_img
@@ -101,7 +104,6 @@ typedef struct s_img
 
 typedef struct s_data
 {
-	int				big_ben;
 	t_play			player;
 	t_maze			maze;
 	void			*mlx_ptr;
@@ -117,6 +119,7 @@ typedef struct s_data
 	struct timeval	fps_start_inter;
 	char			fps_str[32];
 	char			mv_flags[7];
+	float			rot_elem;
 	int				nb_of_rays;
 	t_hit			*hits;
 }	t_data;
@@ -192,7 +195,7 @@ t_pos	set_pos(t_pos *pos, float x, float y);								// ✅
 int		print_pos(t_pos pos);												// ✅
 t_pos	dup_pos(t_pos src);													// ✅
 float	tpos_dist(t_pos a, t_pos b);										// ✅
-t_pos	add_pos(t_pos a, t_pos b);											// ✅
+void	add_pos(t_pos *a, const t_pos *b);									// ✅
 // -[ utils.c ]----------------------------------------------------------------4
 int		char_in_str(char c, const char *str);								// ✅
 void	print_str_array(const char **str_arr);								// ✅

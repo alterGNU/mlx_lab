@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/10 17:20:05 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 18:18:36 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 
 static void	zero_memset_data(t_data *dt)
 {
-	dt->big_ben = 0;
 	dt->player = (t_play){{0.0f, 0.0f}, 0.0f, 0, 0, -1, NULL};
-	dt->maze = (t_maze){NULL, 0, 0};
+	dt->maze = (t_maze){NULL, 0, 0, 0};
 	dt->mlx_ptr = NULL;
 	dt->win_ptr = NULL;
 	dt->img_erase_txt = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
@@ -30,6 +29,9 @@ static void	zero_memset_data(t_data *dt)
 	memset(&dt->fps_start_inter, 0, sizeof(struct timeval));
 	memset(dt->fps_str, 0, sizeof(dt->fps_str));
 	memset(dt->mv_flags, 0, sizeof(dt->mv_flags));
+	dt->rot_elem = 0.0f;
+	if (FOV > FOV_PRE)
+		dt->rot_elem = FOV * FOV_PRE / (FOV - FOV_PRE);
 	dt->nb_of_rays = 0;
 	dt->hits = NULL;
 }
@@ -61,8 +63,6 @@ t_data	init_data(const char **str_arr)
 	dt.img_buffer = create_image(dt.mlx_ptr, win_x, win_y);
 	dt.nb_of_rays = get_nb_of_rays();
 	dt.hits = create_hit_array(dt.nb_of_rays);
-	dt.big_ben = (int)(tpos_dist(init_pos(0.0f, 0.0f), \
-		init_pos(dt.maze.width + 1, dt.maze.height))) + 1;
 	return (dt);
 }
 

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:17:23 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/10 13:32:04 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 15:59:41 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ t_maze	set_maze_and_player(const char **str_arr, t_play *player)
 					maze.height = 0, maze);
 		}
 	}
+	maze.cell_nb = maze.width * maze.height;
 	return (maze);
 }
 
@@ -87,16 +88,14 @@ void	print_maze(t_maze maze)
 {
 	int	x;
 	int	i;
-	int	tot_size;
 
 	printf("Maze [%d x %d]:\n", maze.width, maze.height);
-	tot_size = maze.width * maze.height;
-	if (!maze.mat || tot_size <= 0)
+	if (!maze.mat || maze.cell_nb <= 0)
 		printf("(empty).\n");
 	else
 	{
 		i = -1;
-		while (++i < tot_size)
+		while (++i < maze.cell_nb)
 		{
 			x = i % maze.width;
 			if (i && x == 0)

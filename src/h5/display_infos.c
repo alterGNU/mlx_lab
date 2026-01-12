@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 10:14:41 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 09:13:10 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 17:30:48 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ void	display_hits_infos(t_data *dt)
 	i = -1;
 	while (dt->hits[++i].valid)
 	{
-		snprintf(xray_str, sizeof(xray_str), "hits[%d]:pos(%.2f, %.2f), angle: %.2f", \
-			i, dt->hits[i].pos.x, dt->hits[i].pos.y, dt->hits[i].angle);
+		snprintf(xray_str, sizeof(xray_str), "hits[%d]:pos(%.2f, %.2f), ang:(%.2f, %.2f)", \
+			i, dt->hits[i].pos.x, dt->hits[i].pos.y, dt->hits[i].angle.x, dt->hits[i].angle.y);
 		mlx_string_put(dt->mlx_ptr, dt->win_ptr, txt_x, txt_y + 12 * (i + 1), \
 			RED_COLOR, xray_str);
 	}
