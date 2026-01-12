@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 10:14:41 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/10 13:44:45 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 09:13:10 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ void	display_hits_infos(t_data *dt)
 	int		txt_y;
 
 	txt_x = dt->player.pos.x * TILE_X - 270;
+	if (txt_x < 0)
+		txt_x = dt->player.pos.x * TILE_X + CIRCLE_RADIUS + 10;
 	txt_y = dt->player.pos.y * TILE_Y - 3 * get_nb_of_rays();
 	i = -1;
 	while (dt->hits[++i].valid)
