@@ -1,5 +1,5 @@
 # =[ VARIABLES ]==============================================================================================
-NAME		=	gridMaze_2DrayCastGhost_flagBasedMovs_fps_opti
+NAME		=	gridMaze_3dRayCastGhost_flagBasedMovs_fps_opti
 # -[ MLX ]----------------------------------------------------------------------------------------------------
 MLX_DIR		=	../../mlx
 MLX_A		=	$(MLX_DIR)/libmlx.a

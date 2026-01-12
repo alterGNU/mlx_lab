@@ -1180,6 +1180,7 @@ The vector base movement are based on polar-coord-system using trigo-formulas.
     ```c
     make -C ./src/h4 v
     ```
+
 ### H.5 | Add Flag-Based-Movs and 2D-Raycasting:
 
 - Program's name        : **gridMaze_rayCastGhost_flagBasedMovs_fps_opti**
@@ -1237,3 +1238,5 @@ The vector base movement are based on polar-coord-system using trigo-formulas.
   - 2.1 Add: data struct `t_data->dt->hit_tpos[(int)FOV/FOV_PRE]` struct to store points --> in file `t_pos_arr.c`--> array of `t_pos`
 - 3. Add: in Fun. to compute all `dt->hit_tpos[++i]` points
 - 4. Add: in Fun. to draw all `dt->hit_tpos[++i]` points
+
+### H.6 | Add 3d-RayCasting
