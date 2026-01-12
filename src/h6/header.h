@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 19:38:06 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 19:56:44 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,14 @@
 //-[ Variables ]----------------------------------------------------------------
 # define VALID_MAZE_CHARS "01NSEW"
 # define M_PI 3.1415926535
-//-[ Window ]-------------------------------------------------------------------
-# define WIN_TITLE "Caster the Ghost: (3D Ray-Casting)"
+//-[ 2DWindow ]-----------------------------------------------------------------
+# define WIN_TITLE "Caster the Ghost: (2D Ray-Casting)"
 # define TILE_X 20 // width of one cell in pixels
 # define TILE_Y 20 // height of one cell in pixels
+//-[ 3DWindow ]-----------------------------------------------------------------
+# define WIN3D_TITLE "Caster the Ghost: (3D Ray-Casting)"
+# define WIN3D_WIDTH 640
+# define WIN3D_HEIGHT 480
 //-[ Colors ]-------------------------------------------------------------------
 # define BLACK_COLOR 0x000000
 # define RED_COLOR 0xFF0000
@@ -71,6 +75,7 @@ typedef struct s_hit
 	int		valid;	//sentinel-> valid_hit = 1; invalid_hit = 0
 	t_pos	pos;
 	t_pos	angle; // x: degree, y: tan(radian)
+	float	distance;
 }	t_hit;
 
 typedef struct s_play
@@ -107,7 +112,8 @@ typedef struct s_data
 	t_play			player;
 	t_maze			maze;
 	void			*mlx_ptr;
-	void			*win_ptr;
+	void			*win_2d_ptr;
+	void			*win_3d_ptr;
 	t_img			img_erase_txt;
 	t_img			img_floor;
 	t_img			img_wall;

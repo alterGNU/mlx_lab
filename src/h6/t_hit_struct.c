@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 19:24:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 17:40:53 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 19:56:44 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ t_hit	init_hit(void)
 	hit.valid = 1;
 	hit.pos = init_pos(-1.f, -1.f);
 	hit.angle = init_pos(-1.f, -1.f);
+	hit.distance = -1.f;
 	return (hit);
 }
 
@@ -60,7 +61,7 @@ int	print_hit_array(t_hit *hit_arr)
 		psf += print_pos(hit_arr[i].pos);
 		psf += printf(", ang");
 		psf += print_pos(hit_arr[i].angle);
-		psf += printf("}, ");
+		psf += printf(", dist:%.2f}, ", hit_arr[i].distance);
 		i++;
 	}
 	return (psf += printf("NULL]"), psf);

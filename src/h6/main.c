@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 15:48:07 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 19:56:44 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,9 +156,9 @@ int	main(void)
 	start_pos = dup_pos(dt.player.pos);
 	update_hit_tpos(&dt);
 	mlx_loop_hook(dt.mlx_ptr, &main_loop, &dt);
-	mlx_hook(dt.win_ptr, 17, 0, &mlx_loop_end, dt.mlx_ptr);
-	mlx_hook(dt.win_ptr, 2, (1L << 0), &key_pressed, &dt);
-	mlx_hook(dt.win_ptr, 3, (1L << 1), &key_released, &dt);
+	mlx_hook(dt.win_2d_ptr, 17, 0, &mlx_loop_end, dt.mlx_ptr);
+	mlx_hook(dt.win_2d_ptr, 2, (1L << 0), &key_pressed, &dt);
+	mlx_hook(dt.win_2d_ptr, 3, (1L << 1), &key_released, &dt);
 	mlx_loop(dt.mlx_ptr);
 	gettimeofday(&prog_end_time, NULL);
 	ms_duration = diff_time_in_ms(prog_start_time, prog_end_time);

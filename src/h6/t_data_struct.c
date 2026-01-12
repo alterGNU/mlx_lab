@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 18:18:36 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 19:56:44 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	zero_memset_data(t_data *dt)
 	dt->player = (t_play){{0.0f, 0.0f}, 0.0f, 0, 0, -1, NULL};
 	dt->maze = (t_maze){NULL, 0, 0, 0};
 	dt->mlx_ptr = NULL;
-	dt->win_ptr = NULL;
+	dt->win_2d_ptr = NULL;
 	dt->img_erase_txt = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
 	dt->img_floor = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
 	dt->img_wall = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
@@ -53,8 +53,11 @@ t_data	init_data(const char **str_arr)
 	win_y = dt.maze.height * TILE_Y;
 	if (win_x <= 0 || win_y <= 0)
 		return (dt);
-	dt.win_ptr = mlx_new_window(dt.mlx_ptr, win_x + 10, win_y + 25, WIN_TITLE);
-	if (!dt.win_ptr)
+	dt.win_2d_ptr = mlx_new_window(dt.mlx_ptr, win_x + 10, win_y + 25, WIN_TITLE);
+	if (!dt.win_2d_ptr)
+		return (dt);
+	dt.win_3d_ptr = mlx_new_window(dt.mlx_ptr, WIN3D_WIDTH, WIN3D_HEIGHT, WIN3D_TITLE);
+	if (!dt.win_3d_ptr)
 		return (dt);
 	dt.img_erase_txt = create_image(dt.mlx_ptr, 200, 20);
 	dt.img_floor = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
@@ -76,10 +79,15 @@ void	free_data(t_data *dt)
 	free_image(dt->img_wall, dt->mlx_ptr);
 	free_image(dt->img_grid, dt->mlx_ptr);
 	free_image(dt->img_buffer, dt->mlx_ptr);
-	if (dt->win_ptr)
+	if (dt->win_2d_ptr)
 	{
-		mlx_destroy_window(dt->mlx_ptr, dt->win_ptr);
-		dt->win_ptr = NULL;
+		mlx_destroy_window(dt->mlx_ptr, dt->win_2d_ptr);
+		dt->win_2d_ptr = NULL;
+	}
+	if (dt->win_3d_ptr)
+	{
+		mlx_destroy_window(dt->mlx_ptr, dt->win_3d_ptr);
+		dt->win_3d_ptr = NULL;
 	}
 	if (dt->mlx_ptr)
 	{
@@ -125,7 +133,7 @@ int	error_detected_after_init_data(t_data *dt)
 		error++;
 	}
 	check_ptr_not_null(dt->mlx_ptr, "mlx", &error);
-	check_ptr_not_null(dt->win_ptr, "win", &error);
+	check_ptr_not_null(dt->win_2d_ptr, "win_2d", &error);
 	check_ptr_not_null(dt->img_floor.img_ptr, "img_floor", &error);
 	check_ptr_not_null(dt->img_wall.img_ptr, "img_wall", &error);
 	check_ptr_not_null(dt->img_grid.img_ptr, "img_grid", &error);

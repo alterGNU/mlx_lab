@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 19:20:11 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 19:56:44 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,8 @@ t_pos	found_hit_dda(t_data dt, t_pos start_pos, t_hit hit)
 	dist_h = tpos_dist(start_pos, hit_h);
 	dist_v = tpos_dist(start_pos, hit_v);
 	if (dist_h < dist_v)
-		return (hit_h);
-	return (hit_v);
+		return (hit.distance = dist_h, hit_h);
+	return (hit.distance = dist_v, hit_v);
 }
 
 void	update_hit_tpos(t_data *dt)

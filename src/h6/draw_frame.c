@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 17:56:12 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 19:56:44 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	draw_buffer_image(t_data *dt)
 {
 	struct timeval	act_time;
 
-	if (!dt->mlx_ptr || !dt->win_ptr)
+	if (!dt->mlx_ptr || !dt->win_2d_ptr)
 		return (printf("Error: Invalid data pointers\n"), 1);
 	if (gettimeofday(&act_time, NULL) < 0)
 		return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
@@ -48,7 +48,7 @@ int	draw_buffer_image(t_data *dt)
 				return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
 		}
 	}
-	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_buffer.img_ptr, 5, 20);
+	mlx_put_image_to_window(dt->mlx_ptr, dt->win_2d_ptr, dt->img_buffer.img_ptr, 5, 20);
 	dt->img_drawn++;
 	if (gettimeofday(&dt->last_frame_time, NULL) < 0)
 		return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
