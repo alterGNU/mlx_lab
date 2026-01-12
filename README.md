@@ -1230,7 +1230,10 @@ The vector base movement are based on polar-coord-system using trigo-formulas.
     ```
 
 ##### H.5.a.iii | Add one 2D-Ray-casting
-- 1. Add: `FOV` angle in degree and `FOV_PRE` rotation step (~xrays precision) _(both same type as `player->dir`, float so far...could be double)_
-- 2. Add: in `t_data->dt->hit_tpos[(int)FOV/FOV_PRE]` struct to store points --> in file `t_pos_arr.c`--> array of `t_pos`
-- 3. Add: Fun. to compute all `dt->hit_tpos[++i]` points
-- 4. Add: Fun. to draw all `dt->hit_tpos[++i]` points
+- 1. Add in header file: _(both same type as `player->dir`, float so far...could be double)_
+  - 1.1 `FOV` Player's Field Of View _(**angle in degree**)_
+  - 1.2 `FOV_PRE` FOV Precision _(FOV's Elem. Rot. Step, it's like the xrays precision)_
+- 2. Add a struct to store hit_points `t_pos array` of round(FOV/FOV_PRE + 1)
+  - 2.1 Add: data struct `t_data->dt->hit_tpos[(int)FOV/FOV_PRE]` struct to store points --> in file `t_pos_arr.c`--> array of `t_pos`
+- 3. Add: in Fun. to compute all `dt->hit_tpos[++i]` points
+- 4. Add: in Fun. to draw all `dt->hit_tpos[++i]` points

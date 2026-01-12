@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/10 17:22:11 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 08:44:10 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 # define CIRCLE_RADIUS 32 // size of the player representation
 // -[ Engine ]------------------------------------------------------------------
 # define POS_SPEED .01f	// Position Var. Speed==movement-speed:step/move
-# define ANG_SPEED .05f	// Angle Var. Speed==rotation-speed:degree/move
+# define ANG_SPEED .5f	// Angle Var. Speed==rotation-speed:degree/move
 # define FPS 200		// Desired frames per second
 # define FPS_DELTA 10	// Number of images to consider for FPS calculation
 # define FOV 1.f		// 0<FOV Player's Field of View angle in degrees

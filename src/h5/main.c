@@ -6,12 +6,11 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/10 17:23:56 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 09:51:22 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
-
 
 static void	print_start_infos(t_data dt, const char **str_arr, int bui_delay_ms)
 {
@@ -127,17 +126,20 @@ int	main(void)
 		NULL};
 	*/
 	const char	*str_arr[] = { \
-		"00000", \
-		"00000", \
-		"00E01", \
-		"00000", \
-		"00000", \
+		"000000", \
+		"001001", \
+		"010000", \
+		"000100", \
+		"000000", \
 		NULL };
 	gettimeofday(&prog_start_time, NULL);
 	dt = init_data(str_arr);
 	//------------------------------------------------------TODO REMOVE
-	set_player(&dt.player, 0.0f, dt.maze.height, 45.0f);
-	//set_player(&dt.player, 3.0f, 2.0f, 45.0f);
+	//set_player(&dt.player, 2.5f, 1.4f, 10.0f);
+	set_player(&dt.player, 3.f, 3.f, 0.0f);
+	//set_player(&dt.player, 0.0f, dt.maze.height, 45.0f);
+	//set_player(&dt.player, 1.6f, 2.6f, 250.0f);
+	//set_player(&dt.player, 1.3f, 3.3f, 45.0f);
 	//------------------------------------------------------TODO REMOVE
 	if (error_detected_after_init_data(&dt))
 		return (free_data(&dt), 1);
