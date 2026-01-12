@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/10 12:51:10 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 15:24:18 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,6 @@ int	main_loop(t_data *dt)
 		display_fps_infos(dt);
 		dt->fps_start_inter = dt->last_frame_time;
 	}
-	display_hits_infos(dt);
+	//display_hits_infos(dt);
 	return (0);
 }

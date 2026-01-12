@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 13:58:52 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/12 15:50:40 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@
 # define M_PI 3.1415926535
 //-[ Window ]-------------------------------------------------------------------
 # define WIN_TITLE "Caster the Ghost: (2D Ray-Casting)"
-# define TILE_X 128 // width of one cell in pixels
-# define TILE_Y 128 // height of one cell in pixels
+# define TILE_X 20 // width of one cell in pixels
+# define TILE_Y 20 // height of one cell in pixels
 //-[ Colors ]-------------------------------------------------------------------
 # define BLACK_COLOR 0x000000
 # define RED_COLOR 0xFF0000
@@ -39,13 +39,13 @@
 # define FLOOR_COLOR 0xAAAAAA
 # define WALL_COLOR 0x333333
 //-[ Player ]-------------------------------------------------------------------
-# define CIRCLE_RADIUS 32 // size of the player representation
+# define CIRCLE_RADIUS 8 // size of the player representation
 // -[ Engine ]------------------------------------------------------------------
-# define POS_SPEED .01f	// Position Var. Speed==movement-speed:step/move
-# define ANG_SPEED .5f	// Angle Var. Speed==rotation-speed:degree/move
+# define POS_SPEED .1f	// Position Var. Speed==movement-speed:step/move
+# define ANG_SPEED 1.f	// Angle Var. Speed==rotation-speed:degree/move
 # define FPS 200		// Desired frames per second
 # define FPS_DELTA 10	// Number of images to consider for FPS calculation
-# define FOV 1.f		// 0<FOV Player's Field of View angle in degrees
+# define FOV 60.f		// 0<FOV Player's Field of View angle in degrees
 # define FOV_PRE 1.f	// 0<FOV_PRE Field of View Precision in degrees
 // -[ FAILURES ]----------------------------------------------------------------
 # define MAIN_LOOP_FAILURE 2
@@ -144,14 +144,13 @@ int		key_pressed(int keycode, t_data *dt);								// ✅
 int		key_released(int keycode, t_data *dt);								// ✅
 // -[ ray_casting.c ]----------------------------------------------------------1
 void	update_hit_tpos(t_data *dt);										// ✅
-// -[ raycast_coll_vert.c ]----------------------------------------------------1
-t_pos	v_found_hit_dda(t_data dt, t_pos start_pos, t_hit hit);				// ✅
-// -[ raycast_coll_hori.c ]----------------------------------------------------1
+// -[ raycast_collisions.c ]---------------------------------------------------5
+int		collision_detected(t_maze maze, t_pos start_pos, \
+		t_pos act_pos, float angle);										// ✅
 t_pos	h_found_hit_dda(t_data dt, t_pos start_pos, t_hit hit);				// ✅
-// -[ raycast_collisions.c ]---------------------------------------------------3
-int		collision_detected(t_maze maze, float fx, float fy, float angle);	// ✅
+t_pos	v_found_hit_dda(t_data dt, t_pos start_pos, t_hit hit);				// ✅
 t_pos	found_hit_dda(t_data dt, t_pos start_pos, t_hit hit);				// ✅
-void	update_hit_tpos(t_data *dt);										// ✅
+void	update_hit_tpos(t_data *dt);										// ❌
 // -[ t_data_struct.c ]-------------------------------------------------------5
 t_data	init_data(const char **str_arr);									// ✅
 void	free_data(t_data *dt);												// ✅
@@ -187,12 +186,13 @@ void	set_player(t_play *play, float x, float y, float dir);				// ✅
 int		print_player(t_play play);											// ✅
 void	draw_player(t_img *img, t_play *player);							// ✅
 void	free_player(t_play *player);										// ✅
-// -[ t_pos_struct.c ]---------------------------------------------------------4
+// -[ t_pos_struct.c ]---------------------------------------------------------6
 t_pos	init_pos(float x, float y);											// ✅
 t_pos	set_pos(t_pos *pos, float x, float y);								// ✅
 int		print_pos(t_pos pos);												// ✅
 t_pos	dup_pos(t_pos src);													// ✅
 float	tpos_dist(t_pos a, t_pos b);										// ✅
+t_pos	add_pos(t_pos a, t_pos b);											// ✅
 // -[ utils.c ]----------------------------------------------------------------4
 int		char_in_str(char c, const char *str);								// ✅
 void	print_str_array(const char **str_arr);								// ✅
