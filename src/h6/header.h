@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/13 21:06:13 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/13 21:43:01 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,12 +162,11 @@ int		key_released(int keycode, t_data *dt);								// ✅
 // -[ ray_casting.c ]----------------------------------------------------------1
 void	update_hit_tpos(t_data *dt);										// ✅
 // -[ raycast_collisions.c ]---------------------------------------------------5
-int		collision_detected(t_maze maze, t_pos start_pos, \
-		t_pos act_pos, float angle);										// ✅
-t_pos	h_found_hit_dda(t_data dt, t_pos start_pos, t_hit hit);				// ✅
-t_pos	v_found_hit_dda(t_data dt, t_pos start_pos, t_hit hit);				// ✅
-t_pos	found_hit_dda(t_data dt, t_pos start_pos, t_hit hit);				// ✅
-void	update_hit_tpos(t_data *dt);										// ❌
+int		collision_detected(const t_data *dt, t_pos ray_pos, float angle);	// ✅
+t_pos	h_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
+t_pos	v_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
+void	found_hit_dda(const t_data *dt, t_hit *hit);						// ✅
+void	update_hit_tpos(t_data *dt);										// ✅
 // -[ t_data_struct.c ]-------------------------------------------------------5
 t_data	init_data(const char **str_arr);									// ✅
 void	free_data(t_data *dt);												// ✅
