@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/13 16:44:39 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/13 21:54:42 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,25 +39,64 @@ void	draw2d_hit_lines(t_data *dt)
 	}
 }
 
+//void	draw3d_v_lines(t_data *dt)
+//{
+//	int		i;
+//	int		j;
+//	float	wall_height;
+//	t_pos	a;
+//	t_pos	b;
+//
+//	i = -1;
+//	while (dt->hits[++i].valid)
+//	{
+//		wall_height = (dt->maze.cell_nb * dt->img_3d_buffer.height) / dt->hits[i].distance;
+//		if (wall_height > dt->img_3d_buffer.height)
+//			wall_height = dt->img_3d_buffer.height;
+//		j = 0;
+//		while (++j <  8)
+//		{
+//			a = init_pos(i + j, (dt->img_3d_buffer.height - wall_height) / 2);
+//			b = init_pos(i + j, (dt->img_3d_buffer.height + wall_height) / 2);
+//			draw_dda_line(&dt->img_3d_buffer, a, b, RED_COLOR);
+//		}
+//	}
+//}
 void	draw3d_v_lines(t_data *dt)
 {
 	int		i;
 	int		j;
-	float	line_height;
+	float	wall_height;
+	float	corrected_dist;
+	int		screen_h;
+	int		top;
+	int		bottom;
 	t_pos	a;
 	t_pos	b;
 
+	screen_h = dt->img_3d_buffer.height;
 	i = -1;
 	while (dt->hits[++i].valid)
 	{
-		line_height = (dt->maze.cell_nb * dt->img_3d_buffer.height) / dt->hits[i].distance;
-		if (line_height > dt->img_3d_buffer.height)
-			line_height = dt->img_3d_buffer.height;
-		j = 0;
-		while (++j <  8)
+		/* fisheye correction */
+		corrected_dist = dt->hits[i].distance
+			* cos(dt->hits[i].angle - dt->player.dir);
+
+		wall_height = (dt->maze.cell_nb * screen_h) / corrected_dist;
+		if (wall_height > screen_h)
+			wall_height = screen_h;
+
+		top = (screen_h / 2) - (wall_height / 2);
+		bottom = top + wall_height;
+
+		j = -1;
+		while (++j < 8) /* wall thickness */
 		{
-			a = init_pos(i + j, (dt->img_3d_buffer.height - line_height) / 2);
-			b = init_pos(i + j, (dt->img_3d_buffer.height + line_height) / 2);
+			a.x = i * 8 + j;
+			a.y = top;
+			b.x = i * 8 + j;
+			b.y = bottom;
+
 			draw_dda_line(&dt->img_3d_buffer, a, b, RED_COLOR);
 		}
 	}
