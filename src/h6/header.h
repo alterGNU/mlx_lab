@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 19:56:44 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/13 21:06:13 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,14 @@
 # define M_PI 3.1415926535
 //-[ 2DWindow ]-----------------------------------------------------------------
 # define WIN_TITLE "Caster the Ghost: (2D Ray-Casting)"
-# define TILE_X 20 // width of one cell in pixels
-# define TILE_Y 20 // height of one cell in pixels
+# define TILE_X 32 // width of one cell in pixels
+# define TILE_Y 32 // height of one cell in pixels
 //-[ 3DWindow ]-----------------------------------------------------------------
 # define WIN3D_TITLE "Caster the Ghost: (3D Ray-Casting)"
 # define WIN3D_WIDTH 640
 # define WIN3D_HEIGHT 480
+# define FLOOR_RGB 0x00FF00
+# define CEIL_RGB 0x0000FF
 //-[ Colors ]-------------------------------------------------------------------
 # define BLACK_COLOR 0x000000
 # define RED_COLOR 0xFF0000
@@ -49,8 +51,8 @@
 # define ANG_SPEED 1.f	// Angle Var. Speed==rotation-speed:degree/move
 # define FPS 1000		// Desired frames per second
 # define FPS_DELTA 10	// Number of images to consider for FPS calculation
-# define FOV 60.f		// 0<FOV Player's Field of View angle in degrees
-# define FOV_PRE 1.f	// 0<FOV_PRE Field of View Precision in degrees
+# define FOV 45.f		// 0<FOV Player's Field of View angle in degrees
+# define FOV_PRE 5.f	// 0<FOV_PRE Field of View Precision in degrees
 // -[ Debug/UI toggles ]--------------------------------------------------------
 # define DRAW_HITS_TEXT 0 // 1: enable hit positions display; 0: disable
 // -[ FAILURES ]----------------------------------------------------------------
@@ -112,18 +114,22 @@ typedef struct s_data
 	t_play			player;
 	t_maze			maze;
 	void			*mlx_ptr;
-	void			*win_2d_ptr;
-	void			*win_3d_ptr;
+	void			*win_ptr;
+	t_pos			win_dim;
 	t_img			img_erase_txt;
-	t_img			img_floor;
-	t_img			img_wall;
-	t_img			img_grid;
-	t_img			img_buffer;
+	t_img			img_2d_floor;
+	t_img			img_2d_wall;
+	t_img			img_2d_template;
+	t_img			img_2d_buffer;
+	t_img			img_3d_template;
+	t_img			img_3d_buffer;
 	int				img_drawn;
+	t_pos			start2d;
+	t_pos			start3d;
 	int				delay_between_frames_ms;
 	struct timeval	last_frame_time;
 	struct timeval	fps_start_inter;
-	char			fps_str[32];
+	char			fps_str[64];
 	char			mv_flags[7];
 	float			rot_elem;
 	int				nb_of_rays;
@@ -131,12 +137,14 @@ typedef struct s_data
 }	t_data;
 // =[ Files & Fun. Signatures ]=================================================
 // -[ display_infos.c ]--------------------------------------------------------3
-void	display_player_infos(t_data *dt);									// ✅
-void	display_fps_infos(t_data *dt);										// ✅
-void	display_hits_infos(t_data *dt);										// ✅
-// -[ draw_frame.c ]-----------------------------------------------------------2
-void	draw_all_hit_lines(t_data *dt);										// ❌
-int		draw_buffer_image(t_data *dt);										// ❌
+void	display_player_infos(t_data *dt, int line_num);						// ✅
+void	display_fps_infos(t_data *dt, int line_num);						// ✅
+void	display_hits_infos(t_data *dt, int line_num);						// ✅
+// -[ draw_frame.c ]-----------------------------------------------------------4
+void	draw2d_player(t_img *img, t_play *p);								// ✅
+void	draw2d_hit_lines(t_data *dt);										// ❌
+void	draw3d_v_lines(t_data *dt);											// ❌
+int		draw_buffer_images(t_data *dt);										// ❌
 // -[ draw_to_img.c ]----------------------------------------------------------5
 void	put_pixel_to_image(t_img *img, int x, int y, int color);			// ✅
 void	draw_circle(t_img *img, t_pos c_pos, int r, int color);				// ✅
@@ -169,10 +177,12 @@ t_hit	set_hit(t_hit *hit, float x, float y, float angle);					// ✅
 t_hit	*create_hit_array(int size);										// ✅
 void	free_hit_array(t_hit **hit_arr);									// ✅
 int		print_hit_array(t_hit *hit_arr);									// ✅
-// -[ t_img_builders.c ]-------------------------------------------------------3
+// -[ t_img_builders.c ]-------------------------------------------------------5
+int		build_img_text(t_img *img);											// ✅
 int		build_img_floor(t_img *img);										// ✅
 int		build_img_wall(t_img *img);											// ✅
 int		build_img_grid(t_maze *maze, t_img *grid, t_img *floor, t_img *wall);//✅
+int		build_img_3d(t_img *img);											// ✅
 // -[ t_img_struct.c ]---------------------------------------------------------5
 void	memset_zero_img(t_img *img);										// ✅
 t_img	create_image(void *mlx_ptr, int width, int height);					// ✅
@@ -189,11 +199,10 @@ int		t_img_insert_rows_by_words(\
 t_maze	set_maze_and_player(const char **str_arr, t_play *player);			// ❌
 void	free_maze(t_maze *maze);											// ✅
 void	print_maze(t_maze maze);											// ✅
-// -[ t_player_struct.c ]------------------------------------------------------5
+// -[ t_player_struct.c ]------------------------------------------------------4
 t_play	init_player(void);													// ✅
 void	set_player(t_play *play, float x, float y, float dir);				// ✅
 int		print_player(t_play play);											// ✅
-void	draw_player(t_img *img, t_play *player);							// ✅
 void	free_player(t_play *player);										// ✅
 // -[ t_pos_struct.c ]---------------------------------------------------------6
 t_pos	init_pos(float x, float y);											// ✅

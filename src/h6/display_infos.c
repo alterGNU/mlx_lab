@@ -6,55 +6,60 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 10:14:41 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 19:56:44 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/13 21:04:59 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-void	display_player_infos(t_data *dt)
+void	display_player_infos(t_data *dt, int line_num)
 {
-	mlx_put_image_to_window(dt->mlx_ptr, dt->win_2d_ptr, \
-		dt->img_erase_txt.img_ptr, 0, 0);
-	mlx_string_put(dt->mlx_ptr, dt->win_2d_ptr, 10, 12, WHITE_COLOR, \
-		dt->player.play_str);
+	int		y;
+
+	y = 5 + 12 * line_num;
+	mlx_put_image_to_window(\
+		dt->mlx_ptr, dt->win_ptr, dt->img_erase_txt.img_ptr, 5, y - 6);
+	mlx_string_put(\
+		dt->mlx_ptr, dt->win_ptr, 5, y + 6, WHITE_COLOR, dt->player.play_str);
 }
 
-void	display_fps_infos(t_data *dt)
+void	display_fps_infos(t_data *dt, int line_num)
 {
-	int		win_x;
+	int		y;
 	float	fps;
 	int		delta_ms;
+	int		coloration;
 
-	win_x = dt->maze.width * TILE_X + 10;
-	mlx_put_image_to_window(dt->mlx_ptr, dt->win_2d_ptr, \
-		dt->img_erase_txt.img_ptr, win_x - 70, 0);
+	y = 5 + 12 * line_num;
 	delta_ms = diff_time_in_ms(dt->fps_start_inter, dt->last_frame_time);
 	fps = 0.f;
 	if (delta_ms)
 		fps = FPS_DELTA * 1000.f / (float)delta_ms;
-	snprintf(dt->fps_str, sizeof(dt->fps_str), "FPS: %.2f", fps);
-	mlx_string_put(dt->mlx_ptr, dt->win_2d_ptr, win_x - 70, 12, WHITE_COLOR, \
-		dt->fps_str);
+	snprintf(dt->fps_str, sizeof(dt->fps_str), "FPS: %.2f ---> player have %d rays", fps, dt->nb_of_rays);
+	coloration = GREEN_COLOR;
+	if (fps < 50.f)
+		coloration = RED_COLOR;
+	mlx_put_image_to_window(\
+		dt->mlx_ptr, dt->win_ptr, dt->img_erase_txt.img_ptr, 5, y - 6);
+	mlx_string_put(dt->mlx_ptr, dt->win_ptr, 5, y + 6, coloration, dt->fps_str);
 }
 
-void	display_hits_infos(t_data *dt)
+void	display_hits_infos(t_data *dt, int line_num)
 {
 	int		i;
+	int		y;
 	char	xray_str[64];
-	int		txt_x;
-	int		txt_y;
 
-	txt_x = dt->player.pos.x * TILE_X - 270;
-	if (txt_x < 0)
-		txt_x = dt->player.pos.x * TILE_X + CIRCLE_RADIUS + 10;
-	txt_y = dt->player.pos.y * TILE_Y - 3 * get_nb_of_rays();
+	y = 5 + 12 * line_num;
 	i = -1;
-	while (dt->hits[++i].valid)
+	while (dt->hits[++i].valid && y + 12 <= dt->start2d.y)
 	{
-		snprintf(xray_str, sizeof(xray_str), "hits[%d]:pos(%.2f, %.2f), ang:(%.2f, %.2f)", \
-			i, dt->hits[i].pos.x, dt->hits[i].pos.y, dt->hits[i].angle.x, dt->hits[i].angle.y);
-		mlx_string_put(dt->mlx_ptr, dt->win_2d_ptr, txt_x, txt_y + 12 * (i + 1), \
-			RED_COLOR, xray_str);
+		snprintf(xray_str, sizeof(xray_str), \
+			"hits[%d]:pos(%.2f, %.2f), ang:%.2f, dist:%.2f", i, dt->hits[i].pos.x, \
+			dt->hits[i].pos.y, dt->hits[i].angle.x, dt->hits[i].distance);
+		mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, \
+			dt->img_erase_txt.img_ptr, 5, y - 6);
+		mlx_string_put(dt->mlx_ptr, dt->win_ptr, 5, y + 6, WHITE_COLOR, xray_str);
+		y += 12;
 	}
 }

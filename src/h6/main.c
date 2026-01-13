@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 19:56:44 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/13 21:07:53 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,39 @@
 
 static void	print_start_infos(t_data dt, const char **str_arr, int bui_delay_ms)
 {
-	printf("\n======== STARTING INFOS ===========\n");
-	printf(" - MEM_BLOCK_TYPE = words --> %d ms\n", bui_delay_ms);
-	printf(" - String array:\n");
-	print_str_array(str_arr);
-	printf("\n");
-	print_maze(dt.maze);
-	printf(" - t_img floor: ");
-	print_t_img(dt.img_floor);
-	printf(" - t_img wall:  ");
-	print_t_img(dt.img_wall);
-	printf(" - t_img buff:  ");
-	print_t_img(dt.img_buffer);
-	printf(" - Tile size: %d x %d pixels\n", TILE_X, TILE_Y);
-	printf(" - Window size: %d x %d pixels\n", dt.maze.width * TILE_X, dt.maze.height * TILE_Y);
-	printf(" - Start ");
-	print_player(dt.player);
-	printf("\n - Flags =[%s] ", dt.mv_flags);
-	printf("\n - FOV=%.2f / FOV_PRE=%.2f --> %d\n", FOV, FOV_PRE, get_nb_of_rays());
-	//printf(" - dt.hit_tpos = ");
-	//print_hit_array(dt.hits);
-	printf("\n====================================\n\n");
+	(void)dt;
+	(void)str_arr;
+	(void)bui_delay_ms;
+	printf("\n===================== STARTING INFOS ========================\n");
+	printf(" - Time to build images --> %d ms\n", bui_delay_ms);
+	printf(" - Window:\n");
+	printf("   ├╌╌╌┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄%4d p ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┤\n", (int)dt.win_dim.x);
+	printf("   ┌──────────────┲━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓  ┬\n");
+	printf("   │ Player infos ┃ 🡴Insert img3d                   ┃  ┆\n");
+	printf("   │ FPS          ┃  (%04d, %04d)                   ┃  ┆\n", (int)dt.start3d.x, (int)dt.start3d.y);
+	printf("   │ Hit[0] infos ┃                                 ┃  ┆\n");
+	printf("   │ .....        ┃                                 ┃  ┆\n");
+	printf("   │ Hit[i] infos ┃                                 ┃  ┆\n");
+	printf("   │              ┃                                 ┃  ┆\n");
+	printf("   │ (%04d, %04d) ┃              %4d               ┃%4d p\n", (int)dt.start2d.x, (int)dt.start2d.y, (int)dt.img_3d_buffer.width, (int)dt.win_dim.y);
+	printf("   │ 🡷Insert img2d┃                ╳                ┃ ┆\n");
+	printf("   ┢━━━━━━━━━━━━━━┫              %4d               ┃  ┆\n",  (int)dt.img_3d_buffer.height);
+	printf("   ┃              ┃                                 ┃  ┆\n") ;
+	printf("   ┃    %4d      ┃                                 ┃  ┆\n", (int)dt.img_2d_buffer.width);
+	printf("   ┃      ╳       ┃                                 ┃  ┆\n");
+	printf("   ┃    %4d      ┃                                 ┃  ┆\n", (int)dt.img_2d_buffer.height);
+	printf("   ┃              ┃                                 ┃  ┆\n");
+	printf("   ┗━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┴\n");
+	//printf(" - t_img 2d_buffer:  ");
+	//print_t_img(dt.img_2d_buffer);
+	//printf(" - t_img 3d_buffer:  ");
+	//print_t_img(dt.img_3d_buffer);
+	//printf(" - Window size: %d x %d pixels\n", (int)dt.win_dim.x, (int)dt.win_dim.y);
+	//printf(" - Start ");
+	//print_player(dt.player);
+	//printf("\n - Flags =[%s] ", dt.mv_flags);
+	//printf("\n - FOV=%.2f / FOV_PRE=%.2f --> %d\n", FOV, FOV_PRE, dt.nb_of_rays);
+	printf("\n=============================================================\n");
 }
 
 static void	print_end_infos(t_data dt, t_pos start_pos,  int duration_ms, int bui_delay_ms)
@@ -54,9 +66,7 @@ static void	print_end_infos(t_data dt, t_pos start_pos,  int duration_ms, int bu
 	printf("\n  - to   ");
 	print_pos(dt.player.pos);
 	printf("\n - Flags =[%s] ", dt.mv_flags);
-	printf("\n - FOV=%.2f / FOV_PRE=%.2f --> %d\n", FOV, FOV_PRE, get_nb_of_rays());
-	//printf(" - dt.hit_tpos = ");
-	//print_hit_array(dt.hits);
+	printf("\n - FOV=%.2f / FOV_PRE=%.2f --> %d\n", FOV, FOV_PRE, dt.nb_of_rays);
 	printf("\n====================================\n\n");
 }
 
@@ -70,6 +80,8 @@ int	main(void)
 	struct timeval	end_bui;
 	int				bui_delay_ms;
 	int				ms_duration;
+
+	/*
 	const char *str_arr[] = {
 		"111111111111111111111111111100000111111111111111111111111",
 		"100000000000000000000000000000000000000000000000000000001",
@@ -109,7 +121,6 @@ int	main(void)
 		"001111111111111111111111111111111111111111111111111111100",
 		"000000000000000000000000000000000000000000000000000000000",
 		NULL};
-	/*
 		const char *str_arr[] = {
 		"111111111",
 		"100000001",
@@ -124,14 +135,15 @@ int	main(void)
 		"100000001",
 		"111111111",
 		NULL};
-	const char	*str_arr[] = { \
-		"111111", \
-		"100001", \
-		"10S001", \
-		"100001", \
-		"111111", \
-		NULL };
 	*/
+	const char	*str_arr[] = { \
+		"0000S0000", \
+		"000000000", \
+		"000000000", \
+		"000000000", \
+		"000010000", \
+		"001000100", \
+		NULL };
 	gettimeofday(&prog_start_time, NULL);
 	dt = init_data(str_arr);
 	//------------------------------------------------------TODO REMOVE
@@ -143,22 +155,25 @@ int	main(void)
 	//------------------------------------------------------TODO REMOVE
 	if (error_detected_after_init_data(&dt))
 		return (free_data(&dt), 1);
-	if (!build_img_floor(&dt.img_floor))
-		return (fprintf(stderr, "Error: build_img_floor() failed\n"), free_data(&dt), 1);
-	if (!build_img_wall(&dt.img_wall))
-		return (fprintf(stderr, "Error: build_img_wall() failed\n"), free_data(&dt), 1);
 	gettimeofday(&start_bui, NULL);
-	if (!build_img_grid(&dt.maze, &dt.img_grid, &dt.img_floor, &dt.img_wall))
+	//if (!build_img_text(&dt.img_erase_txt))
+	//	return (fprintf(stderr, "Error: build_img_text() failed\n"), free_data(&dt), 1);
+	if (!build_img_floor(&dt.img_2d_floor))
+		return (fprintf(stderr, "Error: build_img_floor() failed\n"), free_data(&dt), 1);
+	if (!build_img_wall(&dt.img_2d_wall))
+		return (fprintf(stderr, "Error: build_img_wall() failed\n"), free_data(&dt), 1);
+	if (!build_img_grid(&dt.maze, &dt.img_2d_template, &dt.img_2d_floor, &dt.img_2d_wall))
 		return (fprintf(stderr, "Error: build_img_grid() failed\n"), free_data(&dt), 1);
+	if (!build_img_3d(&dt.img_3d_template))
+		return (fprintf(stderr, "Error: build_img_3d() failed\n"), free_data(&dt), 1);
 	gettimeofday(&end_bui, NULL);
 	bui_delay_ms = diff_time_in_ms(start_bui, end_bui);
-	print_start_infos(dt, str_arr, bui_delay_ms);
 	start_pos = dup_pos(dt.player.pos);
-	update_hit_tpos(&dt);
+	print_start_infos(dt, str_arr, bui_delay_ms);
 	mlx_loop_hook(dt.mlx_ptr, &main_loop, &dt);
-	mlx_hook(dt.win_2d_ptr, 17, 0, &mlx_loop_end, dt.mlx_ptr);
-	mlx_hook(dt.win_2d_ptr, 2, (1L << 0), &key_pressed, &dt);
-	mlx_hook(dt.win_2d_ptr, 3, (1L << 1), &key_released, &dt);
+	mlx_hook(dt.win_ptr, 17, 0, &mlx_loop_end, dt.mlx_ptr);
+	mlx_hook(dt.win_ptr, 2, (1L << 0), &key_pressed, &dt);
+	mlx_hook(dt.win_ptr, 3, (1L << 1), &key_released, &dt);
 	mlx_loop(dt.mlx_ptr);
 	gettimeofday(&prog_end_time, NULL);
 	ms_duration = diff_time_in_ms(prog_start_time, prog_end_time);

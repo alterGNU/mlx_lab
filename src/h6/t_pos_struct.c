@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 17:04:50 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 17:29:09 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/13 16:22:09 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ t_pos	dup_pos(t_pos src)
 
 float	tpos_dist(t_pos a, t_pos b)
 {
-	float dx;
-	float dy;
+	float	dx;
+	float	dy;
 
 	dx = b.x - a.x;
 	dy = b.y - a.y;

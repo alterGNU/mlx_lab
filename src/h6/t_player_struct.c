@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:34:13 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/08 02:54:02 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/13 20:58:42 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,6 @@ int	print_player(t_play play)
 	psf += printf(", color: 0x%X, ", play.color);
 	psf += printf("radius: %d, step: %d}", play.radius, play.step_count);
 	return (psf);
-}
-
-void	draw_player(t_img *img, t_play *p)
-{
-	t_pos	center;
-	t_pos	angle_speed;
-
-	center = init_pos(p->pos.x * TILE_X, p->pos.y * TILE_Y);
-	angle_speed = init_pos(p->dir, p->radius * 3);
-	draw_circle(img, center, p->radius, p->color);
-	draw_vector(img, center, angle_speed, BLUE_COLOR);
 }
 
 void	free_player(t_play *player)

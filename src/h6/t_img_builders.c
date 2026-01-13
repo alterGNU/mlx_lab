@@ -6,11 +6,28 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 16:20:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/06 02:13:38 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/13 20:31:42 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
+
+int	build_img_text(t_img *img)
+{
+	int	x;
+	int	y;
+
+	if (!img || !img->addr)
+		return (0);
+	x = -1;
+	while (++x < img->width)
+	{
+		y = -1;
+		while (++y < img->height)
+			put_pixel_to_image(img, x, y, FLOOR_COLOR);
+	}
+	return (1);
+}
 
 int	build_img_floor(t_img *img)
 {
@@ -73,6 +90,30 @@ int	build_img_grid(t_maze *maze, t_img *grid, t_img *floor, t_img *wall)
 			t_img_insert_rows_by_words(wall, grid, x * TILE_X, y * TILE_Y);
 		else
 			t_img_insert_rows_by_words(floor, grid, x * TILE_X, y * TILE_Y);
+	}
+	return (1);
+}
+
+int	build_img_3d(t_img *img)
+{
+	int	x;
+	int	y;
+	int	horizon;
+
+	horizon = img->height / 2;
+	if (!img || !img->addr)
+		return (0);
+	x = -1;
+	while (++x < img->width)
+	{
+		y = -1;
+		while (++y < img->height)
+		{
+			if (y < horizon)
+				put_pixel_to_image(img, x, y, CEIL_RGB);
+			else 
+				put_pixel_to_image(img, x, y, FLOOR_RGB);
+		}
 	}
 	return (1);
 }

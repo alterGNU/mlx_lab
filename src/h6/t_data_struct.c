@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 19:56:44 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/13 20:18:13 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,18 @@ static void	zero_memset_data(t_data *dt)
 	dt->player = (t_play){{0.0f, 0.0f}, 0.0f, 0, 0, -1, NULL};
 	dt->maze = (t_maze){NULL, 0, 0, 0};
 	dt->mlx_ptr = NULL;
-	dt->win_2d_ptr = NULL;
+	dt->win_ptr = NULL;
+	dt->win_dim = (t_pos){0.0f, 0.0f};
 	dt->img_erase_txt = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
-	dt->img_floor = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
-	dt->img_wall = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
-	dt->img_grid = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
-	dt->img_buffer = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
+	dt->img_2d_floor = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
+	dt->img_2d_wall = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
+	dt->img_2d_template = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
+	dt->img_2d_buffer = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
+	dt->img_3d_template = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
+	dt->img_3d_buffer = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
 	dt->img_drawn = 0;
+	dt->start2d = (t_pos){0.0f, 0.0f};
+	dt->start3d = (t_pos){0.0f, 0.0f};
 	dt->delay_between_frames_ms = convert_fps_to_frame_delay(FPS);
 	memset(&dt->last_frame_time, 0, sizeof(struct timeval));
 	memset(&dt->fps_start_inter, 0, sizeof(struct timeval));
@@ -39,8 +44,8 @@ static void	zero_memset_data(t_data *dt)
 t_data	init_data(const char **str_arr)
 {
 	t_data	dt;
-	int		win_x;
-	int		win_y;
+	int		map2d_x;
+	int		map2d_y;
 
 	zero_memset_data(&dt);
 	init_movement_flags(&dt);
@@ -49,21 +54,27 @@ t_data	init_data(const char **str_arr)
 	dt.mlx_ptr = mlx_init();
 	if (!dt.mlx_ptr)
 		return (dt);
-	win_x = dt.maze.width * TILE_X;
-	win_y = dt.maze.height * TILE_Y;
-	if (win_x <= 0 || win_y <= 0)
+	map2d_x = dt.maze.width * TILE_X;
+	map2d_y = dt.maze.height * TILE_Y;
+	if (map2d_x <= 0 || map2d_y <= 0)
 		return (dt);
-	dt.win_2d_ptr = mlx_new_window(dt.mlx_ptr, win_x + 10, win_y + 25, WIN_TITLE);
-	if (!dt.win_2d_ptr)
+	dt.win_dim.x = ft_max(map2d_x, 200) + WIN3D_WIDTH + 15;
+	dt.win_dim.y = ft_max(map2d_y + 200 + 15, WIN3D_HEIGHT + 10);
+	if (dt.win_dim.x <= 0 || dt.win_dim.y <= 0)
 		return (dt);
-	dt.win_3d_ptr = mlx_new_window(dt.mlx_ptr, WIN3D_WIDTH, WIN3D_HEIGHT, WIN3D_TITLE);
-	if (!dt.win_3d_ptr)
+	set_pos(&dt.start2d, 5.0f, (float)dt.win_dim.y - (float)map2d_y - 5.0f);
+	set_pos(&dt.start3d, (float)dt.win_dim.x - (float)WIN3D_WIDTH - 5.0f, 5.0f);
+	dt.win_ptr = mlx_new_window(dt.mlx_ptr, dt.win_dim.x, dt.win_dim.y, \
+		WIN_TITLE);
+	if (!dt.win_ptr)
 		return (dt);
-	dt.img_erase_txt = create_image(dt.mlx_ptr, 200, 20);
-	dt.img_floor = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
-	dt.img_wall = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
-	dt.img_grid = create_image(dt.mlx_ptr, win_x, win_y);
-	dt.img_buffer = create_image(dt.mlx_ptr, win_x, win_y);
+	dt.img_erase_txt = create_image(dt.mlx_ptr, ft_max(map2d_x, 200), 14);
+	dt.img_2d_floor = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
+	dt.img_2d_wall = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
+	dt.img_2d_template = create_image(dt.mlx_ptr, map2d_x, map2d_y);
+	dt.img_2d_buffer = create_image(dt.mlx_ptr, map2d_x, map2d_y);
+	dt.img_3d_template = create_image(dt.mlx_ptr, WIN3D_WIDTH, WIN3D_HEIGHT);
+	dt.img_3d_buffer = create_image(dt.mlx_ptr, WIN3D_WIDTH, WIN3D_HEIGHT);
 	dt.nb_of_rays = get_nb_of_rays();
 	dt.hits = create_hit_array(dt.nb_of_rays);
 	return (dt);
@@ -75,19 +86,16 @@ void	free_data(t_data *dt)
 	free_player(&dt->player);
 	free_maze(&dt->maze);
 	free_image(dt->img_erase_txt, dt->mlx_ptr);
-	free_image(dt->img_floor, dt->mlx_ptr);
-	free_image(dt->img_wall, dt->mlx_ptr);
-	free_image(dt->img_grid, dt->mlx_ptr);
-	free_image(dt->img_buffer, dt->mlx_ptr);
-	if (dt->win_2d_ptr)
+	free_image(dt->img_2d_floor, dt->mlx_ptr);
+	free_image(dt->img_2d_wall, dt->mlx_ptr);
+	free_image(dt->img_2d_template, dt->mlx_ptr);
+	free_image(dt->img_2d_buffer, dt->mlx_ptr);
+	free_image(dt->img_3d_template, dt->mlx_ptr);
+	free_image(dt->img_3d_buffer, dt->mlx_ptr);
+	if (dt->win_ptr)
 	{
-		mlx_destroy_window(dt->mlx_ptr, dt->win_2d_ptr);
-		dt->win_2d_ptr = NULL;
-	}
-	if (dt->win_3d_ptr)
-	{
-		mlx_destroy_window(dt->mlx_ptr, dt->win_3d_ptr);
-		dt->win_3d_ptr = NULL;
+		mlx_destroy_window(dt->mlx_ptr, dt->win_ptr);
+		dt->win_ptr = NULL;
 	}
 	if (dt->mlx_ptr)
 	{
@@ -132,12 +140,21 @@ int	error_detected_after_init_data(t_data *dt)
 		fprintf(stderr, "mat:NULL}\n");
 		error++;
 	}
-	check_ptr_not_null(dt->mlx_ptr, "mlx", &error);
-	check_ptr_not_null(dt->win_2d_ptr, "win_2d", &error);
-	check_ptr_not_null(dt->img_floor.img_ptr, "img_floor", &error);
-	check_ptr_not_null(dt->img_wall.img_ptr, "img_wall", &error);
-	check_ptr_not_null(dt->img_grid.img_ptr, "img_grid", &error);
-	check_ptr_not_null(dt->img_buffer.img_ptr, "img_buffer", &error);
-	check_ptr_not_null(dt->hits, "hits", &error);
+	if ((int)dt->win_dim.x <= 0 || (int)dt->win_dim.y <= 0)
+	{
+		fprintf(stderr, "data->win_dim init invalid: win{width:%d, height:%d, ",
+			(int)dt->win_dim.x, (int)dt->win_dim.y);
+		fprintf(stderr, "mat:NULL}\n");
+		error++;
+	}
+	check_ptr_not_null(dt->mlx_ptr, "mlx_ptr", &error);
+	check_ptr_not_null(dt->win_ptr, "win_ptr", &error);
+	check_ptr_not_null(dt->img_erase_txt.img_ptr, "img_erase_txt", &error);
+	check_ptr_not_null(dt->img_2d_floor.img_ptr, "img_2d_floor", &error);
+	check_ptr_not_null(dt->img_2d_wall.img_ptr, "img_2d_wall", &error);
+	check_ptr_not_null(dt->img_2d_template.img_ptr, "img_2d_template", &error);
+	check_ptr_not_null(dt->img_2d_buffer.img_ptr, "img_2d_buffer", &error);
+	check_ptr_not_null(dt->img_3d_template.img_ptr, "img_3d_template", &error);
+	check_ptr_not_null(dt->img_3d_buffer.img_ptr, "img_3d_buffer", &error);
 	return (error);
 }
