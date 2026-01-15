@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/13 21:54:42 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 00:03:23 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,81 +24,57 @@ void	draw2d_player(t_img *img, t_play *p)
 }
 
 
+/**
+ * TODO: here lines `hit = init_pos(...)` could be optimized using prod_fpos(t_fpos a, t_fpos b) 
+ *   --> hit = prod_fpos(dt->hits[i].pos, init_fpos(TILE_X, TILE_Y));
+ */
 void	draw2d_hit_lines(t_data *dt)
 {
 	int		i;
-	t_pos	play_pos;
-	t_pos	hit_tpos;
+	t_pos	player;
+	t_pos	hit;
 
-	play_pos = init_pos(dt->player.pos.x * TILE_X, dt->player.pos.y * TILE_Y);
-	i = -1;
-	while (dt->hits[++i].valid)
+	if (DRAW_2D_RAYS)
 	{
-		hit_tpos = init_pos(dt->hits[i].pos.x * TILE_X, dt->hits[i].pos.y * TILE_Y);
-		draw_dda_line(&dt->img_2d_buffer, play_pos, hit_tpos, GREEN_COLOR);
+		player = init_pos(dt->player.pos.x * TILE_X, dt->player.pos.y * TILE_Y);
+		if (DRAW_2D_RAYS == 1)
+		{
+			hit = init_pos(dt->hits[0].pos.x * TILE_X, dt->hits[0].pos.y * TILE_Y);
+			draw_dda_line(&dt->img_2d_buffer, player, hit, GREEN_COLOR);
+			i = dt->nb_of_rays - 1;
+			hit = init_pos(dt->hits[i].pos.x * TILE_X, dt->hits[i].pos.y * TILE_Y);
+			draw_dda_line(&dt->img_2d_buffer, player, hit, GREEN_COLOR);
+		}
+		else
+		{
+			i = -1;
+			while (dt->hits[++i].valid)
+			{
+				hit = init_pos(dt->hits[i].pos.x * TILE_X, dt->hits[i].pos.y * TILE_Y);
+				draw_dda_line(&dt->img_2d_buffer, player, hit, GREEN_COLOR);
+			}
+		}
 	}
 }
 
-//void	draw3d_v_lines(t_data *dt)
-//{
-//	int		i;
-//	int		j;
-//	float	wall_height;
-//	t_pos	a;
-//	t_pos	b;
-//
-//	i = -1;
-//	while (dt->hits[++i].valid)
-//	{
-//		wall_height = (dt->maze.cell_nb * dt->img_3d_buffer.height) / dt->hits[i].distance;
-//		if (wall_height > dt->img_3d_buffer.height)
-//			wall_height = dt->img_3d_buffer.height;
-//		j = 0;
-//		while (++j <  8)
-//		{
-//			a = init_pos(i + j, (dt->img_3d_buffer.height - wall_height) / 2);
-//			b = init_pos(i + j, (dt->img_3d_buffer.height + wall_height) / 2);
-//			draw_dda_line(&dt->img_3d_buffer, a, b, RED_COLOR);
-//		}
-//	}
-//}
 void	draw3d_v_lines(t_data *dt)
 {
 	int		i;
 	int		j;
-	float	wall_height;
 	float	corrected_dist;
-	int		screen_h;
-	int		top;
-	int		bottom;
-	t_pos	a;
-	t_pos	b;
+	int		y_start;
+	int		y_stop;
 
-	screen_h = dt->img_3d_buffer.height;
 	i = -1;
 	while (dt->hits[++i].valid)
 	{
-		/* fisheye correction */
-		corrected_dist = dt->hits[i].distance
-			* cos(dt->hits[i].angle - dt->player.dir);
-
-		wall_height = (dt->maze.cell_nb * screen_h) / corrected_dist;
-		if (wall_height > screen_h)
-			wall_height = screen_h;
-
-		top = (screen_h / 2) - (wall_height / 2);
-		bottom = top + wall_height;
-
+		corrected_dist = dt->hits[i].distance * cos(radian(dt->player.dir - dt->hits[i].angle.x));
+		y_start = (dt->img_3d_buffer.height / 2) * (1 + DIST_MIN / corrected_dist);
+		y_stop = (dt->img_3d_buffer.height / 2) * (1 - DIST_MIN / corrected_dist);
 		j = -1;
-		while (++j < 8) /* wall thickness */
-		{
-			a.x = i * 8 + j;
-			a.y = top;
-			b.x = i * 8 + j;
-			b.y = bottom;
-
-			draw_dda_line(&dt->img_3d_buffer, a, b, RED_COLOR);
-		}
+		while (++j < dt->column_width)
+			draw_vline(&dt->img_3d_buffer, dt->img_3d_buffer.width - (i * dt->column_width + j), y_start, y_stop, RED_COLOR);
+			//draw_vline(&dt->img_3d_buffer, i * dt->column_width + j, y_start, y_stop, RED_COLOR);
 	}
 }
 
@@ -112,11 +88,11 @@ int	draw_buffer_images(t_data *dt)
 		return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
 	if (!dup_t_img_by_words(&dt->img_2d_template, &dt->img_2d_buffer))
 		return (fprintf(stderr, "Error: dup_t_img(2d) failed\n"), free_data(dt), 1);
+	draw2d_hit_lines(dt);
+	draw2d_player(&dt->img_2d_buffer, &dt->player); // second layer:player
 	if (!dup_t_img_by_words(&dt->img_3d_template, &dt->img_3d_buffer))
 		return (fprintf(stderr, "Error: dup_t_img(3d) failed\n"), free_data(dt), 1);
 	draw3d_v_lines(dt);
-	draw2d_hit_lines(dt);
-	draw2d_player(&dt->img_2d_buffer, &dt->player); // second layer:player
 	// FPS control to avoid busy-spinning
 	if (dt->img_drawn)
 	{

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 10:14:41 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/13 21:04:59 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/15 23:35:35 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	display_hits_infos(t_data *dt, int line_num)
 	while (dt->hits[++i].valid && y + 12 <= dt->start2d.y)
 	{
 		snprintf(xray_str, sizeof(xray_str), \
-			"hits[%d]:pos(%.2f, %.2f), ang:%.2f, dist:%.2f", i, dt->hits[i].pos.x, \
+			"h[%d]:p(%.2f, %.2f), a:%.2f, d:%.2f", i, dt->hits[i].pos.x, \
 			dt->hits[i].pos.y, dt->hits[i].angle.x, dt->hits[i].distance);
 		mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, \
 			dt->img_erase_txt.img_ptr, 5, y - 6);

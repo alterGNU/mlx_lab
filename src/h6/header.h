@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/13 21:43:01 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 00:02:04 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,16 @@
 //-[ Variables ]----------------------------------------------------------------
 # define VALID_MAZE_CHARS "01NSEW"
 # define M_PI 3.1415926535
-//-[ 2DWindow ]-----------------------------------------------------------------
-# define WIN_TITLE "Caster the Ghost: (2D Ray-Casting)"
-# define TILE_X 32 // width of one cell in pixels
-# define TILE_Y 32 // height of one cell in pixels
-//-[ 3DWindow ]-----------------------------------------------------------------
-# define WIN3D_TITLE "Caster the Ghost: (3D Ray-Casting)"
-# define WIN3D_WIDTH 640
-# define WIN3D_HEIGHT 480
+//-[ Window ]-------------------------------------------------------------------
+# define WIN_TITLE "Caster the Ghost: (3D Monochrome-RayCasting)"
+//-[ 2DImage ]------------------------------------------------------------------
+# define TILE_X 16 // width of one cell in pixels
+# define TILE_Y 16 // height of one cell in pixels
+# define CIRCLE_RADIUS 8 // size of the player representation
+//-[ 3DImage ]------------------------------------------------------------------
+// TODO: replace by resolution
+# define WIN3D_WIDTH 1200
+# define WIN3D_HEIGHT 600
 # define FLOOR_RGB 0x00FF00
 # define CEIL_RGB 0x0000FF
 //-[ Colors ]-------------------------------------------------------------------
@@ -44,19 +46,17 @@
 # define WHITE_COLOR 0xFFFFFF
 # define FLOOR_COLOR 0xAAAAAA
 # define WALL_COLOR 0x333333
-//-[ Player ]-------------------------------------------------------------------
-# define CIRCLE_RADIUS 8 // size of the player representation
 // -[ Engine ]------------------------------------------------------------------
-# define POS_SPEED .1f	// Position Var. Speed==movement-speed:step/move
-# define ANG_SPEED 1.f	// Angle Var. Speed==rotation-speed:degree/move
-# define FPS 1000		// Desired frames per second
-# define FPS_DELTA 10	// Number of images to consider for FPS calculation
-# define FOV 45.f		// 0<FOV Player's Field of View angle in degrees
-# define FOV_PRE 5.f	// 0<FOV_PRE Field of View Precision in degrees
+# define POS_SPEED .1f		// Position Var. Speed==movement-speed:step/move
+# define ANG_SPEED 1.f		// Angle Var. Speed==rotation-speed:degree/move
+# define FPS 1000			// Desired frames per second
+# define FPS_DELTA 10		// Number of images to consider for FPS calculation
+# define FOV 60.f			// 0<FOV Player's Field of View angle in degrees
+# define FOV_PRE 20.f		// 0<FOV_PRE Field of View Precision in degrees
+# define DIST_MIN 1.f		// Distance where WALL_HEIGHT == WIN3D_HEIGHT
 // -[ Debug/UI toggles ]--------------------------------------------------------
-# define DRAW_HITS_TEXT 0 // 1: enable hit positions display; 0: disable
-// -[ FAILURES ]----------------------------------------------------------------
-# define MAIN_LOOP_FAILURE 2
+# define DRAW_HITS_TXT 1	// 0: disable, 1: enable hit positions display
+# define DRAW_2D_RAYS 2		// 0: none, 1: first/last, 2: all rays
 // =[ Include ]=================================================================
 # include "mlx.h"
 # include <math.h>
@@ -113,9 +113,15 @@ typedef struct s_data
 {
 	t_play			player;
 	t_maze			maze;
+	int				nb_of_rays;		// define by FOV and FOV_PRE (2D & 3D)
+	float			rot_elem;		// rotation angle per ray (2D)
+	int				column_width;	// width in pixels of one column (3D image)
+	t_hit			*hits;			// array of hits, size = nb_of_rays
 	void			*mlx_ptr;
 	void			*win_ptr;
-	t_pos			win_dim;
+	t_pos			win_dim;		// window dimensions in pixels(avoid using mlx getter)
+	t_pos			start2d;		// top-left position of 2D image in window
+	t_pos			start3d;		// top-left position of 3D image in window
 	t_img			img_erase_txt;
 	t_img			img_2d_floor;
 	t_img			img_2d_wall;
@@ -124,16 +130,11 @@ typedef struct s_data
 	t_img			img_3d_template;
 	t_img			img_3d_buffer;
 	int				img_drawn;
-	t_pos			start2d;
-	t_pos			start3d;
 	int				delay_between_frames_ms;
 	struct timeval	last_frame_time;
 	struct timeval	fps_start_inter;
 	char			fps_str[64];
 	char			mv_flags[7];
-	float			rot_elem;
-	int				nb_of_rays;
-	t_hit			*hits;
 }	t_data;
 // =[ Files & Fun. Signatures ]=================================================
 // -[ display_infos.c ]--------------------------------------------------------3
@@ -145,8 +146,10 @@ void	draw2d_player(t_img *img, t_play *p);								// ✅
 void	draw2d_hit_lines(t_data *dt);										// ❌
 void	draw3d_v_lines(t_data *dt);											// ❌
 int		draw_buffer_images(t_data *dt);										// ❌
-// -[ draw_to_img.c ]----------------------------------------------------------5
+// -[ draw_to_img.c ]----------------------------------------------------------6
 void	put_pixel_to_image(t_img *img, int x, int y, int color);			// ✅
+void	draw_vline(t_img *img, int x, int start_y, int stop_y, int color);	// ✅
+void	draw_hline(t_img *img, int x, t_pos pos, int color);				// ✅
 void	draw_circle(t_img *img, t_pos c_pos, int r, int color);				// ✅
 void	draw_dda_line(t_img *img, t_pos a_pos, t_pos b_pos, int color);		// ✅
 void	draw_vector(t_img *img, t_pos start, t_pos vec, int color);			// ✅

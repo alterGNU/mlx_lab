@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/13 20:54:14 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/15 23:34:42 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,8 @@ int	main_loop(t_data *dt)
 		update_hit_tpos(dt);
 		display_player_infos(dt, 0);
 		display_fps_infos(dt, 1);
-		display_hits_infos(dt, 2);
+		if (DRAW_HITS_TXT)
+			display_hits_infos(dt, 2);
 	}
 	old_player = dt->player;
 	move_player(dt);
@@ -83,7 +84,8 @@ int	main_loop(t_data *dt)
 	if (dt->img_drawn % FPS_DELTA == 0)
 	{
 		display_fps_infos(dt, 1);
-		display_hits_infos(dt, 2);
+		if (DRAW_HITS_TXT)
+			display_hits_infos(dt, 2);
 		dt->fps_start_inter = dt->last_frame_time;
 	}
 	return (0);

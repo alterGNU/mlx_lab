@@ -1239,4 +1239,102 @@ The vector base movement are based on polar-coord-system using trigo-formulas.
 - 3. Add: in Fun. to compute all `dt->hit_tpos[++i]` points
 - 4. Add: in Fun. to draw all `dt->hit_tpos[++i]` points
 
-### H.6 | Add 3d-RayCasting
+### H.6 | Add 3d-RayCasting (Monochrome)
+Before going any further, let talk about optimization and here some basic definition:
+- **Pointer** store addresses that correpond to positions in **RAM** _(in 32-bit system, addresse are stored in `int *ptr`== 4bytes.)_
+- **Processor Registers** is a quickly accessible location available to a computer's processor. **(faster than RAM)**
+  - **Registers** are measured by the number of bits they can hold _({8, 32, 64, 128}-bit register)_ and a processor contains several kinds/types of registers:
+    - **User-Accessible registers**: can be read and written by machine instruction
+      - **Data registers**: hold **numeric** data values _(int, float, double, char,...)_
+      - **Address registers**: hold **addresses** data values _(stack and frame pointers)_
+      - **Constant registers**: hold **read only values** _(such as 0, 1,...., PI)_
+      - **Control registers**: used to **set the behaviour of system component** _(CPU,...)_
+    - **Internal registers**: not accessible by instruction, only used internally for processor operations.
+
+#### H.6.a | Optimization
+Compiler have many ways or even option to optimize the binary code produced:
+- **DCE**, DeadCodeElimination, clean code by removing irrelevent code _(does not affect the program results)_:
+  - unreachable code _(never called or execute fun.)_
+  - code that affect dead variables _(written to, but never read again)_
+- **Constant Propagation**: Replace the constant value of variables in the expression _(~like macros expansion by preprocessor)_
+- **inlining** with flags `-finline-*`: compiler replace every fun. **calls** by the fun. **code** in binary code. _(~like macros expansion by preprocessor)_
+- **register allocation** : process of assigning local variables and expressions to **User-Accessible:Data-Registers**
+- **loop unrolling** with flags `*loop*`: process of rewritting a loop so that instead of processing a single element of an array N times, processes simultaneously N/x times _(x depends on sys. arch., 32-bit --> x=4)_
+
+##### H.6.a.i | Compiler Optimization Option
+Compilers have different level of optimization:
+- `-O0`: Means "no optimization": this level compiles the fastest and generates the most debuggable code.
+  - Every variable goes to memory
+  - No inlining
+  - No Dead Code Elimination
+- `-O1`: Somewhere between `-O0` and `-01` _(...no shit sherlock...)_ - `-O2`: Moderate lvl of optimization which enables most optimizations
+  - Dead code Elimination
+  - Simple inlining
+  - Register allocation
+- `-O2`: Moderate lvl of optimization which enables most optimizations
+  - Aggressive inlining
+  - Loop unrolling
+  - Constant propagation
+  - Better register allocation
+  - Vectorization (when safe)
+  - Dead store elimination
+- `-O3`: Enables optimizations that take longer to perform and may generate larger code(but faster)
+  - More aggressive loop unrolling
+  - More inlining
+  - Heavier vectorization
+- `-Ofast`: (D.A.N.G.E.R.O.U.S) and break C rules... --> use `-O2 -ffast-math` instead.
+##### H.6.a.ii | Passing Struct by value vs Passing Struct by 
+- In C, a function works on **copies of its parameters**:
+  - If parameter are **basic data type** or **user defined data type**, fun. receives a **FULL COPY OF THIS DATA**
+  - If parameter are **derived data type** like pointers or function, fun. receives a **FULL COPY OF ADDRESSES TO THIS DATA**
+  ```c
+  /*
+  This is an example where the copie's size are inaccurates 'cause the compiler does not necessarily copy argments this way (they may be passed in registers, on stack or partially optimized away...)
+  The idea here is to show that the bigger a struct or data is, bigger the copy is:
+    - Takes more time 
+    - Takes more stack space
+  If an address is given, then the copy's size is constant (do not depends on struct size, always 4bytes:sizeof(int *))
+  */
+  #include <stdio.h>
+  typedef struct s_data {int x1; int x2; int x3; int x4;} t_data;
+  void print_t_data(t_data dt) {printf("dt:{%d, %d, %d, %d}", dt.x1 , dt.x2 , dt.x3 , dt.x4);}
+  void passByValue(t_data dt, int a) {print_t_data(dt);printf(" && a:%d\n", a);}
+  void passByPointer(const t_data *dt, const int *a) {print_t_data(*dt);printf(" && a:%d\n", *a); }
+  int main(void)
+  {
+  	t_data dt1={1,2,3,4};
+  	int	a = 5;
+  	passByValue(dt1, a); // fun. copied sizeof(t_data)+sizeof(int)=5*sizeof(int)-->20bytes on 32-bit syst.
+  	passByPointer(&dt1, &a);// fun. copied 2*sizeof(int *)-->8bytes on 32-bit syst.
+  	return (0);
+  }
+  ```
+
+>[!CAUTION]
+> Passing by value creates a full copy of the struct, the copying process is slower bigger the data is and also use more stack space.
+
+- In another hand, if compiler optimization are allowed, this "issue" can be ignored[^1], so
+  - ✅ <ins>When to pass by value</ins>:
+    - No need to modify the struct, stack size is not limited and compiler optimization flags are allowed **OR**
+    - Else, if no need to modify the struct which is **very small** (e.g. 1~2 int/float)
+  - ✅ <ins>When to pass by pointer</ins>:
+    - If you have/want to modify the structure **OR**
+    - If your struct is **large**, the program need to be fast and the compiler's optimization flags are not allowed.
+
+#### H.6.b | C Code
+##### H.6.a.i | Add monochrome 3D-Ray-casting
+- [ ] Make sure that `dt->nb_of_array() * dt->column_size == img_`
+- 1. <ins>Makes sure that `image3d.with`</ins>
+
+## Sources
+### RayCasting
+- [lovedev: RayCasting](https://lodev.org/cgtutor/raycasting.html)
+### Stack-Overflow
+- [Passing struct by value VS by pointer](https://stackoverflow.com/questions/34223458/passing-struct-pointer-vs-passing-struct)
+- [Downsides of passing struct by value (struct cpy) rather than by pointer(address cpy)](https://stackoverflow.com/questions/161788/are-there-any-downsides-to-passing-structs-by-value-in-c-rather-than-passing-a)
+- [Clang optimization flags](https://clang.llvm.org/docs/CommandGuide/clang.html)
+- [Gcc optimization flags](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html)
+- [What is vectorization](https://stackoverflow.com/questions/1422149/what-is-vectorization)
+
+[^1]: [In a modern x86 CPU context, passing by value may be better](https://austinmorlan.com/posts/pass_by_value_vs_pointer/)
+
