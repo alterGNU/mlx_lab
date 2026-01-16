@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 00:52:18 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 00:10:27 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 15:36:43 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ float	norm_angle(float angle)
 /**
  * Makes sure that the number of rays is appropriate according to:
  *  - FOV and FOV_PRE
- *  - WIN3D_WIDTH
+ *  - IMG3D_WIDTH
  */
 int	get_nb_of_rays(void)
 {
@@ -53,7 +53,7 @@ int	get_nb_of_rays(void)
 	if (FOV_PRE <= 0 || FOV_PRE >= FOV)
 		return (1);
 	nb_rays = (int)(FOV / FOV_PRE);
-	if (nb_rays > WIN3D_WIDTH)
-		nb_rays = WIN3D_WIDTH;
+	if (nb_rays > IMG3D_WIDTH)
+		nb_rays = IMG3D_WIDTH;
 	return (nb_rays);
 }

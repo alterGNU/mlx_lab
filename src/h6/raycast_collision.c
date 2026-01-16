@@ -6,12 +6,20 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 00:37:02 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 13:47:56 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
+/**
+ * TODO:
+ * - Should be called by mouvement fun. too! (if next step collides, block it)
+ * - Should return objects types hit {Out-In}side-Wall:(N,S,E,W),Bounderies,...
+ * - Can be rewritte to use t_ipos and t_fpos
+ * - Can be optimized a bit more (order! and some cases dont need to be checked)
+ *   -> if(index_play <0 || dt->maze.cell_nb <= index_play) can be removed
+ */
 int	collision_detected(const t_data *dt, t_pos ray_pos, float angle)
 {
 	int	index_play;
@@ -19,25 +27,24 @@ int	collision_detected(const t_data *dt, t_pos ray_pos, float angle)
 	int	y;
 	int	index_ray;
 
-	// TODO:l23-25:Can be removed if wanted since player can not be outside maze
 	index_play = (int)floorf(dt->player.pos.y) * dt->maze.width + \
 		(int)floorf(dt->player.pos.x);
 	if (index_play < 0 || dt->maze.cell_nb <= index_play)
 		return (printf("play_pos outside maze limits\n"));
 	x = (int)floorf(ray_pos.x);
 	y = (int)floorf(ray_pos.y);
-	if (y < 0 && angle < 180.0f)
-		return (-1);
-	if (y == dt->maze.height && angle > 180.0f)
-		return (-1);
-	if (x == dt->maze.width && (angle < 90.0f || 270.0f < angle))
-		return (-1);
-	if (x < 0 && 90.0f < angle && angle < 270.0f)
-		return (-1);
+	if (y < 0 && angle < 180.0f)									// On FIRST MAZE LINE facing NORTH
+		return (-1);												// --> HIT NORTH BOUNDARY
+	if (y == dt->maze.height && angle > 180.0f)						// On LAST MAZE LINE facing SOUTH
+		return (-1);												// --> HIT SOUTH BOUNDARY
+	if (x == dt->maze.width && (angle < 90.0f || 270.0f < angle))	// On LAST MAZE COLUMN facing EAST
+		return (-1);												// --> HIT EAST BOUNDARY
+	if (x < 0 && 90.0f < angle && angle < 270.0f)					// On FIRST MAZE COLUMN facing WEST
+		return (-1);												// --> HIT WEST BOUNDARY
 	index_ray = y * dt->maze.width + x;
-	if (index_ray < 0 || dt->maze.cell_nb <= index_ray)
+	if (index_ray < 0 || dt->maze.cell_nb <= index_ray)				// Ray outside maze limits
 		return (-1);
-	if (dt->maze.mat[index_play] != dt->maze.mat[index_ray])
+	if (dt->maze.mat[index_play] != dt->maze.mat[index_ray])		// Different cell -> HIT
 		return (1);
 	return (0);
 }

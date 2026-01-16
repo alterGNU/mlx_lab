@@ -29,7 +29,9 @@ FLAGS		=	-Wall -Wextra -Werror -I. -I$(MLX_DIR)
 VAL			=	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --undef-value-errors=no
 # =[ OBJECTS ]================================================================================================
 SRC			=	display_infos.c \
-				draw_frame.c \
+				draw_2dimg.c \
+				draw_3dimg.c \
+				draw_buffer_images.c \
 				draw_to_img.c \
 				main_loop.c \
 				main.c \

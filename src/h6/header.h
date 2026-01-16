@@ -6,12 +6,42 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 02:23:30 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 16:45:07 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HEADER_H
 # define HEADER_H
+// -[ Debug/UI toggles ]--------------------------------------------------------
+# define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
+# define DRAW_2DIMG 0			// 0: do not draw 2d image (map), else: draw it
+# define DRAW_2D_RAYS 2			// 0: none, 1: first/last, 2: all rays
+//-[ Window ]-------------------------------------------------------------------
+# define WIN_TITLE "Caster the Ghost: (3D Monochrome-RayCasting)"
+# define WIN_BORDER 5			// space between window border & images
+# define WIN_DBG_TXT_LEN 250	// length(in pixels)of debug txt area
+//-[ 2DImage ]------------------------------------------------------------------
+# define TILE_X 16 				// width(in pixels) of one 2Dcell
+# define TILE_Y 16 				// height(in pixels) of one 2Dcell
+# define CIRCLE_RADIUS 8		// size of the player representation
+//-[ 3DImage ]------------------------------------------------------------------
+// TODO: replace by resolution
+# define IMG3D_WIDTH 2048
+# define IMG3D_HEIGHT 1024
+# define FLOOR_RGB 0x00FF00
+# define CEIL_RGB 0x0000FF
+// -[ Engine ]------------------------------------------------------------------
+# define POS_SPEED .1f		// Position Var. Speed==movement-speed:step/move
+# define ANG_SPEED 1.f		// Angle Var. Speed==rotation-speed:degree/move
+# define FPS 1000			// Desired frames per second
+# define FPS_DELTA 10		// Number of images to consider for FPS calculation
+# define FOV 60.f			// Player's Hori-Field-Of-View Angle(in degrees)
+# define FOV_PRE .1f		// Hori-Field-Of-View-Precision(in degrees)
+// TODO: could be replace by objects size (height+width)
+# define DIST_MIN 1.f		// Distance where OBJECTS_HEIGHT == IMG3D_HEIGHT
+//=[ Variables ]================================================================
+# define VALID_MAZE_CHARS "01NSEW"
+# define M_PI 3.1415926535
 //-[ Key definitions ]----------------------------------------------------------
 # define ESC_KEY 65307
 # define W_KEY 119
@@ -22,21 +52,6 @@
 # define E_KEY 101
 # define LA_KEY 65361
 # define RA_KEY 65363
-//-[ Variables ]----------------------------------------------------------------
-# define VALID_MAZE_CHARS "01NSEW"
-# define M_PI 3.1415926535
-//-[ Window ]-------------------------------------------------------------------
-# define WIN_TITLE "Caster the Ghost: (3D Monochrome-RayCasting)"
-//-[ 2DImage ]------------------------------------------------------------------
-# define TILE_X 16 // width of one cell in pixels
-# define TILE_Y 16 // height of one cell in pixels
-# define CIRCLE_RADIUS 8 // size of the player representation
-//-[ 3DImage ]------------------------------------------------------------------
-// TODO: replace by resolution
-# define WIN3D_WIDTH 1024
-# define WIN3D_HEIGHT 1024
-# define FLOOR_RGB 0x00FF00
-# define CEIL_RGB 0x0000FF
 //-[ Colors ]-------------------------------------------------------------------
 # define BLACK_COLOR 0x000000
 # define RED_COLOR 0xFF0000
@@ -46,17 +61,6 @@
 # define WHITE_COLOR 0xFFFFFF
 # define FLOOR_COLOR 0xAAAAAA
 # define WALL_COLOR 0x333333
-// -[ Engine ]------------------------------------------------------------------
-# define POS_SPEED .1f		// Position Var. Speed==movement-speed:step/move
-# define ANG_SPEED 1.f		// Angle Var. Speed==rotation-speed:degree/move
-# define FPS 1000			// Desired frames per second
-# define FPS_DELTA 10		// Number of images to consider for FPS calculation
-# define FOV 60.f			// 0<FOV Player's Field of View angle in degrees
-# define FOV_PRE .01f		// 0<FOV_PRE Field of View Precision in degrees
-# define DIST_MIN .8f		// Distance where WALL_HEIGHT == WIN3D_HEIGHT
-// -[ Debug/UI toggles ]--------------------------------------------------------
-# define DRAW_HITS_TXT 1	// 0: disable, 1: enable hit positions display
-# define DRAW_2D_RAYS 2		// 0: none, 1: first/last, 2: all rays
 // =[ Include ]=================================================================
 # include "mlx.h"
 # include <math.h>
@@ -141,10 +145,14 @@ typedef struct s_data
 void	display_player_infos(t_data *dt, int line_num);						// ✅
 void	display_fps_infos(t_data *dt, int line_num);						// ✅
 void	display_hits_infos(t_data *dt, int line_num);						// ✅
-// -[ draw_frame.c ]-----------------------------------------------------------4
+// -[ draw_2dimg.c ]-----------------------------------------------------------3
 void	draw2d_player(t_img *img, t_play *p);								// ✅
-void	draw2d_hit_lines(t_data *dt);										// ❌
-void	draw3d_v_lines(t_data *dt);											// ❌
+void	draw2d_hit_lines(t_data *dt);										// ✅
+int		draw_buffer_2dimg(t_data *dt);										// ✅
+// -[ draw_3dimg.c ]-----------------------------------------------------------2
+void	draw3d_obj_vlines(t_data *dt);										// ✅
+int		draw_buffer_3dimg(t_data *dt);										// ✅
+// -[ draw_frame.c ]-----------------------------------------------------------4
 int		draw_buffer_images(t_data *dt);										// ❌
 // -[ draw_to_img.c ]----------------------------------------------------------6
 void	put_pixel_to_image(t_img *img, int x, int y, int color);			// ✅
