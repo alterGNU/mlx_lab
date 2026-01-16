@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/13 21:42:23 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 00:37:02 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,13 +127,13 @@ void	update_hit_tpos(t_data *dt)
 	float	angle_start;
 
 	if (dt->nb_of_rays > 1)
-		angle_start = norm_angle(dt->player.dir - (FOV / 2.0f));
+		angle_start = norm_angle(dt->player.dir + (FOV / 2.0f));
 	else
 		angle_start = dt->player.dir;
 	i = -1;
 	while (dt->hits[++i].valid)
 	{
-		dt->hits[i].angle.x = norm_angle(angle_start + i * dt->rot_elem);
+		dt->hits[i].angle.x = norm_angle(angle_start - i * dt->rot_elem);
 		dt->hits[i].angle.y = tanf(radian(dt->hits[i].angle.x));
 		found_hit_dda(dt, &dt->hits[i]);
 	}

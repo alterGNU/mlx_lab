@@ -6,12 +6,15 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:13:33 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/08 17:06:11 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/14 21:42:23 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
+/**
+ * Puts a pixel of a given color at (x, y) in the image.
+ */
 void	put_pixel_to_image(t_img *img, int x, int y, int color)
 {
 	char	*pixel;
@@ -31,7 +34,34 @@ void	put_pixel_to_image(t_img *img, int x, int y, int color)
 	}
 }
 
-static void	draw_hline(t_img *img, int x, t_pos pos, int color)
+void	draw_vline(t_img *img, int x, int start_y, int stop_y, int color)
+{
+	char	*pixel;
+	int		tmp;
+
+	if (x < 0 || x >= img->width)
+		return ;
+	if (start_y > stop_y)
+	{
+		tmp = start_y;
+		start_y = stop_y;
+		stop_y = tmp;
+	}
+	if (stop_y < 0 || start_y >= img->height)
+		return ;
+	if (start_y < 0)
+		start_y = 0;
+	if (stop_y >= img->height)
+		stop_y = img->height - 1;
+	pixel = img->addr + (start_y * img->size_line + x * (img->bpp / 8));
+	while (start_y++ <= stop_y)
+	{
+		*(int *)pixel = color;
+		pixel += img->size_line;
+	}
+}
+
+void	draw_hline(t_img *img, int x, t_pos pos, int color)
 {
 	while (x <= pos.x)
 	{

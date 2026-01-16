@@ -6,13 +6,13 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/13 20:18:13 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 00:41:44 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-static void	zero_memset_data(t_data *dt)
+static void zero_memset_data(t_data *dt)
 {
 	dt->player = (t_play){{0.0f, 0.0f}, 0.0f, 0, 0, -1, NULL};
 	dt->maze = (t_maze){NULL, 0, 0, 0};
@@ -35,17 +35,16 @@ static void	zero_memset_data(t_data *dt)
 	memset(dt->fps_str, 0, sizeof(dt->fps_str));
 	memset(dt->mv_flags, 0, sizeof(dt->mv_flags));
 	dt->rot_elem = 0.0f;
-	if (FOV > FOV_PRE)
-		dt->rot_elem = FOV * FOV_PRE / (FOV - FOV_PRE);
 	dt->nb_of_rays = 0;
 	dt->hits = NULL;
 }
 
-t_data	init_data(const char **str_arr)
+t_data init_data(const char **str_arr)
 {
-	t_data	dt;
-	int		map2d_x;
-	int		map2d_y;
+	t_data dt;
+	int map2d_x;
+	int map2d_y;
+	int img3d_width;
 
 	zero_memset_data(&dt);
 	init_movement_flags(&dt);
@@ -58,29 +57,35 @@ t_data	init_data(const char **str_arr)
 	map2d_y = dt.maze.height * TILE_Y;
 	if (map2d_x <= 0 || map2d_y <= 0)
 		return (dt);
-	dt.win_dim.x = ft_max(map2d_x, 200) + WIN3D_WIDTH + 15;
-	dt.win_dim.y = ft_max(map2d_y + 200 + 15, WIN3D_HEIGHT + 10);
+	dt.nb_of_rays = get_nb_of_rays();
+	if (dt.nb_of_rays > 1)
+		dt.rot_elem = FOV / (dt.nb_of_rays - 1);
+	//if (FOV > FOV_PRE)
+	//	dt.rot_elem = FOV * FOV_PRE / (FOV - FOV_PRE);
+	dt.column_width = (int)(WIN3D_WIDTH / dt.nb_of_rays);
+	img3d_width = dt.nb_of_rays * dt.column_width;
+	dt.win_dim.x = ft_max(map2d_x, 250) + img3d_width + 15;
+	dt.win_dim.y = ft_max(map2d_y + 250 + 15, WIN3D_HEIGHT + 10);
 	if (dt.win_dim.x <= 0 || dt.win_dim.y <= 0)
 		return (dt);
 	set_pos(&dt.start2d, 5.0f, (float)dt.win_dim.y - (float)map2d_y - 5.0f);
-	set_pos(&dt.start3d, (float)dt.win_dim.x - (float)WIN3D_WIDTH - 5.0f, 5.0f);
-	dt.win_ptr = mlx_new_window(dt.mlx_ptr, dt.win_dim.x, dt.win_dim.y, \
-		WIN_TITLE);
+	set_pos(&dt.start3d, (float)dt.win_dim.x - (float)img3d_width - 5.0f, 5.0f);
+	dt.win_ptr = mlx_new_window(dt.mlx_ptr, dt.win_dim.x, dt.win_dim.y,
+								WIN_TITLE);
 	if (!dt.win_ptr)
 		return (dt);
-	dt.img_erase_txt = create_image(dt.mlx_ptr, ft_max(map2d_x, 200), 14);
+	dt.img_erase_txt = create_image(dt.mlx_ptr, ft_max(map2d_x, 250), 14);
 	dt.img_2d_floor = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
 	dt.img_2d_wall = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
 	dt.img_2d_template = create_image(dt.mlx_ptr, map2d_x, map2d_y);
 	dt.img_2d_buffer = create_image(dt.mlx_ptr, map2d_x, map2d_y);
-	dt.img_3d_template = create_image(dt.mlx_ptr, WIN3D_WIDTH, WIN3D_HEIGHT);
-	dt.img_3d_buffer = create_image(dt.mlx_ptr, WIN3D_WIDTH, WIN3D_HEIGHT);
-	dt.nb_of_rays = get_nb_of_rays();
 	dt.hits = create_hit_array(dt.nb_of_rays);
+	dt.img_3d_template = create_image(dt.mlx_ptr, img3d_width, WIN3D_HEIGHT);
+	dt.img_3d_buffer = create_image(dt.mlx_ptr, img3d_width, WIN3D_HEIGHT);
 	return (dt);
 }
 
-void	free_data(t_data *dt)
+void free_data(t_data *dt)
 {
 	free_hit_array(&dt->hits);
 	free_player(&dt->player);
@@ -105,7 +110,7 @@ void	free_data(t_data *dt)
 	}
 }
 
-static void	check_ptr_not_null(void *ptr, const char *ptr_name, int *error)
+static void check_ptr_not_null(void *ptr, const char *ptr_name, int *error)
 {
 	if (!ptr)
 	{
@@ -114,9 +119,9 @@ static void	check_ptr_not_null(void *ptr, const char *ptr_name, int *error)
 	}
 }
 
-int	error_detected_after_init_data(t_data *dt)
+int error_detected_after_init_data(t_data *dt)
 {
-	int	error;
+	int error;
 
 	error = 0;
 	if (!dt->player.play_str)
@@ -124,26 +129,26 @@ int	error_detected_after_init_data(t_data *dt)
 		fprintf(stderr, "data->player.play_str=NULL, calloc() failed\n");
 		error++;
 	}
-	if (dt->player.pos.x < 0.0 || dt->player.pos.y < 0.0 || \
+	if (dt->player.pos.x < 0.0 || dt->player.pos.y < 0.0 ||
 		dt->player.radius <= 0 || dt->player.step_count < 0)
 	{
-		fprintf(stderr, "data->player init invalid: play{pos(%.2f, %.2f), ", \
-			dt->player.pos.x, dt->player.pos.y);
-		fprintf(stderr, "radius:%d, step_count:%d}\n", \
-			dt->player.radius, dt->player.step_count);
+		fprintf(stderr, "data->player init invalid: play{pos(%.2f, %.2f), ",
+				dt->player.pos.x, dt->player.pos.y);
+		fprintf(stderr, "radius:%d, step_count:%d}\n",
+				dt->player.radius, dt->player.step_count);
 		error++;
 	}
 	if (dt->maze.width <= 0 || dt->maze.height <= 0 || !dt->maze.mat)
 	{
 		fprintf(stderr, "data->maze init invalid: maze{width:%d, height:%d, ",
-			dt->maze.width, dt->maze.height);
+				dt->maze.width, dt->maze.height);
 		fprintf(stderr, "mat:NULL}\n");
 		error++;
 	}
 	if ((int)dt->win_dim.x <= 0 || (int)dt->win_dim.y <= 0)
 	{
 		fprintf(stderr, "data->win_dim init invalid: win{width:%d, height:%d, ",
-			(int)dt->win_dim.x, (int)dt->win_dim.y);
+				(int)dt->win_dim.x, (int)dt->win_dim.y);
 		fprintf(stderr, "mat:NULL}\n");
 		error++;
 	}

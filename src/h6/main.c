@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/13 21:07:53 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 00:49:08 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	print_start_infos(t_data dt, const char **str_arr, int bui_delay_ms)
 	printf("   │ Hit[i] infos ┃                                 ┃  ┆\n");
 	printf("   │              ┃                                 ┃  ┆\n");
 	printf("   │ (%04d, %04d) ┃              %4d               ┃%4d p\n", (int)dt.start2d.x, (int)dt.start2d.y, (int)dt.img_3d_buffer.width, (int)dt.win_dim.y);
-	printf("   │ 🡷Insert img2d┃                ╳                ┃ ┆\n");
+	printf("   │ 🡷Insert img2d┃                ╳                ┃  ┆\n");
 	printf("   ┢━━━━━━━━━━━━━━┫              %4d               ┃  ┆\n",  (int)dt.img_3d_buffer.height);
 	printf("   ┃              ┃                                 ┃  ┆\n") ;
 	printf("   ┃    %4d      ┃                                 ┃  ┆\n", (int)dt.img_2d_buffer.width);
@@ -37,15 +37,12 @@ static void	print_start_infos(t_data dt, const char **str_arr, int bui_delay_ms)
 	printf("   ┃    %4d      ┃                                 ┃  ┆\n", (int)dt.img_2d_buffer.height);
 	printf("   ┃              ┃                                 ┃  ┆\n");
 	printf("   ┗━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┴\n");
-	//printf(" - t_img 2d_buffer:  ");
-	//print_t_img(dt.img_2d_buffer);
-	//printf(" - t_img 3d_buffer:  ");
-	//print_t_img(dt.img_3d_buffer);
-	//printf(" - Window size: %d x %d pixels\n", (int)dt.win_dim.x, (int)dt.win_dim.y);
-	//printf(" - Start ");
-	//print_player(dt.player);
-	//printf("\n - Flags =[%s] ", dt.mv_flags);
-	//printf("\n - FOV=%.2f / FOV_PRE=%.2f --> %d\n", FOV, FOV_PRE, dt.nb_of_rays);
+	printf(" - player start pos=(%.2f, %.2f) dir=%.2f degrees\n", dt.player.pos.x, dt.player.pos.y, dt.player.dir);
+	printf(" - FOV=%.2f degrees / FOV_PRE=%.4f degrees\n", FOV, FOV_PRE);
+	printf(" - nb of rays X 3d columns width=%d X %d = %d VS %d\n", dt.nb_of_rays, dt.column_width, dt.column_width*dt.nb_of_rays, dt.img_3d_buffer.width);
+	printf(" - start left ray at angle=%.2f degrees\n", dt.hits[0].angle.x);
+	printf(" - end right ray at angle=%.2f degrees\n", dt.hits[dt.nb_of_rays - 1].angle.x);
+	printf(" - elem rotation per ray=%.4f degrees\n", dt.rot_elem);
 	printf("\n=============================================================\n");
 }
 
@@ -121,33 +118,81 @@ int	main(void)
 		"001111111111111111111111111111111111111111111111111111100",
 		"000000000000000000000000000000000000000000000000000000000",
 		NULL};
-		const char *str_arr[] = {
-		"111111111",
-		"100000001",
-		"101000101",
-		"100000001",
-		"100000E01",
-		"100000001",
-		"100010001",
-		"100000001",
-		"101101101",
-		"101101101",
-		"100000001",
-		"111111111",
+	const char *str_arr[] = {
+		"1111111111",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"1000000001",
+		"10N0000001",
+		"1111111111",
 		NULL};
+	const char	*str_arr[] = { \
+		"100011111111111", \
+		"100001000000001", \
+		"100000100000001", \
+		"100000010000001", \
+		"100000000000101", \
+		"1100000N0000011", \
+		"000000000000001", \
+		"100000000000000", \
+		"010000000000001", \
+		"001000001000001", \
+		"000000000000000", \
+		NULL };
+	const char	*str_arr[] = { \
+		"111", \
+		"1S1", \
+		"111", \
+		NULL };
 	*/
 	const char	*str_arr[] = { \
-		"0000S0000", \
-		"000000000", \
-		"000000000", \
-		"000000000", \
-		"000010000", \
-		"001000100", \
+		"100000011111111111", \
+		"100000001000000001", \
+		"100000000100000001", \
+		"100000000010000001", \
+		"100000000000000101", \
+		"1100100000N0000011", \
+		"000000000000000001", \
+		"100000000000000000", \
+		"010010000000000001", \
+		"001001000001000001", \
+		"001001000001000001", \
+		"000000000000000000", \
 		NULL };
 	gettimeofday(&prog_start_time, NULL);
 	dt = init_data(str_arr);
 	//------------------------------------------------------TODO REMOVE
-	//set_player(&dt.player, 5.6f, .4f, 270.0f);
+	set_player(&dt.player, 10.5f, 5.f, 90.0f);
 	//set_player(&dt.player, .5f, .5f, 135.0f);
 	//set_player(&dt.player, 0.0f, dt.maze.height, 45.0f);
 	//set_player(&dt.player, 1.6f, 2.6f, 250.0f);
@@ -169,6 +214,7 @@ int	main(void)
 	gettimeofday(&end_bui, NULL);
 	bui_delay_ms = diff_time_in_ms(start_bui, end_bui);
 	start_pos = dup_pos(dt.player.pos);
+	update_hit_tpos(&dt);
 	print_start_infos(dt, str_arr, bui_delay_ms);
 	mlx_loop_hook(dt.mlx_ptr, &main_loop, &dt);
 	mlx_hook(dt.win_ptr, 17, 0, &mlx_loop_end, dt.mlx_ptr);

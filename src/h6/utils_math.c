@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 00:52:18 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/10 17:22:11 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 00:10:27 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,18 @@ float	norm_angle(float angle)
 }
 
 /**
- * return ((int)ceilf(FOV / FOV_PRE)) --> IF FOV_PRE is RAY PER DEGREE
- * return ((int)(FOV / FOV_PRE) + 1)  --> IF FOV_PRE is STEP SIZE BETWEEN RAYS
+ * Makes sure that the number of rays is appropriate according to:
+ *  - FOV and FOV_PRE
+ *  - WIN3D_WIDTH
  */
 int	get_nb_of_rays(void)
 {
-	if (FOV_PRE >= FOV)
+	int	nb_rays;
+
+	if (FOV_PRE <= 0 || FOV_PRE >= FOV)
 		return (1);
-	return ((int)ceilf(FOV / FOV_PRE));
+	nb_rays = (int)(FOV / FOV_PRE);
+	if (nb_rays > WIN3D_WIDTH)
+		nb_rays = WIN3D_WIDTH;
+	return (nb_rays);
 }

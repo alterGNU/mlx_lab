@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 00:02:04 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 02:23:30 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@
 # define CIRCLE_RADIUS 8 // size of the player representation
 //-[ 3DImage ]------------------------------------------------------------------
 // TODO: replace by resolution
-# define WIN3D_WIDTH 1200
-# define WIN3D_HEIGHT 600
+# define WIN3D_WIDTH 1024
+# define WIN3D_HEIGHT 1024
 # define FLOOR_RGB 0x00FF00
 # define CEIL_RGB 0x0000FF
 //-[ Colors ]-------------------------------------------------------------------
@@ -52,8 +52,8 @@
 # define FPS 1000			// Desired frames per second
 # define FPS_DELTA 10		// Number of images to consider for FPS calculation
 # define FOV 60.f			// 0<FOV Player's Field of View angle in degrees
-# define FOV_PRE 20.f		// 0<FOV_PRE Field of View Precision in degrees
-# define DIST_MIN 1.f		// Distance where WALL_HEIGHT == WIN3D_HEIGHT
+# define FOV_PRE .01f		// 0<FOV_PRE Field of View Precision in degrees
+# define DIST_MIN .8f		// Distance where WALL_HEIGHT == WIN3D_HEIGHT
 // -[ Debug/UI toggles ]--------------------------------------------------------
 # define DRAW_HITS_TXT 1	// 0: disable, 1: enable hit positions display
 # define DRAW_2D_RAYS 2		// 0: none, 1: first/last, 2: all rays

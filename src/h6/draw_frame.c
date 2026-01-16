@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 00:03:23 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 02:14:29 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,7 @@ void	draw3d_v_lines(t_data *dt)
 		y_stop = (dt->img_3d_buffer.height / 2) * (1 - DIST_MIN / corrected_dist);
 		j = -1;
 		while (++j < dt->column_width)
-			draw_vline(&dt->img_3d_buffer, dt->img_3d_buffer.width - (i * dt->column_width + j), y_start, y_stop, RED_COLOR);
-			//draw_vline(&dt->img_3d_buffer, i * dt->column_width + j, y_start, y_stop, RED_COLOR);
+			draw_vline(&dt->img_3d_buffer, i * dt->column_width + j, y_start, y_stop, RED_COLOR);
 	}
 }
 
