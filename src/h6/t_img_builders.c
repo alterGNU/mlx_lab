@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 16:20:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/13 20:31:42 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:40:31 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int	build_img_3d(t_img *img)
 		{
 			if (y < horizon)
 				put_pixel_to_image(img, x, y, CEIL_RGB);
-			else 
+			else
 				put_pixel_to_image(img, x, y, FLOOR_RGB);
 		}
 	}

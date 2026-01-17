@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 02:19:27 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:48:58 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,8 +149,8 @@ typedef struct s_data
 // =[ Files & Fun. Signatures ]=================================================
 // -[ display_infos.c ]--------------------------------------------------------3
 void	display_player_infos(t_data *dt, int line_num);						// ✅
-void	display_fps_infos(t_data *dt, int line_num);						// ✅
-void	display_hits_infos(t_data *dt, int line_num);						// ✅
+void	display_fps_infos(t_data *dt, int line_num);						// ❌
+void	display_hits_infos(t_data *dt, int line_num);						// ❌
 // -[ draw_2dimg.c ]-----------------------------------------------------------3
 void	draw2d_player(t_img *img, t_play *p);								// ✅
 void	draw2d_hit_lines(t_data *dt);										// ✅
@@ -158,16 +158,16 @@ int		draw_buffer_2dimg(t_data *dt);										// ✅
 // -[ draw_3dimg.c ]-----------------------------------------------------------2
 void	draw3d_obj_vlines(t_data *dt);										// ✅
 int		draw_buffer_3dimg(t_data *dt);										// ✅
-// -[ draw_frame.c ]-----------------------------------------------------------4
+// -[ draw_buffer_images.c ]---------------------------------------------------1
 int		draw_buffer_images(t_data *dt);										// ❌
 // -[ draw_to_img.c ]----------------------------------------------------------6
 void	put_pixel_to_image(t_img *img, int x, int y, int color);			// ✅
-void	draw_vline(t_img *img, int x, int start_y, int stop_y, int color);	// ✅
+void	draw_vline(t_img *img, int x, int start_y, int stop_y, int color);	// ❌
 void	draw_hline(t_img *img, int x, t_fpos pos, int color);				// ✅
-void	draw_circle(t_img *img, t_fpos c_pos, int r, int color);			// ✅
+void	draw_circle(t_img *img, t_fpos c_pos, int r, int color);			// ❌
 void	draw_dda_line(t_img *img, t_fpos a_pos, t_fpos b_pos, int color);	// ✅
 void	draw_vector(t_img *img, t_fpos start, t_fpos vec, int color);		// ✅
-// -[ main_loop.c ]------------------------------------------------------------2
+// -[ main_loop.c ]------------------------------------------------------------4
 int		main_loop(t_data *dt);												// ❌
 // -[ memcpy_utils.c ]---------------------------------------------------------2
 void	*ft_memcpy(void *dst, const void *src, size_t len);					// ✅
@@ -176,57 +176,16 @@ void	*ft_memcpy_by_words(void *dst, const void *src, size_t len);		// ✅
 void	init_movement_flags(t_data *dt);									// ✅
 int		key_pressed(int keycode, t_data *dt);								// ✅
 int		key_released(int keycode, t_data *dt);								// ✅
-// -[ ray_casting.c ]----------------------------------------------------------1
-void	update_hit_tpos(t_data *dt);										// ✅
 // -[ raycast_collisions.c ]---------------------------------------------------5
-int		collision_detected(const t_data *dt, t_fpos ray_pos, float angle);	// ✅
+int		collision_detected(const t_data *dt, t_fpos ray_pos, float angle);	// ❌
 t_fpos	h_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
 t_fpos	v_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
 void	found_hit_dda(const t_data *dt, t_hit *hit);						// ✅
 void	update_hit_tpos(t_data *dt);										// ✅
 // -[ t_data_struct.c ]-------------------------------------------------------5
-t_data	init_data(const char **str_arr);									// ✅
+t_data	init_data(const char **str_arr);									// ❌
 void	free_data(t_data *dt);												// ✅
-int		error_detected_after_init_data(t_data *dt);							// ✅
-// -[ t_hit_struct.c ]---------------------------------------------------------4
-t_hit	*create_hit_array(int size);										// ✅
-void	free_hit_array(t_hit **hit_arr);									// ✅
-int		print_hit_array(t_hit *hit_arr);									// ✅
-// -[ t_img_builders.c ]-------------------------------------------------------5
-int		build_img_text(t_img *img);											// ✅
-int		build_img_floor(t_img *img);										// ✅
-int		build_img_wall(t_img *img);											// ✅
-int		build_img_grid(t_maze *maze, t_img *grid, t_img *floor, t_img *wall);//✅
-int		build_img_3d(t_img *img);											// ✅
-// -[ t_img_struct.c ]---------------------------------------------------------5
-void	memset_zero_img(t_img *img);										// ✅
-t_img	create_image(void *mlx_ptr, int width, int height);					// ✅
-void	print_t_img(t_img img);												// ✅
-void	free_image(t_img img, void *mlx_ptr);								// ✅
-int		is_img_valid(t_img *img);											// ✅
-// -[ t_img_duplicate.c ]------------------------------------------------------2
-void	copy_t_img_metadata(t_img *src, t_img *dst);						// ✅
-int		dup_t_img_by_words(t_img *src, t_img *dst);							// ✅
-// -[ t_img_insert.c ]---------------------------------------------------------1
-int		t_img_insert_rows_by_words(\
-		t_img *src, t_img *dst, int dst_x, int dst_y);						// ✅
-// -[ t_ipos_struct.c ]--------------------------------------------------------4
-t_ipos	init_ipos(int x, int y);											// ✅
-t_ipos	set_ipos(t_ipos *pos, int x, int y);								// ✅
-int		print_ipos(t_ipos pos);												// ✅
-t_ipos	dup_ipos(t_ipos src);												// ✅
-// -[ t_ipos_utils.c ]---------------------------------------------------------2
-void	add_ipos(t_ipos *a, const t_ipos *b);								// ✅
-void	prod_scal_ipos(t_ipos *a, int b);									// ✅
-// -[ t_maze_struct.c ]--------------------------------------------------------3
-t_maze	set_maze_and_player(const char **str_arr, t_play *player);			// ❌
-void	free_maze(t_maze *maze);											// ✅
-void	print_maze(t_maze maze);											// ✅
-// -[ t_player_struct.c ]------------------------------------------------------4
-t_play	init_player(void);													// ✅
-void	set_player(t_play *play, float x, float y, float dir);				// ✅
-int		print_player(t_play play);											// ✅
-void	free_player(t_play *player);										// ✅
+int		error_detected_after_init_data(t_data *dt);							// ❌
 // -[ t_fpos_struct.c ]--------------------------------------------------------4
 t_fpos	init_fpos(float x, float y);										// ✅
 t_fpos	set_fpos(t_fpos *pos, float x, float y);							// ✅
@@ -235,12 +194,45 @@ t_fpos	dup_fpos(t_fpos src);												// ✅
 // -[ t_fpos_utils.c ]---------------------------------------------------------2
 float	fpos_dist(t_fpos a, t_fpos b);										// ✅
 void	add_fpos(t_fpos *a, const t_fpos *b);								// ✅
-// -[ utils.c ]----------------------------------------------------------------5
-int		char_in_str(char c, const char *str);								// ✅
-void	print_str_array(const char **str_arr);								// ✅
-int		diff_time_in_ms(struct timeval start, struct timeval end);			// ✅
-int		convert_fps_to_frame_delay(int fps);								// ✅
-int		get_nb_of_rays(void);												// ✅
+// -[ t_hit_struct.c ]---------------------------------------------------------5
+t_hit	init_hit(void);														// ✅
+t_hit	*create_hit_array(int size);										// ✅
+void	free_hit_array(t_hit **hit_arr);									// ✅
+int		print_hit_array(t_hit *hit_arr);									// ✅
+t_data	init_data(const char **str_arr);									// ❌
+// -[ t_img_builders.c ]-------------------------------------------------------5
+int		build_img_text(t_img *img);											// ✅
+int		build_img_floor(t_img *img);										// ✅
+int		build_img_wall(t_img *img);											// ✅
+int		build_img_grid(t_maze *maze, t_img *grid, t_img *floor, t_img *wall);//✅
+int		build_img_3d(t_img *img);											// ✅
+// -[ t_img_manipulations.c ]--------------------------------------------------3
+int		t_img_insert_rows_by_words(\
+		t_img *src, t_img *dst, int dst_x, int dst_y);						// ✅
+int		dup_t_img_by_words(t_img *src, t_img *dst);							// ✅
+// -[ t_img_struct.c ]---------------------------------------------------------5
+void	memset_zero_img(t_img *img);										// ✅
+t_img	create_image(void *mlx_ptr, int width, int height);					// ✅
+void	print_t_img(t_img img);												// ✅
+void	free_image(t_img img, void *mlx_ptr);								// ✅
+int		is_img_valid(t_img *img);											// ✅
+// -[ t_ipos_struct.c ]--------------------------------------------------------4
+t_ipos	init_ipos(int x, int y);											// ✅
+t_ipos	set_ipos(t_ipos *pos, int x, int y);								// ✅
+int		print_ipos(t_ipos pos);												// ✅
+t_ipos	dup_ipos(t_ipos src);												// ✅
+// -[ t_ipos_utils.c ]---------------------------------------------------------2
+void	add_ipos(t_ipos *a, const t_ipos *b);								// ✅
+void	prod_scal_ipos(t_ipos *a, int b);									// ✅
+// -[ t_maze_struct.c ]--------------------------------------------------------4
+t_maze	set_maze_and_player(const char **str_arr, t_play *player);			// ❌
+void	free_maze(t_maze *maze);											// ✅
+void	print_maze(t_maze maze);											// ✅
+// -[ t_player_struct.c ]------------------------------------------------------4
+t_play	init_player(void);													// ✅
+void	set_player(t_play *play, float x, float y, float dir);				// ❌
+int		print_player(t_play play);											// ✅
+void	free_player(t_play *player);										// ✅
 // -[ utils_fmath.c ]----------------------------------------------------------5
 float	ft_fmax(float a, float b);											// ✅
 float	ft_fmin(float a, float b);											// ✅
@@ -251,4 +243,10 @@ float	norm_angle(float angle);											// ✅
 int		ft_imax(int a, int b);												// ✅
 int		ft_imin(int a, int b);												// ✅
 int		ft_iabs(int a);														// ✅
+// -[ utils.c ]----------------------------------------------------------------5
+int		char_in_str(char c, const char *str);								// ✅
+void	print_str_array(const char **str_arr);								// ✅
+int		diff_time_in_ms(struct timeval start, struct timeval end);			// ✅
+int		convert_fps_to_frame_delay(int fps);								// ✅
+int		get_nb_of_rays(void);												// ✅
 #endif

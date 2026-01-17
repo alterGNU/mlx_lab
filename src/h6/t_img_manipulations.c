@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   t_img_insertion.c                                  :+:      :+:    :+:   */
+/*   t_img_manipulations.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 00:04:25 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/06 18:47:51 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:45:11 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,25 @@ int	t_img_insert_rows_by_words(t_img *src, t_img *dst, int dst_x, int dst_y)
 		ft_memcpy_by_words(dst_row, src_row, row_bytes);
 	}
 	return (0);
+}
+
+static void	copy_t_img_metadata(t_img *src, t_img *dst)
+{
+	dst->endian = src->endian;
+	dst->size_line = src->size_line;
+	dst->bpp = src->bpp;
+	dst->height = src->height;
+	dst->width = src->width;
+}
+
+int	dup_t_img_by_words(t_img *src, t_img *dst)
+{
+	size_t	length;
+
+	if (!is_img_valid(src) || !is_img_valid(dst))
+		return (0);
+	copy_t_img_metadata(src, dst);
+	length = (size_t)(src->size_line * src->height);
+	ft_memcpy_by_words(dst->addr, src->addr, length);
+	return (1);
 }

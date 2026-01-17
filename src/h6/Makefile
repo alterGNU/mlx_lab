@@ -43,8 +43,7 @@ SRC			=	display_infos.c \
 				t_fpos_utils.c \
 				t_hit_struct.c \
 				t_img_builders.c \
-				t_img_duplicate.c \
-				t_img_insertion.c \
+				t_img_manipulations.c \
 				t_img_struct.c \
 				t_ipos_struct.c \
 				t_ipos_utils.c \

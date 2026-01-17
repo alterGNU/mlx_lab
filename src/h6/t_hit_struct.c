@@ -6,12 +6,20 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 19:24:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 16:54:12 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:39:20 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
+/**
+ * TODO:
+ * - Add more info to struct:
+ *   - hit->type: 
+ *     - wall-outside(NSEW)
+ *     - wall-inside(NSEW)
+ *     - boundery(NSEW)
+ */
 t_hit	init_hit(void)
 {
 	t_hit	hit;

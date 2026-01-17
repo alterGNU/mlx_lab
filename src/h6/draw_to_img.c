@@ -6,14 +6,17 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:13:33 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 02:02:39 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:31:29 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
 /**
- * Puts a pixel of a given color at (x, y) in the image.
+ * TODO:
+ *  - REORGANISE, OPTIMIZE and FACTORIZE the pixel writing functions.(tests)
+ *  - ENDIANNESS should be checked once on img-loading ,not at each pixel write.
+ *    --> Found a way to switch between fun. using little/big endian easily.
  */
 void	put_pixel_to_image(t_img *img, int x, int y, int color)
 {

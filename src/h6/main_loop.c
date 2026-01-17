@@ -6,12 +6,17 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/15 23:34:42 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:27:08 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
+/**
+ * TODO:
+ * - some of this function are engine-specific (move_player, coll-detect...):
+ *   --> Clean code an move to an engine file if needed.
+ */
 static int	move_player_pos(t_data *dt, float rot, float speed)
 {
 	float	next_x;
@@ -48,6 +53,10 @@ static void	move_player(t_data *dt)
 		move_player_pos(dt, -90, POS_SPEED);
 }
 
+/**
+ * TODO:
+ * 	- Player could have a rotation counter too
+ */
 static int	player_moved(t_play *old_play, t_play *new_play)
 {
 	if (old_play->pos.x != new_play->pos.x || \
