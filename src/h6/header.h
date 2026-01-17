@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 02:06:07 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:19:27 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,12 @@
 # include <sys/time.h>
 # include <unistd.h>
 // =[ Structures ]==============================================================
+typedef struct s_ipos
+{
+	int	x;
+	int	y;
+}	t_ipos;
+
 typedef struct s_fpos
 {
 	float	x;
@@ -183,7 +189,6 @@ t_data	init_data(const char **str_arr);									// ✅
 void	free_data(t_data *dt);												// ✅
 int		error_detected_after_init_data(t_data *dt);							// ✅
 // -[ t_hit_struct.c ]---------------------------------------------------------4
-t_hit	set_hit(t_hit *hit, float x, float y, float angle);					// ✅
 t_hit	*create_hit_array(int size);										// ✅
 void	free_hit_array(t_hit **hit_arr);									// ✅
 int		print_hit_array(t_hit *hit_arr);									// ✅
@@ -205,6 +210,14 @@ int		dup_t_img_by_words(t_img *src, t_img *dst);							// ✅
 // -[ t_img_insert.c ]---------------------------------------------------------1
 int		t_img_insert_rows_by_words(\
 		t_img *src, t_img *dst, int dst_x, int dst_y);						// ✅
+// -[ t_ipos_struct.c ]--------------------------------------------------------4
+t_ipos	init_ipos(int x, int y);											// ✅
+t_ipos	set_ipos(t_ipos *pos, int x, int y);								// ✅
+int		print_ipos(t_ipos pos);												// ✅
+t_ipos	dup_ipos(t_ipos src);												// ✅
+// -[ t_ipos_utils.c ]---------------------------------------------------------2
+void	add_ipos(t_ipos *a, const t_ipos *b);								// ✅
+void	prod_scal_ipos(t_ipos *a, int b);									// ✅
 // -[ t_maze_struct.c ]--------------------------------------------------------3
 t_maze	set_maze_and_player(const char **str_arr, t_play *player);			// ❌
 void	free_maze(t_maze *maze);											// ✅
@@ -218,7 +231,7 @@ void	free_player(t_play *player);										// ✅
 t_fpos	init_fpos(float x, float y);										// ✅
 t_fpos	set_fpos(t_fpos *pos, float x, float y);							// ✅
 int		print_fpos(t_fpos pos);												// ✅
-t_fpos	dup_pos(t_fpos src);												// ✅
+t_fpos	dup_fpos(t_fpos src);												// ✅
 // -[ t_fpos_utils.c ]---------------------------------------------------------2
 float	fpos_dist(t_fpos a, t_fpos b);										// ✅
 void	add_fpos(t_fpos *a, const t_fpos *b);								// ✅

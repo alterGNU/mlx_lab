@@ -1,48 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   t_fpos_struct.c                                    :+:      :+:    :+:   */
+/*   t_ipos_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 16:54:50 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 02:13:57 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:17:52 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-t_fpos	init_fpos(float x, float y)
+/**
+ * TODO: remove if not used
+ */
+void	add_ipos(t_ipos *a, const t_ipos *b)
 {
-	t_fpos	pos;
-
-	pos.x = x;
-	pos.y = y;
-	return (pos);
-}
-
-t_fpos	set_fpos(t_fpos *pos, float x, float y)
-{
-	if (!pos)
-		return (init_fpos(-1, -1));
-	pos->x = x;
-	pos->y = y;
-	return (*pos);
-}
-
-int	print_fpos(t_fpos pos)
-{
-	return (printf("(%.4f, %.4f)", pos.x, pos.y));
+	a->x += b->x;
+	a->y += b->y;
 }
 
 /**
- * TODO: Check if really useful...t_fpos toto = t_fpos tutu do the same?
+ * TODO: remove if not used
  */
-t_fpos	dup_fpos(t_fpos src)
+void	prod_scal_ipos(t_ipos *a, int b)
 {
-	t_fpos	dst;
-
-	dst.x = src.x;
-	dst.y = src.y;
-	return (dst);
+	a->x *= b;
+	a->y *= b;
 }

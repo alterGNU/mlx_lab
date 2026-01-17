@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 16:54:03 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:13:56 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,7 @@ int	main(void)
 		return (fprintf(stderr, "Error: build_img_3d() failed\n"), free_data(&dt), 1);
 	gettimeofday(&end_bui, NULL);
 	bui_delay_ms = diff_time_in_ms(start_bui, end_bui);
-	start_fpos = dup_pos(dt.player.pos);
+	start_fpos = dup_fpos(dt.player.pos);
 	update_hit_tpos(&dt);
 	print_start_infos(dt, str_arr, bui_delay_ms);
 	mlx_loop_hook(dt.mlx_ptr, &main_loop, &dt);

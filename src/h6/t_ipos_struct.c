@@ -1,46 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   t_fpos_struct.c                                    :+:      :+:    :+:   */
+/*   t_ipos_struct.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 16:54:50 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 02:13:57 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:13:26 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-t_fpos	init_fpos(float x, float y)
+t_ipos	init_ipos(int x, int y)
 {
-	t_fpos	pos;
+	t_ipos	pos;
 
 	pos.x = x;
 	pos.y = y;
 	return (pos);
 }
 
-t_fpos	set_fpos(t_fpos *pos, float x, float y)
+t_ipos	set_ipos(t_ipos *pos, int x, int y)
 {
 	if (!pos)
-		return (init_fpos(-1, -1));
+		return (init_ipos(-1, -1));
 	pos->x = x;
 	pos->y = y;
 	return (*pos);
 }
 
-int	print_fpos(t_fpos pos)
+int	print_ipos(t_ipos pos)
 {
-	return (printf("(%.4f, %.4f)", pos.x, pos.y));
+	return (printf("(%d, %d)", pos.x, pos.y));
 }
 
 /**
- * TODO: Check if really useful...t_fpos toto = t_fpos tutu do the same?
+ * TODO: Check if really useful...t_ipos toto = t_ipos tutu do the same?
  */
-t_fpos	dup_fpos(t_fpos src)
+t_ipos	dup_ipos(t_ipos src)
 {
-	t_fpos	dst;
+	t_ipos	dst;
 
 	dst.x = src.x;
 	dst.y = src.y;

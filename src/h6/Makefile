@@ -46,6 +46,8 @@ SRC			=	display_infos.c \
 				t_img_duplicate.c \
 				t_img_insertion.c \
 				t_img_struct.c \
+				t_ipos_struct.c \
+				t_ipos_utils.c \
 				t_maze_struct.c \
 				t_player_struct.c \
 				utils_fmath.c \
