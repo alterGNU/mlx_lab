@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:13:33 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/14 21:42:23 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 16:53:47 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	draw_vline(t_img *img, int x, int start_y, int stop_y, int color)
 	}
 }
 
-void	draw_hline(t_img *img, int x, t_pos pos, int color)
+void	draw_hline(t_img *img, int x, t_fpos pos, int color)
 {
 	while (x <= pos.x)
 	{
@@ -71,23 +71,23 @@ void	draw_hline(t_img *img, int x, t_pos pos, int color)
 	}
 }
 
-void	draw_circle(t_img *img, t_pos c_pos, int r, int c)
+void	draw_circle(t_img *img, t_fpos c_pos, int r, int c)
 {
 	int		x;
 	int		y;
 	int		d;
-	t_pos	tp;
+	t_fpos	tp;
 
 	x = 0;
 	y = r;
 	d = 1 - r;
-	tp = init_pos(-1, -1);
+	tp = init_fpos(-1, -1);
 	while (x <= y)
 	{
-		draw_hline(img, c_pos.x - x, set_pos(&tp, c_pos.x + x, c_pos.y + y), c);
-		draw_hline(img, c_pos.x - x, set_pos(&tp, c_pos.x + x, c_pos.y - y), c);
-		draw_hline(img, c_pos.x - y, set_pos(&tp, c_pos.x + y, c_pos.y + x), c);
-		draw_hline(img, c_pos.x - y, set_pos(&tp, c_pos.x + y, c_pos.y - x), c);
+		draw_hline(img, c_pos.x - x, set_fpos(&tp, c_pos.x + x, c_pos.y + y), c);
+		draw_hline(img, c_pos.x - x, set_fpos(&tp, c_pos.x + x, c_pos.y - y), c);
+		draw_hline(img, c_pos.x - y, set_fpos(&tp, c_pos.x + y, c_pos.y + x), c);
+		draw_hline(img, c_pos.x - y, set_fpos(&tp, c_pos.x + y, c_pos.y - x), c);
 		if (d < 0)
 			d += 2 * x + 3;
 		else
@@ -99,7 +99,7 @@ void	draw_circle(t_img *img, t_pos c_pos, int r, int c)
 	}
 }
 
-void	draw_dda_line(t_img *img, t_pos a_pos, t_pos b_pos, int color)
+void	draw_dda_line(t_img *img, t_fpos a_pos, t_fpos b_pos, int color)
 {
 	int		dx;
 	int		dy;
@@ -120,21 +120,21 @@ void	draw_dda_line(t_img *img, t_pos a_pos, t_pos b_pos, int color)
 	}
 }
 
-void	draw_vector(t_img *img, t_pos origin, t_pos angle_speed, int color)
+void	draw_vector(t_img *img, t_fpos origin, t_fpos angle_speed, int color)
 {
-	t_pos	end;
-	t_pos	left;
-	t_pos	right;
+	t_fpos	end;
+	t_fpos	left;
+	t_fpos	right;
 	float	angle_left;
 	float	angle_right;
 
-	end = init_pos(origin.x + cosf(radian(angle_speed.x)) * angle_speed.y, \
+	end = init_fpos(origin.x + cosf(radian(angle_speed.x)) * angle_speed.y, \
 		origin.y - sinf(radian(angle_speed.x)) * angle_speed.y);
 	angle_left = norm_angle(180.0 + angle_speed.x - 45.0);
-	left = init_pos(end.x + cosf(radian(angle_left)) * angle_speed.y / 2, \
+	left = init_fpos(end.x + cosf(radian(angle_left)) * angle_speed.y / 2, \
 		end.y - sinf(radian(angle_left)) * angle_speed.y / 2);
 	angle_right = norm_angle(180.0 + angle_speed.x + 45.0);
-	right = init_pos(end.x + cosf(radian(angle_right)) * angle_speed.y / 2, \
+	right = init_fpos(end.x + cosf(radian(angle_right)) * angle_speed.y / 2, \
 		end.y - sinf(radian(angle_right)) * angle_speed.y / 2);
 	draw_dda_line(img, origin, end, color);
 	draw_dda_line(img, end, left, color);

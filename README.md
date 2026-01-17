@@ -845,7 +845,7 @@ As our code grows, we will create a folder per major update using multi-files, h
 - **Player**:
   - Start position given in string array with the char:`'P'`.
   - A player struct has
-    - a position member:`t_pos(float x, float y)` --> 2D position
+    - a position member:`t_fpos(float x, float y)` --> 2D position
     - a color member:`int color` --> pixel color `0x00RRGGBB` value
     - a circle radius member:`int radius` --> circle radius in pixel
   - Player representation is a fill color circle. _(The algorithm used to draw a circle in pixels is: **Bresenham**)_
@@ -862,7 +862,7 @@ As our code grows, we will create a folder per major update using multi-files, h
 #### H.1.b | Implementations:
 
 - [header.h](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/header.h): header with struct def. and fun. signatures.
-- [t_pos_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_pos_struct.c)
+- [t_fpos_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_fpos_struct.c)
 - [t_player_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_player_struct.c)
 - [t_maze_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_maze_struct.c)
 - [t_img_struct.c](https://github.com/alterGNU/mlx_lab/blob/main/src/h1/t_img_struct.c)
@@ -1234,8 +1234,8 @@ The vector base movement are based on polar-coord-system using trigo-formulas.
 - 1. Add in header file: _(both same type as `player->dir`, float so far...could be double)_
   - 1.1 `FOV` Player's Field Of View _(**angle in degree**)_
   - 1.2 `FOV_PRE` FOV Precision _(FOV's Elem. Rot. Step, it's like the xrays precision)_
-- 2. Add a struct to store hit_points `t_pos array` of round(FOV/FOV_PRE + 1)
-  - 2.1 Add: data struct `t_data->dt->hit_tpos[(int)FOV/FOV_PRE]` struct to store points --> in file `t_pos_arr.c`--> array of `t_pos`
+- 2. Add a struct to store hit_points `t_fpos array` of round(FOV/FOV_PRE + 1)
+  - 2.1 Add: data struct `t_data->dt->hit_tpos[(int)FOV/FOV_PRE]` struct to store points --> in file `t_fpos_arr.c`--> array of `t_fpos`
 - 3. Add: in Fun. to compute all `dt->hit_tpos[++i]` points
 - 4. Add: in Fun. to draw all `dt->hit_tpos[++i]` points
 

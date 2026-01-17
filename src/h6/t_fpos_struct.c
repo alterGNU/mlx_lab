@@ -1,61 +1,48 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   t_pos_struct.c                                     :+:      :+:    :+:   */
+/*   t_fpos_struct.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/04 17:04:50 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/13 16:22:09 by lagrondi         ###   ########.fr       */
+/*   Created: 2026/01/16 16:54:50 by lagrondi          #+#    #+#             */
+/*   Updated: 2026/01/16 17:05:46 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-t_pos	init_pos(float x, float y)
+t_fpos	init_fpos(float x, float y)
 {
-	t_pos	pos;
+	t_fpos	pos;
 
 	pos.x = x;
 	pos.y = y;
 	return (pos);
 }
 
-t_pos	set_pos(t_pos *pos, float x, float y)
+t_fpos	set_fpos(t_fpos *pos, float x, float y)
 {
 	if (!pos)
-		return (init_pos(-1, -1));
+		return (init_fpos(-1, -1));
 	pos->x = x;
 	pos->y = y;
 	return (*pos);
 }
 
-int	print_pos(t_pos pos)
+int	print_fpos(t_fpos pos)
 {
-	return (printf("(%.2f, %.2f)", pos.x, pos.y));
+	return (printf("(%.4f, %.4f)", pos.x, pos.y));
 }
 
-t_pos	dup_pos(t_pos src)
+/**
+ * TODO: Check if really useful...t_fpos toto = t_fpos tutu do the same?
+ */
+t_fpos	dup_pos(t_fpos src)
 {
-	t_pos	dst;
+	t_fpos	dst;
 
 	dst.x = src.x;
 	dst.y = src.y;
 	return (dst);
-}
-
-float	tpos_dist(t_pos a, t_pos b)
-{
-	float	dx;
-	float	dy;
-
-	dx = b.x - a.x;
-	dy = b.y - a.y;
-	return (sqrtf(dx * dx + dy * dy));
-}
-
-void	add_pos(t_pos *a, const t_pos *b)
-{
-	a->x += b->x;
-	a->y += b->y;
 }

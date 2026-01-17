@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   t_hit_struct.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lmouttap <lmouttap@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 19:24:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 21:08:18 by lmouttap         ###   ########.fr       */
+/*   Updated: 2026/01/16 16:54:12 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ t_hit	init_hit(void)
 	t_hit	hit;
 
 	hit.valid = 1;
-	hit.pos = init_pos(-1.f, -1.f);
-	hit.angle = init_pos(-1.f, -1.f);
+	hit.pos = init_fpos(-1.f, -1.f);
+	hit.angle = init_fpos(-1.f, -1.f);
 	hit.distance = -1.f;
 	return (hit);
 }
@@ -58,9 +58,9 @@ int	print_hit_array(t_hit *hit_arr)
 	while (hit_arr[i].valid)
 	{
 		psf += printf("{pos");
-		psf += print_pos(hit_arr[i].pos);
+		psf += print_fpos(hit_arr[i].pos);
 		psf += printf(", ang");
-		psf += print_pos(hit_arr[i].angle);
+		psf += print_fpos(hit_arr[i].angle);
 		psf += printf(", dist:%.2f}, ", hit_arr[i].distance);
 		i++;
 	}

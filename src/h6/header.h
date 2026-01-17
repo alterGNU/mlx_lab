@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 16:45:07 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 17:13:37 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,23 +70,23 @@
 # include <sys/time.h>
 # include <unistd.h>
 // =[ Structures ]==============================================================
-typedef struct s_pos
+typedef struct s_fpos
 {
 	float	x;
 	float	y;
-}	t_pos;
+}	t_fpos;
 
 typedef struct s_hit
 {
 	int		valid;	//sentinel-> valid_hit = 1; invalid_hit = 0
-	t_pos	pos;
-	t_pos	angle; // x: degree, y: tan(radian)
+	t_fpos	pos;
+	t_fpos	angle; // x: degree, y: tan(radian)
 	float	distance;
 }	t_hit;
 
 typedef struct s_play
 {
-	t_pos	pos;
+	t_fpos	pos;
 	float	dir;
 	int		color;
 	int		radius;
@@ -123,9 +123,9 @@ typedef struct s_data
 	t_hit			*hits;			// array of hits, size = nb_of_rays
 	void			*mlx_ptr;
 	void			*win_ptr;
-	t_pos			win_dim;		// window dimensions in pixels(avoid using mlx getter)
-	t_pos			start2d;		// top-left position of 2D image in window
-	t_pos			start3d;		// top-left position of 3D image in window
+	t_fpos			win_dim;		// window dimensions in pixels(avoid using mlx getter)
+	t_fpos			start2d;		// top-left position of 2D image in window
+	t_fpos			start3d;		// top-left position of 3D image in window
 	t_img			img_erase_txt;
 	t_img			img_2d_floor;
 	t_img			img_2d_wall;
@@ -157,10 +157,10 @@ int		draw_buffer_images(t_data *dt);										// ❌
 // -[ draw_to_img.c ]----------------------------------------------------------6
 void	put_pixel_to_image(t_img *img, int x, int y, int color);			// ✅
 void	draw_vline(t_img *img, int x, int start_y, int stop_y, int color);	// ✅
-void	draw_hline(t_img *img, int x, t_pos pos, int color);				// ✅
-void	draw_circle(t_img *img, t_pos c_pos, int r, int color);				// ✅
-void	draw_dda_line(t_img *img, t_pos a_pos, t_pos b_pos, int color);		// ✅
-void	draw_vector(t_img *img, t_pos start, t_pos vec, int color);			// ✅
+void	draw_hline(t_img *img, int x, t_fpos pos, int color);				// ✅
+void	draw_circle(t_img *img, t_fpos c_pos, int r, int color);				// ✅
+void	draw_dda_line(t_img *img, t_fpos a_pos, t_fpos b_pos, int color);		// ✅
+void	draw_vector(t_img *img, t_fpos start, t_fpos vec, int color);			// ✅
 // -[ main_loop.c ]------------------------------------------------------------2
 int		main_loop(t_data *dt);												// ❌
 // -[ memcpy_utils.c ]---------------------------------------------------------2
@@ -173,9 +173,9 @@ int		key_released(int keycode, t_data *dt);								// ✅
 // -[ ray_casting.c ]----------------------------------------------------------1
 void	update_hit_tpos(t_data *dt);										// ✅
 // -[ raycast_collisions.c ]---------------------------------------------------5
-int		collision_detected(const t_data *dt, t_pos ray_pos, float angle);	// ✅
-t_pos	h_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
-t_pos	v_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
+int		collision_detected(const t_data *dt, t_fpos ray_pos, float angle);	// ✅
+t_fpos	h_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
+t_fpos	v_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
 void	found_hit_dda(const t_data *dt, t_hit *hit);						// ✅
 void	update_hit_tpos(t_data *dt);										// ✅
 // -[ t_data_struct.c ]-------------------------------------------------------5
@@ -214,13 +214,14 @@ t_play	init_player(void);													// ✅
 void	set_player(t_play *play, float x, float y, float dir);				// ✅
 int		print_player(t_play play);											// ✅
 void	free_player(t_play *player);										// ✅
-// -[ t_pos_struct.c ]---------------------------------------------------------6
-t_pos	init_pos(float x, float y);											// ✅
-t_pos	set_pos(t_pos *pos, float x, float y);								// ✅
-int		print_pos(t_pos pos);												// ✅
-t_pos	dup_pos(t_pos src);													// ✅
-float	tpos_dist(t_pos a, t_pos b);										// ✅
-void	add_pos(t_pos *a, const t_pos *b);									// ✅
+// -[ t_fpos_struct.c ]--------------------------------------------------------4
+t_fpos	init_fpos(float x, float y);										// ✅
+t_fpos	set_fpos(t_fpos *pos, float x, float y);							// ✅
+int		print_fpos(t_fpos pos);												// ✅
+t_fpos	dup_pos(t_fpos src);												// ✅
+// -[ t_fpos_utils.c ]---------------------------------------------------------2
+float	fpos_dist(t_fpos a, t_fpos b);										// ✅
+void	add_fpos(t_fpos *a, const t_fpos *b);								// ✅
 // -[ utils.c ]----------------------------------------------------------------4
 int		char_in_str(char c, const char *str);								// ✅
 void	print_str_array(const char **str_arr);								// ✅

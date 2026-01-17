@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 15:37:07 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 16:54:11 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	zero_memset_data(t_data *dt)
 	dt->maze = (t_maze){NULL, 0, 0, 0};
 	dt->mlx_ptr = NULL;
 	dt->win_ptr = NULL;
-	dt->win_dim = (t_pos){0.0f, 0.0f};
+	dt->win_dim = (t_fpos){0.0f, 0.0f};
 	dt->img_erase_txt = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
 	dt->img_2d_floor = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
 	dt->img_2d_wall = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
@@ -27,8 +27,8 @@ static void	zero_memset_data(t_data *dt)
 	dt->img_3d_template = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
 	dt->img_3d_buffer = (t_img){NULL, NULL, 0, 0, 0, 0, 0};
 	dt->img_drawn = 0;
-	dt->start2d = (t_pos){0.0f, 0.0f};
-	dt->start3d = (t_pos){0.0f, 0.0f};
+	dt->start2d = (t_fpos){0.0f, 0.0f};
+	dt->start3d = (t_fpos){0.0f, 0.0f};
 	dt->delay_between_frames_ms = convert_fps_to_frame_delay(FPS);
 	memset(&dt->last_frame_time, 0, sizeof(struct timeval));
 	memset(&dt->fps_start_inter, 0, sizeof(struct timeval));
@@ -68,8 +68,8 @@ t_data	init_data(const char **str_arr)
 	dt.win_dim.y = ft_max(map2d_y + WIN_DBG_TXT_LEN + 3 * WIN_BORDER, IMG3D_HEIGHT + 2 * WIN_BORDER);
 	if (dt.win_dim.x <= 0 || dt.win_dim.y <= 0)
 		return (dt);
-	set_pos(&dt.start2d, 5.0f, (float)dt.win_dim.y - (float)map2d_y - 5.0f);
-	set_pos(&dt.start3d, (float)dt.win_dim.x - (float)img3d_width - 5.0f, 5.0f);
+	set_fpos(&dt.start2d, 5.0f, (float)dt.win_dim.y - (float)map2d_y - 5.0f);
+	set_fpos(&dt.start3d, (float)dt.win_dim.x - (float)img3d_width - 5.0f, 5.0f);
 	dt.win_ptr = mlx_new_window(dt.mlx_ptr, dt.win_dim.x, dt.win_dim.y, WIN_TITLE);
 	if (!dt.win_ptr)
 		return (dt);

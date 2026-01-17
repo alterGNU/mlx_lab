@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 00:49:08 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/16 16:54:03 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static void	print_start_infos(t_data dt, const char **str_arr, int bui_delay_ms)
 	printf("\n=============================================================\n");
 }
 
-static void	print_end_infos(t_data dt, t_pos start_pos,  int duration_ms, int bui_delay_ms)
+static void	print_end_infos(t_data dt, t_fpos start_fpos,  int duration_ms, int bui_delay_ms)
 {
 	float	avg_fps;
 
@@ -59,9 +59,9 @@ static void	print_end_infos(t_data dt, t_pos start_pos,  int duration_ms, int bu
 	printf(" - Player:\n");
 	printf("  - %d steps taken\n", dt.player.step_count);
 	printf("  - from ");
-	print_pos(start_pos);
+	print_fpos(start_fpos);
 	printf("\n  - to   ");
-	print_pos(dt.player.pos);
+	print_fpos(dt.player.pos);
 	printf("\n - Flags =[%s] ", dt.mv_flags);
 	printf("\n - FOV=%.2f / FOV_PRE=%.2f --> %d\n", FOV, FOV_PRE, dt.nb_of_rays);
 	printf("\n====================================\n\n");
@@ -69,7 +69,7 @@ static void	print_end_infos(t_data dt, t_pos start_pos,  int duration_ms, int bu
 
 int	main(void)
 {
-	t_pos			start_pos;
+	t_fpos			start_fpos;
 	t_data			dt;
 	struct timeval	prog_start_time;
 	struct timeval	prog_end_time;
@@ -174,7 +174,6 @@ int	main(void)
 		"1S1", \
 		"111", \
 		NULL };
-	*/
 	const char	*str_arr[] = { \
 		"100000011111111111", \
 		"100000001000000001", \
@@ -189,14 +188,23 @@ int	main(void)
 		"001001000001000001", \
 		"000000000000000000", \
 		NULL };
+	*/
+	const char	*str_arr[] = { \
+		"0000000", \
+		"0010100", \
+		"0100010", \
+		"100N001", \
+		"0100010", \
+		"0010100", \
+		"0000000", \
+		NULL };
 	gettimeofday(&prog_start_time, NULL);
 	dt = init_data(str_arr);
 	//------------------------------------------------------TODO REMOVE
-	set_player(&dt.player, 10.5f, 5.f, 90.0f);
-	//set_player(&dt.player, .5f, .5f, 135.0f);
-	//set_player(&dt.player, 0.0f, dt.maze.height, 45.0f);
-	//set_player(&dt.player, 1.6f, 2.6f, 250.0f);
-	//set_player(&dt.player, 1.3f, 3.3f, 45.0f);
+	set_player(&dt.player, 3.5f, 3.5f, 45.0f);
+	//set_player(&dt.player, 3.5f, 3.5f, 3 * 45.0f);
+	//set_player(&dt.player, 3.5f, 3.5f, 5 * 45.0f);
+	//set_player(&dt.player, 3.5f, 3.5f, 7 * 45.0f);
 	//------------------------------------------------------TODO REMOVE
 	if (error_detected_after_init_data(&dt))
 		return (free_data(&dt), 1);
@@ -213,7 +221,7 @@ int	main(void)
 		return (fprintf(stderr, "Error: build_img_3d() failed\n"), free_data(&dt), 1);
 	gettimeofday(&end_bui, NULL);
 	bui_delay_ms = diff_time_in_ms(start_bui, end_bui);
-	start_pos = dup_pos(dt.player.pos);
+	start_fpos = dup_pos(dt.player.pos);
 	update_hit_tpos(&dt);
 	print_start_infos(dt, str_arr, bui_delay_ms);
 	mlx_loop_hook(dt.mlx_ptr, &main_loop, &dt);
@@ -223,6 +231,6 @@ int	main(void)
 	mlx_loop(dt.mlx_ptr);
 	gettimeofday(&prog_end_time, NULL);
 	ms_duration = diff_time_in_ms(prog_start_time, prog_end_time);
-	print_end_infos(dt, start_pos, ms_duration, bui_delay_ms);
+	print_end_infos(dt, start_fpos, ms_duration, bui_delay_ms);
 	return (free_data(&dt), 0); 
 }

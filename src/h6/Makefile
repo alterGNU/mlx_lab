@@ -33,12 +33,14 @@ SRC			=	display_infos.c \
 				draw_3dimg.c \
 				draw_buffer_images.c \
 				draw_to_img.c \
-				main_loop.c \
 				main.c \
+				main_loop.c \
 				memcpy_utils.c \
 				move_flags.c \
 				raycast_collision.c \
 				t_data_struct.c \
+				t_fpos_struct.c \
+				t_fpos_utils.c \
 				t_hit_struct.c \
 				t_img_builders.c \
 				t_img_duplicate.c \
@@ -46,9 +48,8 @@ SRC			=	display_infos.c \
 				t_img_struct.c \
 				t_maze_struct.c \
 				t_player_struct.c \
-				t_pos_struct.c \
-				utils_math.c \
-				utils.c
+				utils.c \
+				utils_math.c
 OBJ			=	$(addprefix $(BUILD_DIR)/, $(SRC:.c=.o))
 # =[ RULES ]==================================================================================================
 all: $(NAME)
