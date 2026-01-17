@@ -48,8 +48,9 @@ SRC			=	display_infos.c \
 				t_img_struct.c \
 				t_maze_struct.c \
 				t_player_struct.c \
-				utils.c \
-				utils_math.c
+				utils_fmath.c \
+				utils_imath.c \
+				utils.c
 OBJ			=	$(addprefix $(BUILD_DIR)/, $(SRC:.c=.o))
 # =[ RULES ]==================================================================================================
 all: $(NAME)

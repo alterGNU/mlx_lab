@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 16:54:11 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:08:15 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ t_data	init_data(const char **str_arr)
 	//	dt.rot_elem = FOV * FOV_PRE / (FOV - FOV_PRE);
 	dt.column_width = (int)(IMG3D_WIDTH / dt.nb_of_rays);
 	img3d_width = dt.nb_of_rays * dt.column_width;
-	dt.win_dim.x = ft_max(map2d_x, WIN_DBG_TXT_LEN) + img3d_width + 3 * WIN_BORDER;
-	dt.win_dim.y = ft_max(map2d_y + WIN_DBG_TXT_LEN + 3 * WIN_BORDER, IMG3D_HEIGHT + 2 * WIN_BORDER);
+	dt.win_dim.x = ft_imax(map2d_x, WIN_DBG_TXT_LEN) + img3d_width + 3 * WIN_BORDER;
+	dt.win_dim.y = ft_imax(map2d_y + WIN_DBG_TXT_LEN + 3 * WIN_BORDER, IMG3D_HEIGHT + 2 * WIN_BORDER);
 	if (dt.win_dim.x <= 0 || dt.win_dim.y <= 0)
 		return (dt);
 	set_fpos(&dt.start2d, 5.0f, (float)dt.win_dim.y - (float)map2d_y - 5.0f);
@@ -73,7 +73,7 @@ t_data	init_data(const char **str_arr)
 	dt.win_ptr = mlx_new_window(dt.mlx_ptr, dt.win_dim.x, dt.win_dim.y, WIN_TITLE);
 	if (!dt.win_ptr)
 		return (dt);
-	dt.img_erase_txt = create_image(dt.mlx_ptr, ft_max(map2d_x, WIN_DBG_TXT_LEN), 14);
+	dt.img_erase_txt = create_image(dt.mlx_ptr, ft_imax(map2d_x, WIN_DBG_TXT_LEN), 14);
 	dt.img_2d_floor = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
 	dt.img_2d_wall = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
 	dt.img_2d_template = create_image(dt.mlx_ptr, map2d_x, map2d_y);

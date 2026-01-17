@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 17:13:37 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:06:07 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,9 +158,9 @@ int		draw_buffer_images(t_data *dt);										// ❌
 void	put_pixel_to_image(t_img *img, int x, int y, int color);			// ✅
 void	draw_vline(t_img *img, int x, int start_y, int stop_y, int color);	// ✅
 void	draw_hline(t_img *img, int x, t_fpos pos, int color);				// ✅
-void	draw_circle(t_img *img, t_fpos c_pos, int r, int color);				// ✅
-void	draw_dda_line(t_img *img, t_fpos a_pos, t_fpos b_pos, int color);		// ✅
-void	draw_vector(t_img *img, t_fpos start, t_fpos vec, int color);			// ✅
+void	draw_circle(t_img *img, t_fpos c_pos, int r, int color);			// ✅
+void	draw_dda_line(t_img *img, t_fpos a_pos, t_fpos b_pos, int color);	// ✅
+void	draw_vector(t_img *img, t_fpos start, t_fpos vec, int color);		// ✅
 // -[ main_loop.c ]------------------------------------------------------------2
 int		main_loop(t_data *dt);												// ❌
 // -[ memcpy_utils.c ]---------------------------------------------------------2
@@ -222,15 +222,20 @@ t_fpos	dup_pos(t_fpos src);												// ✅
 // -[ t_fpos_utils.c ]---------------------------------------------------------2
 float	fpos_dist(t_fpos a, t_fpos b);										// ✅
 void	add_fpos(t_fpos *a, const t_fpos *b);								// ✅
-// -[ utils.c ]----------------------------------------------------------------4
+// -[ utils.c ]----------------------------------------------------------------5
 int		char_in_str(char c, const char *str);								// ✅
 void	print_str_array(const char **str_arr);								// ✅
 int		diff_time_in_ms(struct timeval start, struct timeval end);			// ✅
 int		convert_fps_to_frame_delay(int fps);								// ✅
-// -[ utils_math.c ]-----------------------------------------------------------5
-float	radian(float degree);												// ✅
-int		ft_max(int a, int b);												// ✅
-int		ft_abs(int a);														// ✅
-float	norm_angle(float angle);											// ✅
 int		get_nb_of_rays(void);												// ✅
+// -[ utils_fmath.c ]----------------------------------------------------------5
+float	ft_fmax(float a, float b);											// ✅
+float	ft_fmin(float a, float b);											// ✅
+float	ft_fabs(float a);													// ✅
+float	radian(float degree);												// ✅
+float	norm_angle(float angle);											// ✅
+// -[ utils_imath.c ]----------------------------------------------------------3
+int		ft_imax(int a, int b);												// ✅
+int		ft_imin(int a, int b);												// ✅
+int		ft_iabs(int a);														// ✅
 #endif

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:11:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/08 00:52:27 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:00:21 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,21 @@ int	convert_fps_to_frame_delay(int fps)
 	if (fps <= 0)
 		return (0);
 	return (1000 / fps);
+}
+
+/**
+ * Makes sure that the number of rays is appropriate according to:
+ *  - FOV and FOV_PRE
+ *  - IMG3D_WIDTH
+ */
+int	get_nb_of_rays(void)
+{
+	int	nb_rays;
+
+	if (FOV_PRE <= 0 || FOV_PRE >= FOV)
+		return (1);
+	nb_rays = (int)(FOV / FOV_PRE);
+	if (nb_rays > IMG3D_WIDTH)
+		nb_rays = IMG3D_WIDTH;
+	return (nb_rays);
 }

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:13:33 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 16:53:47 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:02:39 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ void	draw_dda_line(t_img *img, t_fpos a_pos, t_fpos b_pos, int color)
 
 	dx = b_pos.x - a_pos.x;
 	dy = b_pos.y - a_pos.y;
-	steps = ft_max(abs(dx), abs(dy));
+	steps = ft_imax(abs(dx), abs(dy));
 	sx = (float)dx / steps;
 	sy = (float)dy / steps;
 	while (steps-- >= 0)
