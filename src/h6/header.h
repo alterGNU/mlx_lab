@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/18 11:47:59 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 12:46:47 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,9 +191,11 @@ t_fpos	init_fpos(float x, float y);										// ✅
 t_fpos	set_fpos(t_fpos *pos, float x, float y);							// ✅
 int		print_fpos(t_fpos pos);												// ✅
 t_fpos	dup_fpos(t_fpos src);												// ✅
-// -[ t_fpos_utils.c ]---------------------------------------------------------2
+// -[ t_fpos_utils.c ]---------------------------------------------------------4
 float	fpos_dist(t_fpos a, t_fpos b);										// ✅
-t_fpos	add_fpos(t_fpos *a, const t_fpos *b);								// ✅
+void	fpos_add(t_fpos *a, const t_fpos *b);								// ✅
+void	fpos_dot(t_fpos *a, const t_fpos *b);								// ✅
+void	fpos_scal(t_fpos *a, float scalar);									// ✅
 // -[ t_hit_struct.c ]---------------------------------------------------------5
 t_hit	init_hit(void);														// ✅
 t_hit	*create_hit_array(int size);										// ✅
@@ -221,9 +223,10 @@ t_ipos	init_ipos(int x, int y);											// ✅
 t_ipos	set_ipos(t_ipos *pos, int x, int y);								// ✅
 int		print_ipos(t_ipos pos);												// ✅
 t_ipos	dup_ipos(t_ipos src);												// ✅
-// -[ t_ipos_utils.c ]---------------------------------------------------------2
-t_ipos	add_ipos(t_ipos *a, const t_ipos *b);								// ✅
-t_ipos	prod_scal_ipos(t_ipos *a, int b);									// ✅
+// -[ t_ipos_utils.c ]---------------------------------------------------------3
+void	ipos_add(t_ipos *a, const t_ipos *b);								// ✅
+void	ipos_dot(t_ipos *a, const t_ipos *b);								// ✅
+void	ipos_scal(t_ipos *a, int b);										// ✅
 // -[ t_maze_struct.c ]--------------------------------------------------------4
 t_maze	set_maze_and_player(const char **str_arr, t_play *player);			// ❌
 void	free_maze(t_maze *maze);											// ✅
@@ -233,6 +236,10 @@ t_play	init_player(void);													// ✅
 void	set_player(t_play *play, float x, float y, float dir);				// ❌
 int		print_player(t_play play);											// ✅
 void	free_player(t_play *player);										// ✅
+// -[ t_pos conv.c ]----------------------------------------------------------3
+void	fpos_floor(t_ipos *a, const t_fpos *b);								// ✅
+void	fpos_ceil(t_ipos *a, const t_fpos *b);								// ✅
+void	fpos_round(t_ipos *a, const t_fpos *b);								// ✅
 // -[ utils_fmath.c ]----------------------------------------------------------5
 float	ft_fmax(float a, float b);											// ✅
 float	ft_fmin(float a, float b);											// ✅

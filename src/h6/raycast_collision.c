@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/18 11:02:33 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 12:29:41 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ t_fpos	h_found_hit_dda(const t_data *dt, const t_hit *hit)
 	ray.x = dt->player.pos.x + (dt->player.pos.y - ray.y) / hit->angle.y;
 	mov.x = -mov.y / hit->angle.y;
 	while (!collision_detected(dt, ray, hit->angle.x))
-		add_fpos(&ray, &mov);
+		fpos_add(&ray, &mov);
 	return (ray);
 }
 
@@ -108,7 +108,7 @@ t_fpos	v_found_hit_dda(const t_data *dt, const t_hit *hit)
 	ray.y = dt->player.pos.y + (dt->player.pos.x - ray.x) * hit->angle.y;
 	mov.y = -mov.x * hit->angle.y;
 	while (!collision_detected(dt, ray, hit->angle.x))
-		add_fpos(&ray, &mov);
+		fpos_add(&ray, &mov);
 	return (ray);
 }
 

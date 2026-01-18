@@ -1311,7 +1311,7 @@ Compilers have different level of optimization:
   ```
 
 >[!CAUTION]
-> Passing by value creates a full copy of the struct, the copying process is slower bigger the data is and also use more stack space.
+> Passing by value creates a full copy of the struct; the copying process is slower the bigger the data is, and also uses more stack space.
 
 - In another hand, if compiler optimization are allowed, this "issue" can be ignored[^1], so
   - ✅ <ins>When to pass by value</ins>:

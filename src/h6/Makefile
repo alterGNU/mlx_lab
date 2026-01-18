@@ -49,6 +49,7 @@ SRC			=	display_infos.c \
 				t_ipos_utils.c \
 				t_maze_struct.c \
 				t_player_struct.c \
+				t_pos_conv.c \
 				utils_fmath.c \
 				utils_imath.c \
 				utils.c

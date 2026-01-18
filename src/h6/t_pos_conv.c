@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   t_ipos_utils.c                                     :+:      :+:    :+:   */
+/*   t_pos_conv.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 16:54:50 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/18 12:44:05 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 12:44:17 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-void	ipos_add(t_ipos *a, const t_ipos *b)
+void	fpos_floor(t_ipos *a, const t_fpos *b)
 {
-	a->x += b->x;
-	a->y += b->y;
+	a->x = floorf(b->x);
+	a->y = floorf(b->y);
 }
 
-void	ipos_dot(t_ipos *a, const t_ipos *b)
+void	fpos_ceil(t_ipos *a, const t_fpos *b)
 {
-	a->x *= b->x;
-	a->y *= b->y;
+	a->x = ceilf(b->x);
+	a->y = ceilf(b->y);
 }
 
-void	ipos_scal(t_ipos *a, int b)
+void	fpos_round(t_ipos *a, const t_fpos *b)
 {
-	a->x *= b;
-	a->y *= b;
+	a->x = roundf(b->x);
+	a->y = roundf(b->y);
 }
