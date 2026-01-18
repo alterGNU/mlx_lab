@@ -7,7 +7,7 @@
 #   - step 0: Exec the script as sudo
 #   - step 1: Check and install this script's dependancies (cmds:date, git, perl, sed, yes).
 #   - step 2: Update and Upgrade the system (skippable step, but good practice before any installation).
-#   - step 3: Check and install mlx's dependancies (MLX_DEPS var. , check minilibx README to update list).
+#   - step 3: Check and install mlx's dependancies (LINUX_MLX_DEPS var. , check minilibx README to update list).
 #   - step 4: Clone and Make minilibx (MLX_PATH var. can be change to modify path and mlx folder's name).
 #   - step 5: Create a env_file, sourcing this file will add mlx's doc to man cmd (using MANPATH env-var).
 #
@@ -34,7 +34,7 @@ declare -A LINUX_PRE_REQUIS_CMDS=( \
     ["yes"]="coreutils" \
 )
 # -[ List of MLX's dependancies to installed ]----------------------------------------------------------------
-MLX_DEPS=(\
+LINUX_MLX_DEPS=(\
     "clang" \
     "gcc" \
     "libbsd-dev" \
@@ -169,52 +169,8 @@ if [ "${OS}" == "Linux" ];then
 
     # =[ A.4 | Install MLX's dependancies packages: ]=========================================================
     title_1 "4  | Check Minilibx packages dependancies:"
-    for pkg in ${MLX_DEPS[@]};do install_pck ${pkg};done
+    for pkg in ${LINUX_LINUX_MLX_DEPS[@]};do install_pck ${pkg};done
 
-    # =[ A.5 | Git clone and Make minilibx if mlx folder not at $PWD ]========================================
-    title_1 "5  | Clone and Make minilibx:"
-    title_2 "5.1| Git clone:"
-    if [ ! -d ${MLX_PATH} ];then
-        pnt ${SEP} $((LEN - 18))
-        print_in_log_file git clone ${MLX_URL} ${MLX_PATH}
-        git clone ${MLX_URL} ${MLX_PATH} >> ${log_file} 2>&1 && echo -e " ✅"${E} || echo -e " ❌"${E}
-    else
-        pnt ${SEP} $((LEN - 34))
-        echo -e "${G}(already cloned) ☑️"${E}
-    fi
-    title_2 "5.2| Make mlx:"
-    if [ -d ${MLX_PATH} ];then
-        print_in_log_file "cd ./mlx && ./configure:"
-        if [[ ! -f "${MLX_PATH}/libmlx.a" ]];then
-            pnt ${SEP} $((LEN - 17))
-            { cd ${MLX_PATH} && ./configure >> ${log_file} 2>&1 ; } && echo -e " ✅"${E} || echo -e " ❌"${E}
-        else
-            pnt ${SEP} $((LEN - 31))
-            echo -e "${G}(already made) ☑️"${E}
-        fi
-    else
-        pnt ${SEP} $((LEN - 35))
-        echo -e "${R}(git clone failed) ❌${E}"
-    fi
-    title_2 "5.3| Change mlx folder owner from root to user:"
-    if [ -d ${MLX_PATH} ];then
-    	pnt ${SEP} $((LEN - 50))
-    	chown -R ${SUDO_USER}:${SUDO_USER} ${MLX_PATH} && echo -e " ✅"${E} || echo -e " ❌"${E}
-    else
-    	pnt ${SEP} $((LEN - 72))
-    	echo -e "${R}(mlx folder not found) ❌"${E}
-    fi
-    echo -e "\n${M}for more details, check log file:\n - ${Y}${log_file}${E}"
-
-    # =[ A.6 | Add mlx's doc to man command ]=================================================================
-    title_1 "6  | Add mlx's doc to man command:"
-    title_2 "\n6.1| Temporary :\n"
-    echo "export MANPATH=\"${MLX_PATH}/man:\$MANPATH\"" > ${env_file}
-    echo -e "- Exec:${R} \`${UG}source ${env_file}${E}${R}\`${G} (Add mlx/man/ folder to MANPATH env-var.)${E}"
-    echo -e "- Test:${R} \`${UG}man mlx${E}${R}\`${G} (should display mlx man page)${E}"
-    title_2 "\n6.2| Permanently :\n"
-    echo -e "- Add this line: '${M}export MANPATH=\"${MLX_PATH}/man:\$MANPATH\"${E}'\n- In any startup dotfile: ${G}(e.g. .zshrc, .bashrc, .profile)${E}\n- Then manually source this dotfile once, or just restart the session."
-    echo -e "${G}(Note that now ${MLX_PATH}/man must not be removed ^^')${E}"
 elif [ "${OS}" == "Darwin" ];then
     title_1 "1  | macOS Detected:"
     #echo -e "${R}⚠️  macOS installation is not yet supported by this script.${E}"
@@ -241,8 +197,66 @@ elif [ "${OS}" == "Darwin" ];then
     fi
     # =[ B.3 | Install xquartz ]=============================================================================
     title_2 "2.3| Install xquartz:\n"
-    brew install --cask xquartz
+    if brew list xquartz &> /dev/null 2>&1; then
+        echo -en "- ${V}XQuartz${E} already installed by brew cmd"
+        pnt ${SEP} $((LEN - 40))
+        echo -en " ☑️\n"
+    else
+        # XQuartz not installed via brew
+        echo -en "- ${V}XQuartz${E} not installed ${R}reboot needed after installation"${E}
+        brew install --cask xquartz
+        echo -en "- ${V}XQuartz${E} successfully installed ${R}reboot needed"${E}
+        read -p "Do you want to reboot now? (y/n) " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            sudo reboot
+        fi
+    fi
 else
     title_1 "1  | Unknown OS Detected"
     exit 1
 fi
+# =[ 5 | Git clone and Make minilibx if mlx folder not at $PWD ]==========================================
+title_1 "5  | Clone and Make minilibx:"
+title_2 "5.1| Git clone:"
+if [ ! -d ${MLX_PATH} ];then
+    pnt ${SEP} $((LEN - 18))
+    print_in_log_file git clone ${MLX_URL} ${MLX_PATH}
+    git clone ${MLX_URL} ${MLX_PATH} >> ${log_file} 2>&1 && echo -e " ✅"${E} || echo -e " ❌"${E}
+else
+    pnt ${SEP} $((LEN - 34))
+    echo -e "${G}(already cloned) ☑️"${E}
+fi
+title_2 "5.2| Make mlx:"
+if [ -d ${MLX_PATH} ];then
+    print_in_log_file "cd ./mlx && ./configure:"
+    if [[ ! -f "${MLX_PATH}/libmlx.a" ]];then
+        pnt ${SEP} $((LEN - 17))
+        { cd ${MLX_PATH} && ./configure >> ${log_file} 2>&1 ; } && echo -e " ✅"${E} || echo -e " ❌"${E}
+    else
+        pnt ${SEP} $((LEN - 31))
+        echo -e "${G}(already made) ☑️"${E}
+    fi
+else
+    pnt ${SEP} $((LEN - 35))
+    echo -e "${R}(git clone failed) ❌${E}"
+fi
+title_2 "5.3| Change mlx folder owner from root to user:"
+if [ -d ${MLX_PATH} ];then
+	pnt ${SEP} $((LEN - 50))
+	chown -R ${SUDO_USER}:${SUDO_USER} ${MLX_PATH} && echo -e " ✅"${E} || echo -e " ❌"${E}
+else
+	pnt ${SEP} $((LEN - 72))
+	echo -e "${R}(mlx folder not found) ❌"${E}
+fi
+echo -e "\n${M}for more details, check log file:\n - ${Y}${log_file}${E}"
+
+# =[ 6 | Add mlx's doc to man command ]===================================================================
+title_1 "6  | Add mlx's doc to man command:"
+title_2 "\n6.1| Temporary :\n"
+echo "export MANPATH=\"${MLX_PATH}/man:\$MANPATH\"" > ${env_file}
+echo -e "- Exec:${R} \`${UG}source ${env_file}${E}${R}\`${G} (Add mlx/man/ folder to MANPATH env-var.)${E}"
+echo -e "- Test:${R} \`${UG}man mlx${E}${R}\`${G} (should display mlx man page)${E}"
+title_2 "\n6.2| Permanently :\n"
+echo -e "- Add this line: '${M}export MANPATH=\"${MLX_PATH}/man:\$MANPATH\"${E}'\n- In any startup dotfile: ${G}(e.g. .zshrc, .bashrc, .profile)${E}\n- Then manually source this dotfile once, or just restart the session."
+echo -e "${G}(Note that now ${MLX_PATH}/man must not be removed ^^')${E}"
