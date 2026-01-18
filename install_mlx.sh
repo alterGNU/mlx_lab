@@ -144,9 +144,9 @@ install_pck()
 # MAIN
 # ============================================================================================================
 # =[ A.1 | log in as sudo ]===================================================================================
-[[ "$EUID" -ne 0 ]] && title_1 "0  | Exec the script with sudo:" && exec sudo "$0" "$@"
 OS=$(uname -s)
 if [ "${OS}" == "Linux" ];then
+    [[ "$EUID" -ne 0 ]] && title_1 "0  | Exec the script with sudo:" && exec sudo "$0" "$@"
     title_1 "1  | Linux OS Detected:"
 
     # =[ A.2 | Check 'yes' is installed ]=====================================================================
