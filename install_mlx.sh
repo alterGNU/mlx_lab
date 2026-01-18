@@ -23,10 +23,10 @@
 # ============================================================================================================
 
 # ============================================================================================================
-# VARIABLES
+# LINUX VARIABLES
 # ============================================================================================================
 # -[ dict of cmd:pck needed by this script ]------------------------------------------------------------------
-declare -A PRE_REQUIS_CMDS=( \
+declare -A LINUX_PRE_REQUIS_CMDS=( \
     ["date"]="coreutils" \
     ["git"]="git" \
     ["perl"]="perl" \
@@ -146,15 +146,12 @@ install_pck()
 # =[ A.1 | log in as sudo ]===================================================================================
 [[ "$EUID" -ne 0 ]] && title_1 "0  | Exec the script with sudo:" && exec sudo "$0" "$@"
 OS=$(uname -s)
-if [ "${OS}" == "Darwin" ];then
-    title_1 "1  | macOS Detected:"
-    echo -e "${R}⚠️  macOS installation is not yet supported by this script.${E}"
-elif [ "${OS}" == "Linux" ];then
+if [ "${OS}" == "Linux" ];then
     title_1 "1  | Linux OS Detected:"
 
     # =[ A.2 | Check 'yes' is installed ]=====================================================================
     title_1 "2  | Check script commandes dependancies:"
-    for cmd in "${!PRE_REQUIS_CMDS[@]}";do install_cmd ${cmd} ${PRE_REQUIS_CMDS[${cmd}]};done
+    for cmd in "${!LINUX_PRE_REQUIS_CMDS[@]}";do install_cmd ${cmd} ${LINUX_PRE_REQUIS_CMDS[${cmd}]};done
 
     # =[ A.3 | Update system ]================================================================================
     title_1 "3  | Update System:"
@@ -218,6 +215,30 @@ elif [ "${OS}" == "Linux" ];then
     title_2 "\n6.2| Permanently :\n"
     echo -e "- Add this line: '${M}export MANPATH=\"${MLX_PATH}/man:\$MANPATH\"${E}'\n- In any startup dotfile: ${G}(e.g. .zshrc, .bashrc, .profile)${E}\n- Then manually source this dotfile once, or just restart the session."
     echo -e "${G}(Note that now ${MLX_PATH}/man must not be removed ^^')${E}"
+elif [ "${OS}" == "Darwin" ];then
+    title_1 "1  | macOS Detected:"
+    #echo -e "${R}⚠️  macOS installation is not yet supported by this script.${E}"
+    # =[ B.2 | Check 'brew' is installed ]=====================================================================
+    title_1 "2  | Check script commandes dependancies:"
+    title_2 "2.1| Check ${V}curl${BU} cmd is installed:\n"
+    if cmd_exist "curl";then
+        echo -en "- cmd ${V}curl${E} "
+        pnt ${SEP} $((LEN - 31))
+        echo -en "(already installed) ☑️\n"
+    else
+        title_2 "${R}⚠️  curl is not installed. Please install it and re-run this script.${E}"
+        exit 1
+    fi
+    title_2 "2.2| Check ${V}brew${BU} cmd is installed:\n"
+    if cmd_exist "brew";then
+        echo -en "- cmd ${V}brew${E} "
+        pnt ${SEP} $((LEN - 31))
+        echo -en "(already installed) ☑️\n"
+    else
+        title_2 "${R}⚠️  Homebrew is not installed. Please install it using the following command:${E}"
+        echo "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+        exit 1
+    fi
 else
     title_1 "1  | Unknown OS Detected"
 fi
