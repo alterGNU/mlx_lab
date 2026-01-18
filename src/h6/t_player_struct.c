@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:34:13 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 16:54:13 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 16:33:00 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ t_play	init_player(void)
 {
 	t_play	player;
 
-	player.pos = init_fpos(-0.1, -0.1);
+	player.pos = fpos_new(-0.1, -0.1);
 	player.dir = -1.0;
 	player.color = RED_COLOR;
 	player.radius = CIRCLE_RADIUS;
@@ -39,7 +39,7 @@ int	print_player(t_play play)
 	int	psf;
 
 	psf = printf("Play{");
-	psf += print_fpos(play.pos);
+	psf += fpos_print(play.pos);
 	psf += printf(", dir: %.2f", play.dir);
 	psf += printf(", color: 0x%X, ", play.color);
 	psf += printf("radius: %d, step: %d}", play.radius, play.step_count);

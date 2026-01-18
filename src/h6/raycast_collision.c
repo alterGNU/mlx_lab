@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/18 12:29:41 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 15:19:02 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,11 @@ t_fpos	h_found_hit_dda(const t_data *dt, const t_hit *hit)
 	t_fpos	mov;
 
 	ray = dt->player.pos;
-	mov = init_fpos(0.f, 0.f);
+	mov = fpos_new(0.f, 0.f);
 	if (hit->angle.x == 0.0f)
-		return (init_fpos(dt->player.pos.x + dt->maze.width, dt->player.pos.y));
+		return (fpos_new(dt->player.pos.x + dt->maze.width, dt->player.pos.y));
 	if (hit->angle.x == 180.0f)
-		return (init_fpos(dt->player.pos.x - dt->maze.width, dt->player.pos.y));
+		return (fpos_new(dt->player.pos.x - dt->maze.width, dt->player.pos.y));
 	if (hit->angle.x < 180.0f)
 	{
 		ray.y = floorf(dt->player.pos.y) - 0.0001f;
@@ -90,7 +90,7 @@ t_fpos	v_found_hit_dda(const t_data *dt, const t_hit *hit)
 	t_fpos	mov;
 
 	ray = dt->player.pos;
-	mov = init_fpos(0.f, 0.f);
+	mov = fpos_new(0.f, 0.f);
 	if (hit->angle.x == 90.0f)
 		return (ray.y = dt->player.pos.y - dt->maze.height, ray);
 	if (hit->angle.x == 270.0f)

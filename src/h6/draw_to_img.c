@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:13:33 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/18 11:41:27 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 15:20:23 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,17 +95,17 @@ void	draw_circle(t_img *img, t_fpos center, int r, int color)
 	x = 0;
 	y = r;
 	d = 1 - r;
-	tp = init_fpos(-1, -1);
+	tp = fpos_new(-1, -1);
 	while (x <= y)
 	{
 		draw_hline(img, center.x - x, \
-			set_fpos(&tp, center.x + x, center.y + y), color);
+			fpos_set(&tp, center.x + x, center.y + y), color);
 		draw_hline(img, center.x - x, \
-			set_fpos(&tp, center.x + x, center.y - y), color);
+			fpos_set(&tp, center.x + x, center.y - y), color);
 		draw_hline(img, center.x - y, \
-			set_fpos(&tp, center.x + y, center.y + x), color);
+			fpos_set(&tp, center.x + y, center.y + x), color);
 		draw_hline(img, center.x - y, \
-			set_fpos(&tp, center.x + y, center.y - x), color);
+			fpos_set(&tp, center.x + y, center.y - x), color);
 		if (d < 0)
 			d += 2 * x + 3;
 		else
@@ -153,13 +153,13 @@ void	draw_vector(t_img *img, t_fpos origin, t_fpos angle_speed, int color)
 	float	angle_left;
 	float	angle_right;
 
-	end = init_fpos(origin.x + cosf(radian(angle_speed.x)) * angle_speed.y, \
+	end = fpos_new(origin.x + cosf(radian(angle_speed.x)) * angle_speed.y, \
 		origin.y - sinf(radian(angle_speed.x)) * angle_speed.y);
 	angle_left = norm_angle(180.0 + angle_speed.x - 45.0);
-	left = init_fpos(end.x + cosf(radian(angle_left)) * angle_speed.y / 2, \
+	left = fpos_new(end.x + cosf(radian(angle_left)) * angle_speed.y / 2, \
 		end.y - sinf(radian(angle_left)) * angle_speed.y / 2);
 	angle_right = norm_angle(180.0 + angle_speed.x + 45.0);
-	right = init_fpos(end.x + cosf(radian(angle_right)) * angle_speed.y / 2, \
+	right = fpos_new(end.x + cosf(radian(angle_right)) * angle_speed.y / 2, \
 		end.y - sinf(radian(angle_right)) * angle_speed.y / 2);
 	draw_dda_line(img, origin, end, color);
 	draw_dda_line(img, end, left, color);

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 02:08:15 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 16:28:52 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	zero_memset_data(t_data *dt)
 {
+	dt->tile_dim = (t_fpos){0.0f, 0.0f};
 	dt->player = (t_play){{0.0f, 0.0f}, 0.0f, 0, 0, -1, NULL};
 	dt->maze = (t_maze){NULL, 0, 0, 0};
 	dt->mlx_ptr = NULL;
@@ -39,6 +40,12 @@ static void	zero_memset_data(t_data *dt)
 	dt->hits = NULL;
 }
 
+/**
+ * NOTE: many init + settings can be done at once... example:
+ * -> tile_dim=(t_fpos){0.0f, 0.0f} + fpos_set(...) could be replaced by
+ * -> tile_dim=fpos_new(TILE_X, TILE_Y);
+ * 
+ */
 t_data	init_data(const char **str_arr)
 {
 	t_data	dt;
@@ -47,6 +54,7 @@ t_data	init_data(const char **str_arr)
 	int		img3d_width;
 
 	zero_memset_data(&dt);
+	fpos_set(&dt.tile_dim, (float)TILE_X, (float)TILE_Y);
 	init_movement_flags(&dt);
 	dt.player = init_player();
 	dt.maze = set_maze_and_player(str_arr, &dt.player);
@@ -68,8 +76,8 @@ t_data	init_data(const char **str_arr)
 	dt.win_dim.y = ft_imax(map2d_y + WIN_DBG_TXT_LEN + 3 * WIN_BORDER, IMG3D_HEIGHT + 2 * WIN_BORDER);
 	if (dt.win_dim.x <= 0 || dt.win_dim.y <= 0)
 		return (dt);
-	set_fpos(&dt.start2d, 5.0f, (float)dt.win_dim.y - (float)map2d_y - 5.0f);
-	set_fpos(&dt.start3d, (float)dt.win_dim.x - (float)img3d_width - 5.0f, 5.0f);
+	fpos_set(&dt.start2d, 5.0f, (float)dt.win_dim.y - (float)map2d_y - 5.0f);
+	fpos_set(&dt.start3d, (float)dt.win_dim.x - (float)img3d_width - 5.0f, 5.0f);
 	dt.win_ptr = mlx_new_window(dt.mlx_ptr, dt.win_dim.x, dt.win_dim.y, WIN_TITLE);
 	if (!dt.win_ptr)
 		return (dt);

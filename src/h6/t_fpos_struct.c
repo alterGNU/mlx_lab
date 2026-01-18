@@ -6,13 +6,13 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 16:54:50 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 18:12:43 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 16:34:48 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-t_fpos	init_fpos(float x, float y)
+t_fpos	fpos_new(float x, float y)
 {
 	t_fpos	pos;
 
@@ -21,24 +21,24 @@ t_fpos	init_fpos(float x, float y)
 	return (pos);
 }
 
-t_fpos	set_fpos(t_fpos *pos, float x, float y)
+/**
+ * TODO: Should be a void function?
+ */
+t_fpos	fpos_set(t_fpos *pos, float x, float y)
 {
 	if (!pos)
-		return (init_fpos(-1, -1));
+		return (fpos_new(-1, -1));
 	pos->x = x;
 	pos->y = y;
 	return (*pos);
 }
 
-int	print_fpos(t_fpos pos)
+int	fpos_print(t_fpos pos)
 {
 	return (printf("(%.4f, %.4f)", pos.x, pos.y));
 }
 
-/**
- * CHECK-IF: Really useful
- */
-t_fpos	dup_fpos(t_fpos src)
+t_fpos	fpos_dup(t_fpos src)
 {
 	t_fpos	dst;
 

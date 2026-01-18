@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/18 11:09:07 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 15:30:58 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,38 +17,36 @@ void	draw2d_player(t_img *img, t_play *p)
 	t_fpos	center;
 	t_fpos	angle_speed;
 
-	center = init_fpos(p->pos.x * TILE_X, p->pos.y * TILE_Y);
-	angle_speed = init_fpos(p->dir, p->radius * 3);
+	center = fpos_new(p->pos.x * TILE_X, p->pos.y * TILE_Y);
+	angle_speed = fpos_new(p->dir, p->radius * 3);
 	draw_circle(img, center, p->radius, p->color);
 	draw_vector(img, center, angle_speed, BLUE_COLOR);
 }
 
 /**
- * TODO: use prod_scal_fpos(t_fpos *a, const float scalar)
+ * NOTE: Could be opt by avoiding mult. calls to fpos_dot_new()
  */
 void	draw2d_hit_lines(t_data *dt)
 {
 	int		i;
-	t_fpos	player;
-	t_fpos	hit;
+	t_fpos	play_pos;
+	t_fpos	hit_pos;
 
-	player = init_fpos(dt->player.pos.x * TILE_X, dt->player.pos.y * TILE_Y);
+	play_pos = fpos_dot_new(dt->player.pos, dt->tile_dim);
 	if (DRAW_2D_RAYS == 1)
 	{
-		hit = init_fpos(dt->hits[0].pos.x * TILE_X, dt->hits[0].pos.y * TILE_Y);
-		draw_dda_line(&dt->img_2d_buffer, player, hit, GREEN_COLOR);
-		i = dt->nb_of_rays - 1;
-		hit = init_fpos(dt->hits[i].pos.x * TILE_X, dt->hits[i].pos.y * TILE_Y);
-		draw_dda_line(&dt->img_2d_buffer, player, hit, GREEN_COLOR);
+		hit_pos = fpos_dot_new(dt->hits[0].pos, dt->tile_dim);
+		draw_dda_line(&dt->img_2d_buffer, play_pos, hit_pos, GREEN_COLOR);
+		hit_pos = fpos_dot_new(dt->hits[dt->nb_of_rays - 1].pos, dt->tile_dim);
+		draw_dda_line(&dt->img_2d_buffer, play_pos, hit_pos, GREEN_COLOR);
 	}
 	else
 	{
 		i = -1;
 		while (dt->hits[++i].valid)
 		{
-			hit = init_fpos(dt->hits[i].pos.x * TILE_X, \
-				dt->hits[i].pos.y * TILE_Y);
-			draw_dda_line(&dt->img_2d_buffer, player, hit, GREEN_COLOR);
+			hit_pos = fpos_dot_new(dt->hits[i].pos, dt->tile_dim);
+			draw_dda_line(&dt->img_2d_buffer, play_pos, hit_pos, GREEN_COLOR);
 		}
 	}
 }

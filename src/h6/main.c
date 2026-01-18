@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 02:13:56 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 16:32:58 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,9 @@ static void	print_end_infos(t_data dt, t_fpos start_fpos,  int duration_ms, int 
 	printf(" - Player:\n");
 	printf("  - %d steps taken\n", dt.player.step_count);
 	printf("  - from ");
-	print_fpos(start_fpos);
+	fpos_print(start_fpos);
 	printf("\n  - to   ");
-	print_fpos(dt.player.pos);
+	fpos_print(dt.player.pos);
 	printf("\n - Flags =[%s] ", dt.mv_flags);
 	printf("\n - FOV=%.2f / FOV_PRE=%.2f --> %d\n", FOV, FOV_PRE, dt.nb_of_rays);
 	printf("\n====================================\n\n");
@@ -221,7 +221,7 @@ int	main(void)
 		return (fprintf(stderr, "Error: build_img_3d() failed\n"), free_data(&dt), 1);
 	gettimeofday(&end_bui, NULL);
 	bui_delay_ms = diff_time_in_ms(start_bui, end_bui);
-	start_fpos = dup_fpos(dt.player.pos);
+	start_fpos = fpos_dup(dt.player.pos);
 	update_hit_tpos(&dt);
 	print_start_infos(dt, str_arr, bui_delay_ms);
 	mlx_loop_hook(dt.mlx_ptr, &main_loop, &dt);

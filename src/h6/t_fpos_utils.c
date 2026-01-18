@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 16:54:50 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/18 12:46:23 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 15:24:06 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,9 @@ void	fpos_add(t_fpos *a, const t_fpos *b)
 	a->y += b->y;
 }
 
-void	fpos_dot(t_fpos *a, const t_fpos *b)
+t_fpos	fpos_dot_new(const t_fpos a, const t_fpos b)
 {
-	a->x *= b->x;
-	a->y *= b->y;
+	return (fpos_new(a.x * b.x, a.y * b.y));
 }
 
 void	fpos_scal(t_fpos *a, float scalar)

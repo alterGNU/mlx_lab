@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/18 12:46:47 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 16:42:06 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ typedef struct s_img
 
 typedef struct s_data
 {
+	t_fpos			tile_dim;
 	t_play			player;
 	t_maze			maze;
 	int				nb_of_rays;		// define by FOV and FOV_PRE (2D & 3D)
@@ -187,14 +188,14 @@ t_data	init_data(const char **str_arr);									// ❌
 void	free_data(t_data *dt);												// ✅
 int		error_detected_after_init_data(t_data *dt);							// ❌
 // -[ t_fpos_struct.c ]--------------------------------------------------------4
-t_fpos	init_fpos(float x, float y);										// ✅
-t_fpos	set_fpos(t_fpos *pos, float x, float y);							// ✅
-int		print_fpos(t_fpos pos);												// ✅
-t_fpos	dup_fpos(t_fpos src);												// ✅
+t_fpos	fpos_new(float x, float y);											// ✅
+t_fpos	fpos_set(t_fpos *pos, float x, float y);							// ✅
+int		fpos_print(t_fpos pos);												// ✅
+t_fpos	fpos_dup(t_fpos src);												// ✅
 // -[ t_fpos_utils.c ]---------------------------------------------------------4
 float	fpos_dist(t_fpos a, t_fpos b);										// ✅
 void	fpos_add(t_fpos *a, const t_fpos *b);								// ✅
-void	fpos_dot(t_fpos *a, const t_fpos *b);								// ✅
+t_fpos	fpos_dot_new(const t_fpos a, const t_fpos b);						// ✅
 void	fpos_scal(t_fpos *a, float scalar);									// ✅
 // -[ t_hit_struct.c ]---------------------------------------------------------5
 t_hit	init_hit(void);														// ✅
@@ -219,14 +220,14 @@ void	print_t_img(t_img img);												// ✅
 void	free_image(t_img img, void *mlx_ptr);								// ✅
 int		is_img_valid(t_img *img);											// ✅
 // -[ t_ipos_struct.c ]--------------------------------------------------------4
-t_ipos	init_ipos(int x, int y);											// ✅
-t_ipos	set_ipos(t_ipos *pos, int x, int y);								// ✅
-int		print_ipos(t_ipos pos);												// ✅
-t_ipos	dup_ipos(t_ipos src);												// ✅
+t_ipos	ipos_new(int x, int y);												// ✅
+void	ipos_set(t_ipos *pos, int x, int y);								// ✅
+int		ipos_print(t_ipos pos);												// ✅
+t_ipos	ipos_dup(t_ipos src);												// ✅
 // -[ t_ipos_utils.c ]---------------------------------------------------------3
-void	ipos_add(t_ipos *a, const t_ipos *b);								// ✅
-void	ipos_dot(t_ipos *a, const t_ipos *b);								// ✅
-void	ipos_scal(t_ipos *a, int b);										// ✅
+t_ipos	ipos_add_new(const t_ipos *a, const t_ipos *b);						// ✅
+t_ipos	ipos_dot_new(const t_ipos *a, const t_ipos *b);						// ✅
+t_ipos	ipos_scal_new(const t_ipos *a, int b);								// ✅
 // -[ t_maze_struct.c ]--------------------------------------------------------4
 t_maze	set_maze_and_player(const char **str_arr, t_play *player);			// ❌
 void	free_maze(t_maze *maze);											// ✅
