@@ -143,72 +143,81 @@ install_pck()
 # ============================================================================================================
 # MAIN
 # ============================================================================================================
-# =[ | log in as sudo ]=======================================================================================
+# =[ A.1 | log in as sudo ]===================================================================================
 [[ "$EUID" -ne 0 ]] && title_1 "0  | Exec the script with sudo:" && exec sudo "$0" "$@"
+OS=$(uname -s)
+if [ "${OS}" == "Darwin" ];then
+    title_1 "1  | macOS Detected:"
+    echo -e "${R}⚠️  macOS installation is not yet supported by this script.${E}"
+elif [ "${OS}" == "Linux" ];then
+    title_1 "1  | Linux OS Detected:"
 
-# =[ 1 | Check 'yes' is installed ]===========================================================================
-title_1 "1  | Check script commandes dependancies:"
-for cmd in "${!PRE_REQUIS_CMDS[@]}";do install_cmd ${cmd} ${PRE_REQUIS_CMDS[${cmd}]};done
+    # =[ A.2 | Check 'yes' is installed ]=====================================================================
+    title_1 "2  | Check script commandes dependancies:"
+    for cmd in "${!PRE_REQUIS_CMDS[@]}";do install_cmd ${cmd} ${PRE_REQUIS_CMDS[${cmd}]};done
 
-# =[ 2 | Update system ]======================================================================================
-title_1 "2  | Update System:"
-read -p "Do you want to run apt update, upgrade, and autoremove? (y/yes or n/no): " update_choice
-if [[ "$update_choice" =~ ^[Yy]([Ee][Ss])?$ ]]; then
-	title_2 "2.1| Update:" && pnt "${B}${SEP}${E}" $((LEN - 12)) && echo
-	sudo apt update && pnt ${B}"${SEP}${E}" "$((LEN - 2))" && echo "✅"
-	title_2 "2.2| Upgrade:" && pnt "${B}${SEP}${E}" $((LEN - 13)) && echo
-	sudo apt upgrade && pnt ${B}"${SEP}${E}" "$((LEN - 2))" && echo "✅"
-	title_2 "2.3| Autoremove:" && pnt "${B}${SEP}${E}" $((LEN - 16)) && echo
-	sudo apt autoremove && pnt "${B}${SEP}${E}" "$((LEN - 2))" && echo "✅"
-else
-	echo -e ${Y}"⏭️  Skipping Update System Step"${E}
-fi
-
-# =[ 3 | Install MLX's dependancies packages: ]===============================================================
-title_1 "3  | Check Minilibx packages dependancies:"
-for pkg in ${MLX_DEPS[@]};do install_pck ${pkg};done
-
-# =[ 4 | Git clone and Make minilibx if mlx folder not at $PWD ]==============================================
-title_1 "4  | Clone and Make minilibx:"
-title_2 "4.1| Git clone:"
-if [ ! -d ${MLX_PATH} ];then
-    pnt ${SEP} $((LEN - 18))
-    print_in_log_file git clone ${MLX_URL} ${MLX_PATH}
-    git clone ${MLX_URL} ${MLX_PATH} >> ${log_file} 2>&1 && echo -e " ✅"${E} || echo -e " ❌"${E}
-else
-    pnt ${SEP} $((LEN - 34))
-    echo -e "${G}(already cloned) ☑️"${E}
-fi
-title_2 "4.2| Make mlx:"
-if [ -d ${MLX_PATH} ];then
-    print_in_log_file "cd ./mlx && ./configure:"
-    if [[ ! -f "${MLX_PATH}/libmlx.a" ]];then
-        pnt ${SEP} $((LEN - 17))
-        { cd ${MLX_PATH} && ./configure >> ${log_file} 2>&1 ; } && echo -e " ✅"${E} || echo -e " ❌"${E}
+    # =[ A.3 | Update system ]================================================================================
+    title_1 "3  | Update System:"
+    read -p "Do you want to run apt update, upgrade, and autoremove? (y/yes or n/no): " update_choice
+    if [[ "$update_choice" =~ ^[Yy]([Ee][Ss])?$ ]]; then
+    	title_2 "2.1| Update:" && pnt "${B}${SEP}${E}" $((LEN - 12)) && echo
+    	sudo apt update && pnt ${B}"${SEP}${E}" "$((LEN - 2))" && echo "✅"
+    	title_2 "2.2| Upgrade:" && pnt "${B}${SEP}${E}" $((LEN - 13)) && echo
+    	sudo apt upgrade && pnt ${B}"${SEP}${E}" "$((LEN - 2))" && echo "✅"
+    	title_2 "2.3| Autoremove:" && pnt "${B}${SEP}${E}" $((LEN - 16)) && echo
+    	sudo apt autoremove && pnt "${B}${SEP}${E}" "$((LEN - 2))" && echo "✅"
     else
-        pnt ${SEP} $((LEN - 31))
-        echo -e "${G}(already made) ☑️"${E}
+    	echo -e ${Y}"⏭️  Skipping Update System Step"${E}
     fi
-else
-    pnt ${SEP} $((LEN - 35))
-    echo -e "${R}(git clone failed) ❌${E}"
-fi
-title_2 "4.3| Change mlx folder owner from root to user:"
-if [ -d ${MLX_PATH} ];then
-	pnt ${SEP} $((LEN - 50))
-	chown -R ${SUDO_USER}:${SUDO_USER} ${MLX_PATH} && echo -e " ✅"${E} || echo -e " ❌"${E}
-else
-	pnt ${SEP} $((LEN - 72))
-	echo -e "${R}(mlx folder not found) ❌"${E}
-fi
-echo -e "\n${M}for more details, check log file:\n - ${Y}${log_file}${E}"
 
-# =[ 5 | Add mlx's doc to man command ]=======================================================================
-title_1 "5  | Add mlx's doc to man command:"
-title_2 "\n5.1| Temporary :\n"
-echo "export MANPATH=\"${MLX_PATH}/man:\$MANPATH\"" > ${env_file}
-echo -e "- Exec:${R} \`${UG}source ${env_file}${E}${R}\`${G} (Add mlx/man/ folder to MANPATH env-var.)${E}"
-echo -e "- Test:${R} \`${UG}man mlx${E}${R}\`${G} (should display mlx man page)${E}"
-title_2 "\n5.2| Permanently :\n"
-echo -e "- Add this line: '${M}export MANPATH=\"${MLX_PATH}/man:\$MANPATH\"${E}'\n- In any startup dotfile: ${G}(e.g. .zshrc, .bashrc, .profile)${E}\n- Then manually source this dotfile once, or just restart the session."
-echo -e "${G}(Note that now ${MLX_PATH}/man must not be removed ^^')${E}"
+    # =[ A.4 | Install MLX's dependancies packages: ]=========================================================
+    title_1 "4  | Check Minilibx packages dependancies:"
+    for pkg in ${MLX_DEPS[@]};do install_pck ${pkg};done
+
+    # =[ A.5 | Git clone and Make minilibx if mlx folder not at $PWD ]========================================
+    title_1 "5  | Clone and Make minilibx:"
+    title_2 "5.1| Git clone:"
+    if [ ! -d ${MLX_PATH} ];then
+        pnt ${SEP} $((LEN - 18))
+        print_in_log_file git clone ${MLX_URL} ${MLX_PATH}
+        git clone ${MLX_URL} ${MLX_PATH} >> ${log_file} 2>&1 && echo -e " ✅"${E} || echo -e " ❌"${E}
+    else
+        pnt ${SEP} $((LEN - 34))
+        echo -e "${G}(already cloned) ☑️"${E}
+    fi
+    title_2 "5.2| Make mlx:"
+    if [ -d ${MLX_PATH} ];then
+        print_in_log_file "cd ./mlx && ./configure:"
+        if [[ ! -f "${MLX_PATH}/libmlx.a" ]];then
+            pnt ${SEP} $((LEN - 17))
+            { cd ${MLX_PATH} && ./configure >> ${log_file} 2>&1 ; } && echo -e " ✅"${E} || echo -e " ❌"${E}
+        else
+            pnt ${SEP} $((LEN - 31))
+            echo -e "${G}(already made) ☑️"${E}
+        fi
+    else
+        pnt ${SEP} $((LEN - 35))
+        echo -e "${R}(git clone failed) ❌${E}"
+    fi
+    title_2 "5.3| Change mlx folder owner from root to user:"
+    if [ -d ${MLX_PATH} ];then
+    	pnt ${SEP} $((LEN - 50))
+    	chown -R ${SUDO_USER}:${SUDO_USER} ${MLX_PATH} && echo -e " ✅"${E} || echo -e " ❌"${E}
+    else
+    	pnt ${SEP} $((LEN - 72))
+    	echo -e "${R}(mlx folder not found) ❌"${E}
+    fi
+    echo -e "\n${M}for more details, check log file:\n - ${Y}${log_file}${E}"
+
+    # =[ A.6 | Add mlx's doc to man command ]=================================================================
+    title_1 "6  | Add mlx's doc to man command:"
+    title_2 "\n6.1| Temporary :\n"
+    echo "export MANPATH=\"${MLX_PATH}/man:\$MANPATH\"" > ${env_file}
+    echo -e "- Exec:${R} \`${UG}source ${env_file}${E}${R}\`${G} (Add mlx/man/ folder to MANPATH env-var.)${E}"
+    echo -e "- Test:${R} \`${UG}man mlx${E}${R}\`${G} (should display mlx man page)${E}"
+    title_2 "\n6.2| Permanently :\n"
+    echo -e "- Add this line: '${M}export MANPATH=\"${MLX_PATH}/man:\$MANPATH\"${E}'\n- In any startup dotfile: ${G}(e.g. .zshrc, .bashrc, .profile)${E}\n- Then manually source this dotfile once, or just restart the session."
+    echo -e "${G}(Note that now ${MLX_PATH}/man must not be removed ^^')${E}"
+else
+    title_1 "1  | Unknown OS Detected"
+fi
