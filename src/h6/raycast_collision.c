@@ -6,19 +6,26 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 17:13:39 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 11:02:33 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
 /**
- * TODO:
- * - Should be called by mouvement fun. too! (if next step collides, block it)
- * - Should return objects types hit {Out-In}side-Wall:(N,S,E,W),Bounderies,...
- * - Can be rewritte to use t_ipos and t_fpos
- * - Can be optimized a bit more (order! and some cases dont need to be checked)
+ * TODO-LIST: rewrite collision_detected()
+ * -[] Should be called by mouvement fun. too! (if next step collides, block it)
+ * -[] Should return objects types hit {Out-In}side-Wall:(N,S,E,W),Bounderies,...
+ * -[] Can be rewritte to use t_ipos and t_fpos
+ * -[] Can be OPTI a bit more (order! and some cases dont need to be checked)
  *   -> if(index_play <0 || dt->maze.cell_nb <= index_play) can be removed
+ */
+
+ /**
+ * FIX-ME: Collision detection not working properly on all walls corners
+ *   -> diagonal walls not detected properly
+ * NOT-OPTI: Order can be improved for performance
+ * NOTE : check if player inside maze can be removed
  */
 int	collision_detected(const t_data *dt, t_fpos ray_pos, float angle)
 {

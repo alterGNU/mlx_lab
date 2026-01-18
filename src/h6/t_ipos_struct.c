@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 16:54:50 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 02:13:26 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 11:31:41 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	print_ipos(t_ipos pos)
 }
 
 /**
- * TODO: Check if really useful...t_ipos toto = t_ipos tutu do the same?
+ * CHECK-IF: really useful...t_ipos toto = t_ipos tutu do the same?
  */
 t_ipos	dup_ipos(t_ipos src)
 {

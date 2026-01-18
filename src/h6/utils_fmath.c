@@ -6,15 +6,12 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 00:52:18 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 02:08:46 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 11:30:18 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-/**
- * TODO: Remove if not used
- */
 float	ft_fmax(float a, float b)
 {
 	if (a > b)
@@ -22,9 +19,6 @@ float	ft_fmax(float a, float b)
 	return (b);
 }
 
-/**
- * TODO: Remove if not used
- */
 float	ft_fmin(float a, float b)
 {
 	if (a < b)
@@ -32,9 +26,6 @@ float	ft_fmin(float a, float b)
 	return (b);
 }
 
-/**
- * TODO: Remove if not used
- */
 float	ft_fabs(float a)
 {
 	if (a < 0)

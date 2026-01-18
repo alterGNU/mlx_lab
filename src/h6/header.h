@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 02:48:58 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 11:47:59 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define HEADER_H
 // -[ Debug/UI toggles ]--------------------------------------------------------
 # define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
-# define DRAW_2DIMG 0			// 0: do not draw 2d image (map), else: draw it
+# define DRAW_2DIMG 1			// 0: do not draw 2d image (map), else: draw it
 # define DRAW_2D_RAYS 2			// 0: none, 1: first/last, 2: all rays
 //-[ Window ]-------------------------------------------------------------------
 # define WIN_TITLE "Caster the Ghost: (3D Monochrome-RayCasting)"
@@ -25,9 +25,9 @@
 # define TILE_Y 16 				// height(in pixels) of one 2Dcell
 # define CIRCLE_RADIUS 8		// size of the player representation
 //-[ 3DImage ]------------------------------------------------------------------
-// TODO: replace by resolution
-# define IMG3D_WIDTH 2048
-# define IMG3D_HEIGHT 1024
+// To-Do replace by resolution
+# define IMG3D_WIDTH 1200
+# define IMG3D_HEIGHT 800
 # define FLOOR_RGB 0x00FF00
 # define CEIL_RGB 0x0000FF
 // -[ Engine ]------------------------------------------------------------------
@@ -36,9 +36,9 @@
 # define FPS 1000			// Desired frames per second
 # define FPS_DELTA 10		// Number of images to consider for FPS calculation
 # define FOV 60.f			// Player's Hori-Field-Of-View Angle(in degrees)
-# define FOV_PRE .1f		// Hori-Field-Of-View-Precision(in degrees)
-// TODO: could be replace by objects size (height+width)
-# define DIST_MIN 1.f		// Distance where OBJECTS_HEIGHT == IMG3D_HEIGHT
+# define FOV_PRE .05f		// Hori-Field-Of-View-Precision(in degrees)
+// TODO: dist_min should be replace by objects sizes (x:width, y:height)
+# define DIST_MIN .5f		// Distance where OBJECTS_HEIGHT == IMG3D_HEIGHT
 //=[ Variables ]================================================================
 # define VALID_MAZE_CHARS "01NSEW"
 # define M_PI 3.1415926535
@@ -193,7 +193,7 @@ int		print_fpos(t_fpos pos);												// ✅
 t_fpos	dup_fpos(t_fpos src);												// ✅
 // -[ t_fpos_utils.c ]---------------------------------------------------------2
 float	fpos_dist(t_fpos a, t_fpos b);										// ✅
-void	add_fpos(t_fpos *a, const t_fpos *b);								// ✅
+t_fpos	add_fpos(t_fpos *a, const t_fpos *b);								// ✅
 // -[ t_hit_struct.c ]---------------------------------------------------------5
 t_hit	init_hit(void);														// ✅
 t_hit	*create_hit_array(int size);										// ✅
@@ -222,8 +222,8 @@ t_ipos	set_ipos(t_ipos *pos, int x, int y);								// ✅
 int		print_ipos(t_ipos pos);												// ✅
 t_ipos	dup_ipos(t_ipos src);												// ✅
 // -[ t_ipos_utils.c ]---------------------------------------------------------2
-void	add_ipos(t_ipos *a, const t_ipos *b);								// ✅
-void	prod_scal_ipos(t_ipos *a, int b);									// ✅
+t_ipos	add_ipos(t_ipos *a, const t_ipos *b);								// ✅
+t_ipos	prod_scal_ipos(t_ipos *a, int b);									// ✅
 // -[ t_maze_struct.c ]--------------------------------------------------------4
 t_maze	set_maze_and_player(const char **str_arr, t_play *player);			// ❌
 void	free_maze(t_maze *maze);											// ✅

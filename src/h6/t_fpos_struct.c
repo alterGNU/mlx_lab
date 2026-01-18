@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 16:54:50 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 02:13:57 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/17 18:12:43 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	print_fpos(t_fpos pos)
 }
 
 /**
- * TODO: Check if really useful...t_fpos toto = t_fpos tutu do the same?
+ * CHECK-IF: Really useful
  */
 t_fpos	dup_fpos(t_fpos src)
 {

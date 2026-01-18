@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 16:53:42 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 11:09:07 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,7 @@ void	draw2d_player(t_img *img, t_play *p)
 }
 
 /**
- * TODO: 
- * - here lines `hit = init_fpos(...)` could be opt. using 
- *   -> hit = prod_fpos(t_fpos a, t_fpos b);
+ * TODO: use prod_scal_fpos(t_fpos *a, const float scalar)
  */
 void	draw2d_hit_lines(t_data *dt)
 {

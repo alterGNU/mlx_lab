@@ -944,9 +944,9 @@ int	convert_fps_to_frame_delay(int fps)
 ```
 
 ##### H.2.c.iii | In header
-- ADD: `#define FPS 60`
+- WE ADD: `#define FPS 60`
   - This value can be modified to set the maximum allowed frames per second.
-- ADD: to `t_data` struct this two new members:
+- WE ADD: to `t_data` struct this two new members:
   ```c
   typedef struct s_data
   {
@@ -1322,9 +1322,6 @@ Compilers have different level of optimization:
     - If your struct is **large**, the program need to be fast and the compiler's optimization flags are not allowed.
 
 #### H.6.b | C Code
-##### H.6.a.i | Add monochrome 3D-Ray-casting
-- [ ] Make sure that `dt->nb_of_array() * dt->column_size == img_`
-- 1. <ins>Makes sure that `image3d.with`</ins>
 
 ## Sources
 ### RayCasting

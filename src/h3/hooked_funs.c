@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/06 00:56:16 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 11:03:04 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ int	handle_key(int keycode, t_data *dt)
 	return (0);
 }
 
-//TODO:add switch to change duplication methode
 static int	switch_duplicate_method(t_data *dt)
 {
 	if (mem_block_type == 0)

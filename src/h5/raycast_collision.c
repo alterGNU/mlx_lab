@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/12 19:20:11 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 11:03:14 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ int	collision_detected(t_maze maze, t_pos play_pos, t_pos ray_pos, float angle)
 	int	y;
 	int	index_ray;
 
-	// TODO:l23-25:Can be removed if wanted since player can not be outside maze
 	index_play = (int)floorf(play_pos.y) * maze.width + (int)floorf(play_pos.x);
 	if (index_play < 0 || maze.cell_nb <= index_play)
 		return (printf("play_pos outside maze limits\n"));

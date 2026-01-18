@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 00:52:18 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 02:05:13 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 11:31:21 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,6 @@ int	ft_imax(int a, int b)
 	return (b);
 }
 
-/**
- * TODO: Remove if not used
- */
 int	ft_imin(int a, int b)
 {
 	if (a < b)
@@ -29,9 +26,6 @@ int	ft_imin(int a, int b)
 	return (b);
 }
 
-/**
- * TODO: Remove if not used
- */
 int	ft_iabs(int a)
 {
 	if (a < 0)

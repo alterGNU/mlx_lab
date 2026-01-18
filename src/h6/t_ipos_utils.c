@@ -6,26 +6,31 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 16:54:50 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 02:17:52 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/18 11:47:15 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
 /**
- * TODO: remove if not used
+ * TODO-LIST: add ipos utils functions:
+ *  -[x] t_ipos	add_ipos(t_ipos *a, const t_ipos *b)
+ *  -[x] t_ipos	prod_scal_ipos(t_ipos *a, int b)
+ *  -[] t_ipos fpos_floor(t_ipos *a, const t_fpos *b);
+ *  -[] t_ipos fpos_ceil(t_ipos *a, const t_fpos *b);
+ *  -[] t_ipos fpos_round(t_ipos *a, const t_fpos *b);
  */
-void	add_ipos(t_ipos *a, const t_ipos *b)
+
+t_ipos	add_ipos(t_ipos *a, const t_ipos *b)
 {
 	a->x += b->x;
 	a->y += b->y;
+	return (*a);
 }
 
-/**
- * TODO: remove if not used
- */
-void	prod_scal_ipos(t_ipos *a, int b)
+t_ipos	prod_scal_ipos(t_ipos *a, int b)
 {
 	a->x *= b;
 	a->y *= b;
+	return (*a);
 }
