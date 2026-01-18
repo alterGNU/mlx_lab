@@ -218,7 +218,7 @@ if [ "${OS}" == "Linux" ];then
 elif [ "${OS}" == "Darwin" ];then
     title_1 "1  | macOS Detected:"
     #echo -e "${R}⚠️  macOS installation is not yet supported by this script.${E}"
-    # =[ B.2 | Check 'brew' is installed ]=====================================================================
+    # =[ B.2 | Check 'cmds' installed ]=======================================================================
     title_1 "2  | Check script commandes dependancies:"
     title_2 "2.1| Check ${V}curl${BU} cmd is installed:\n"
     if cmd_exist "curl";then
@@ -239,6 +239,10 @@ elif [ "${OS}" == "Darwin" ];then
         echo "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
         exit 1
     fi
+    # =[ B.3 | Install xquartz ]=============================================================================
+    title_2 "2.3| Install xquartz:\n"
+    brew install --cask xquartz
 else
     title_1 "1  | Unknown OS Detected"
+    exit 1
 fi
