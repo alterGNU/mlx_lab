@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/19 19:17:15 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/19 21:39:28 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@ static void	zero_memset_data(t_data *dt)
 	dt->mlx_ptr = NULL;
 	dt->win_ptr = NULL;
 	dt->win_dim = (t_fpos){0.0f, 0.0f};
-	dt->img_erase_txt = (t_img){NULL, NULL, 0, 0, 0, 0, 0, NULL};
-	dt->img_2d_floor = (t_img){NULL, NULL, 0, 0, 0, 0, 0, NULL};
-	dt->img_2d_wall = (t_img){NULL, NULL, 0, 0, 0, 0, 0, NULL};
-	dt->img_2d_template = (t_img){NULL, NULL, 0, 0, 0, 0, 0, NULL};
-	dt->img_2d_buffer = (t_img){NULL, NULL, 0, 0, 0, 0, 0, NULL};
-	dt->img_3d_template = (t_img){NULL, NULL, 0, 0, 0, 0, 0, NULL};
-	dt->img_3d_buffer = (t_img){NULL, NULL, 0, 0, 0, 0, 0, NULL};
+	memset_zero_img(&dt->img_erase_txt);
+	memset_zero_img(&dt->img_2d_floor);
+	memset_zero_img(&dt->img_2d_wall);
+	memset_zero_img(&dt->img_2d_template);
+	memset_zero_img(&dt->img_2d_buffer);
+	memset_zero_img(&dt->img_3d_template);
+	memset_zero_img(&dt->img_3d_buffer);
 	dt->img_drawn = 0;
 	dt->start2d = (t_fpos){0.0f, 0.0f};
 	dt->start3d = (t_fpos){0.0f, 0.0f};

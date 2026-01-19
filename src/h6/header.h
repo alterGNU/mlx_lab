@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/19 19:54:30 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/20 00:18:35 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ typedef struct s_img
 	int			size_line;
 	int			endian;
 	void		(*put_pix_to_img)(struct s_img *img, int x, int y, int color);
+	void		(*draw_vlines)(struct s_img *, int, t_ipos, int);
 }	t_img;
 
 typedef struct s_data
@@ -158,16 +159,21 @@ void	draw2d_player(t_img *img, t_play *p);								// ✅
 void	draw2d_hit_lines(t_data *dt);										// ✅
 int		draw_buffer_2dimg(t_data *dt);										// ✅
 // -[ draw_3dimg.c ]-----------------------------------------------------------2
-void	draw3d_obj_vlines(t_data *dt);										// ✅
+void	draw3d_obj_vlines(t_img *img, t_hit *hit, t_play play, int col_width);
 int		draw_buffer_3dimg(t_data *dt);										// ✅
 // -[ draw_buffer_images.c ]---------------------------------------------------1
 int		draw_buffer_images(t_data *dt);										// ❌
 // -[ draw_to_img.c ]----------------------------------------------------------6
-void	draw_vline(t_img *img, int x, int start_y, int stop_y, int color);	// ❌
+void	draw_vline(t_img *img, int x, t_ipos y_interval, int color);		// ✅
 void	draw_hline(t_img *img, int x, t_fpos pos, int color);				// ✅
 void	draw_circle(t_img *img, t_fpos c_pos, int r, int color);			// ❌
 void	draw_dda_line(t_img *img, t_fpos a_pos, t_fpos b_pos, int color);	// ✅
 void	draw_vector(t_img *img, t_fpos start, t_fpos vec, int color);		// ✅
+// -[ draw_vlines.c ]----------------------------------------------------------3
+void	draw_vlines_generic(t_img *img, int x, t_ipos y_inter, int color);
+void	draw_vlines_little_end_32(t_img *img, int x, t_ipos y_inter, int color);
+void	draw_vlines_big_end_32(t_img *img, int x, t_ipos y_inter, int color);
+// -[ event_hooks.c ]----------------------------------------------------------3
 // -[ main_loop.c ]------------------------------------------------------------4
 int		main_loop(t_data *dt);												// ❌
 // -[ memcpy_utils.c ]---------------------------------------------------------2

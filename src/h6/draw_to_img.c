@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:13:33 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/19 19:38:25 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/20 00:03:16 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,42 +17,7 @@
  * -[] rewrite put_pixel_to_image using t_ipos() instead of x,y.
  * -[] use optimized put_pixel_to_image() fun. in other drawing functions.
  *
- * NOT-OPTI: endianness only need to check it once on start (init img load).
- *    --> Found a way to switch between fun. using little/big endian easily.
  */
-
-/**
- * FIX-ME: To many args, need to use t_ipos struct. and its utils fun.
- * TODO: t and utils fun, calls put_pixel_to_image() fun.
- * NOT-OPTI: bounds checking for each pixel, check-if need to.
- */
-void	draw_vline(t_img *img, int x, int start_y, int stop_y, int color)
-{
-	char	*pixel;
-	int		tmp;
-
-	if (x < 0 || x >= img->width)
-		return ;
-	if (start_y > stop_y)
-	{
-		tmp = start_y;
-		start_y = stop_y;
-		stop_y = tmp;
-	}
-	if (stop_y < 0 || start_y >= img->height)
-		return ;
-	if (start_y < 0)
-		start_y = 0;
-	if (stop_y >= img->height)
-		stop_y = img->height - 1;
-	pixel = img->addr + (start_y * img->size_line + x * (img->bpp / 8));
-	while (start_y++ <= stop_y)
-	{
-		*(int *)pixel = color;
-		pixel += img->size_line;
-	}
-}
-
 void	draw_hline(t_img *img, int x, t_fpos pos, int color)
 {
 	while (x <= pos.x)
@@ -66,6 +31,7 @@ void	draw_hline(t_img *img, int x, t_fpos pos, int color)
 /**
  * TODO: rewrite using t_fpos utils functions. 
  *  -> ipos_add(center,)
+ * NORM-ME:
  */
 void	draw_circle(t_img *img, t_fpos center, int r, int color)
 {

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:18:44 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/19 20:00:03 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/20 00:20:57 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,13 @@ void	memset_zero_img(t_img *img)
 	img->bpp = 0;
 	img->size_line = 0;
 	img->endian = 0;
+	img->put_pix_to_img = NULL;
+	img->draw_vlines = NULL;
 }
 
+/**
+ * NORM-ME: Too many lines...static fun. to set function ptrs.
+ */
 t_img	create_image(void *mlx_ptr, int width, int height)
 {
 	t_img	img;
@@ -37,13 +42,25 @@ t_img	create_image(void *mlx_ptr, int width, int height)
 				&img.size_line, &img.endian);
 		img.width = width;
 		img.height = height;
-		img.put_pix_to_img = &put_pix_to_img_little_end_32;
-		if (img.bpp != 32)
-			img.put_pix_to_img = &put_pix_to_img_little_end;
-		if (img.endian)
+		if (img.bpp == 32)
 		{
-			img.put_pix_to_img = &put_pix_to_img_big_end_32;
-			if (img.bpp != 32)
+			if (img.endian == 0)
+			{
+				img.put_pix_to_img = &put_pix_to_img_little_end_32;
+				img.draw_vlines = &draw_vlines_little_end_32;
+			}
+			else
+			{
+				img.put_pix_to_img = &put_pix_to_img_big_end_32;
+				img.draw_vlines = &draw_vlines_big_end_32;
+			}
+		}
+		else
+		{
+			img.draw_vlines = &draw_vlines_generic;
+			if (img.endian == 0)
+				img.put_pix_to_img = &put_pix_to_img_little_end;
+			else
 				img.put_pix_to_img = &put_pix_to_img_big_end;
 		}
 	}

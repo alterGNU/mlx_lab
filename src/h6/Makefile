@@ -33,6 +33,7 @@ SRC			=	display_infos.c \
 				draw_3dimg.c \
 				draw_buffer_images.c \
 				draw_to_img.c \
+				draw_vlines.c \
 				main.c \
 				main_loop.c \
 				memcpy_utils.c \
