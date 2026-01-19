@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 16:20:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/17 02:40:31 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:36:44 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	build_img_text(t_img *img)
 	{
 		y = -1;
 		while (++y < img->height)
-			put_pixel_to_image(img, x, y, FLOOR_COLOR);
+			img->put_pix_to_img(img, x, y, FLOOR_COLOR);
 	}
 	return (1);
 }
@@ -43,9 +43,9 @@ int	build_img_floor(t_img *img)
 		while (++y < img->height)
 		{
 			if (0 < x && x + 1 < img->width && 0 < y && y + 1 < img->height)
-				put_pixel_to_image(img, x, y, FLOOR_COLOR);
+				img->put_pix_to_img(img, x, y, FLOOR_COLOR);
 			else
-				put_pixel_to_image(img, x, y, WHITE_COLOR);
+				img->put_pix_to_img(img, x, y, WHITE_COLOR);
 		}
 	}
 	return (1);
@@ -65,7 +65,7 @@ int	build_img_wall(t_img *img)
 		while (++y < img->height)
 		{
 			if (0 < x && x + 1 < img->width && 0 < y && y + 1 < img->height)
-				put_pixel_to_image(img, x, y, WALL_COLOR);
+				img->put_pix_to_img(img, x, y, WALL_COLOR);
 		}
 	}
 	return (1);
@@ -110,9 +110,9 @@ int	build_img_3d(t_img *img)
 		while (++y < img->height)
 		{
 			if (y < horizon)
-				put_pixel_to_image(img, x, y, CEIL_RGB);
+				img->put_pix_to_img(img, x, y, CEIL_RGB);
 			else
-				put_pixel_to_image(img, x, y, FLOOR_RGB);
+				img->put_pix_to_img(img, x, y, FLOOR_RGB);
 		}
 	}
 	return (1);

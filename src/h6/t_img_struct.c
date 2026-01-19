@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:18:44 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/06 18:48:00 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:18:07 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@ t_img	create_image(void *mlx_ptr, int width, int height)
 				&img.size_line, &img.endian);
 		img.width = width;
 		img.height = height;
+		if (img.endian == 0)
+			img.put_pix_to_img = &put_pix_to_img_little_end;
+		else if (img.endian == 1)
+			img.put_pix_to_img = &put_pix_to_img_big_end;
 	}
 	return (img);
 }

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/18 16:42:06 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:25:24 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@
 # define CIRCLE_RADIUS 8		// size of the player representation
 //-[ 3DImage ]------------------------------------------------------------------
 // To-Do replace by resolution
-# define IMG3D_WIDTH 1200
-# define IMG3D_HEIGHT 800
+# define IMG3D_WIDTH 1024
+# define IMG3D_HEIGHT 896
 # define FLOOR_RGB 0x00FF00
 # define CEIL_RGB 0x0000FF
 // -[ Engine ]------------------------------------------------------------------
@@ -35,10 +35,10 @@
 # define ANG_SPEED 1.f		// Angle Var. Speed==rotation-speed:degree/move
 # define FPS 1000			// Desired frames per second
 # define FPS_DELTA 10		// Number of images to consider for FPS calculation
-# define FOV 60.f			// Player's Hori-Field-Of-View Angle(in degrees)
-# define FOV_PRE .05f		// Hori-Field-Of-View-Precision(in degrees)
+# define FOV 64.f			// Player's Hori-Field-Of-View Angle(in degrees)
+# define FOV_PRE .0625		// Hori-Field-Of-View-Precision(in degrees)
 // TODO: dist_min should be replace by objects sizes (x:width, y:height)
-# define DIST_MIN .5f		// Distance where OBJECTS_HEIGHT == IMG3D_HEIGHT
+# define DIST_MIN .8f		// Distance where OBJECTS_HEIGHT == IMG3D_HEIGHT
 //=[ Variables ]================================================================
 # define VALID_MAZE_CHARS "01NSEW"
 # define M_PI 3.1415926535
@@ -110,13 +110,14 @@ typedef struct s_maze
 
 typedef struct s_img
 {
-	void	*img_ptr;
-	char	*addr;
-	int		width;
-	int		height;
-	int		bpp;
-	int		size_line;
-	int		endian;
+	void		*img_ptr;
+	char		*addr;
+	int			width;
+	int			height;
+	int			bpp;
+	int			size_line;
+	int			endian;
+	void		(*put_pix_to_img)(struct s_img *img, int x, int y, int color);
 }	t_img;
 
 typedef struct s_data
@@ -162,7 +163,6 @@ int		draw_buffer_3dimg(t_data *dt);										// ✅
 // -[ draw_buffer_images.c ]---------------------------------------------------1
 int		draw_buffer_images(t_data *dt);										// ❌
 // -[ draw_to_img.c ]----------------------------------------------------------6
-void	put_pixel_to_image(t_img *img, int x, int y, int color);			// ✅
 void	draw_vline(t_img *img, int x, int start_y, int stop_y, int color);	// ❌
 void	draw_hline(t_img *img, int x, t_fpos pos, int color);				// ✅
 void	draw_circle(t_img *img, t_fpos c_pos, int r, int color);			// ❌
@@ -177,6 +177,9 @@ void	*ft_memcpy_by_words(void *dst, const void *src, size_t len);		// ✅
 void	init_movement_flags(t_data *dt);									// ✅
 int		key_pressed(int keycode, t_data *dt);								// ✅
 int		key_released(int keycode, t_data *dt);								// ✅
+// - [ put_pix_to_img.c ]------------------------------------------------------2
+void	put_pix_to_img_little_end(t_img *img, int x, int y, int color);		// ✅
+void	put_pix_to_img_big_end(t_img *img, int x, int y, int color);		// ✅
 // -[ raycast_collisions.c ]---------------------------------------------------5
 int		collision_detected(const t_data *dt, t_fpos ray_pos, float angle);	// ❌
 t_fpos	h_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅

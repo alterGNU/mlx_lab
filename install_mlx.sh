@@ -17,7 +17,7 @@
 #
 # TODO-LIST: install.sh features
 #  -[x] linux support.
-#  -[ ] macOS support.
+#  -[x] macOS support.
 #
 #                                                                                                 by alterGNU
 # ============================================================================================================

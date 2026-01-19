@@ -37,6 +37,7 @@ SRC			=	display_infos.c \
 				main_loop.c \
 				memcpy_utils.c \
 				move_flags.c \
+				put_pix_to_img.c \
 				raycast_collision.c \
 				t_data_struct.c \
 				t_fpos_struct.c \

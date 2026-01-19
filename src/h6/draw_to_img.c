@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:13:33 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/18 15:20:23 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:38:25 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,24 +20,6 @@
  * NOT-OPTI: endianness only need to check it once on start (init img load).
  *    --> Found a way to switch between fun. using little/big endian easily.
  */
-void	put_pixel_to_image(t_img *img, int x, int y, int color)
-{
-	char	*pixel;
-	int		i;
-
-	if (x < 0 || x >= img->width || y < 0 || y >= img->height)
-		return ;
-	pixel = img->addr + (y * img->size_line + x * (img->bpp / 8));
-	i = img->bpp - 8;
-	while (i >= 0)
-	{
-		if (img->endian != 0)
-			*pixel++ = (color >> i) & 0xFF;
-		else
-			*pixel++ = (color >> (img->bpp - 8 - i)) & 0xFF;
-		i -= 8;
-	}
-}
 
 /**
  * FIX-ME: To many args, need to use t_ipos struct. and its utils fun.
@@ -76,7 +58,7 @@ void	draw_hline(t_img *img, int x, t_fpos pos, int color)
 	while (x <= pos.x)
 	{
 		if (x >= 0 && x < img->width && pos.y >= 0 && pos.y < img->height)
-			put_pixel_to_image(img, x, pos.y, color);
+			img->put_pix_to_img(img, x, pos.y, color);
 		x++;
 	}
 }
@@ -136,7 +118,7 @@ void	draw_dda_line(t_img *img, t_fpos a_pos, t_fpos b_pos, int color)
 	sy = (float)dy / steps;
 	while (steps-- >= 0)
 	{
-		put_pixel_to_image(img, round(a_pos.x), round(a_pos.y), color);
+		img->put_pix_to_img(img, round(a_pos.x), round(a_pos.y), color);
 		a_pos.x += sx;
 		a_pos.y += sy;
 	}
