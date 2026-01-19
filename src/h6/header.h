@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/19 19:25:24 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:54:30 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,9 +177,11 @@ void	*ft_memcpy_by_words(void *dst, const void *src, size_t len);		// ✅
 void	init_movement_flags(t_data *dt);									// ✅
 int		key_pressed(int keycode, t_data *dt);								// ✅
 int		key_released(int keycode, t_data *dt);								// ✅
-// - [ put_pix_to_img.c ]------------------------------------------------------2
+// - [ put_pix_to_img.c ]------------------------------------------------------4
 void	put_pix_to_img_little_end(t_img *img, int x, int y, int color);		// ✅
+void	put_pix_to_img_little_end_32(t_img *img, int x, int y, int color);	// ✅
 void	put_pix_to_img_big_end(t_img *img, int x, int y, int color);		// ✅
+void	put_pix_to_img_big_end_32(t_img *img, int x, int y, int color);		// ✅
 // -[ raycast_collisions.c ]---------------------------------------------------5
 int		collision_detected(const t_data *dt, t_fpos ray_pos, float angle);	// ❌
 t_fpos	h_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅

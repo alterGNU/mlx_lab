@@ -6,26 +6,17 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:13:33 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/19 19:41:38 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/19 20:05:05 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
 /**
- * TODO-LIST: reorganise, optimize and factorize pixel writing functions.
- * -[x] use t_ipos struct. for position argument.
- * -[x] write two separate functions for little and big endian.
- * -[] add optimized version for bpp=32 only.
- *
- */
-
-/**
  * NOTE: 
+ * - & 0xFF is a bitwise AND mask to extract only the least significant byte.
  * - while loop to handle any bpp (bits per pixel) value. (64,32,24,16...)
  * - void instead of int cause we will not check returns value on failure
- * NOT-OPTI:
- *  - while loop added overhead for bpp=32, could be optimized.
  */
 void	put_pix_to_img_little_end(t_img *img, int x, int y, int color)
 {
@@ -45,11 +36,27 @@ void	put_pix_to_img_little_end(t_img *img, int x, int y, int color)
 }
 
 /**
+ * OPTI: optimized version for bpp=32 only.
+ */
+void	put_pix_to_img_little_end_32(t_img *img, int x, int y, int color)
+{
+	char	*pixel;
+
+	if (0 <= x && x < img->width && 0 <= y && y < img->height)
+	{
+		pixel = img->addr + (y * img->size_line + x * 4);
+		pixel[0] = (color >> 0) & 0xFF;
+		pixel[1] = (color >> 8) & 0xFF;
+		pixel[2] = (color >> 16) & 0xFF;
+		pixel[3] = (color >> 24) & 0xFF;
+	}
+}
+
+/**
  * NOTE: 
+ * - & 0xFF is a bitwise AND mask to extract only the least significant byte.
  * - void instead of int cause we will not check returns value on failure
  * - while loop to handle any bpp (bits per pixel) value. (64,32,24,16...)
- * NOT-OPTI:
- * - while loop added overhead for bpp=32, could be optimized.
  */
 void	put_pix_to_img_big_end(t_img *img, int x, int y, int color)
 {
@@ -65,5 +72,22 @@ void	put_pix_to_img_big_end(t_img *img, int x, int y, int color)
 			*pixel++ = (color >> i) & 0xFF;
 			i -= 8;
 		}
+	}
+}
+
+/**
+ * OPTI: optimized version for bpp=32 only.
+ */
+void	put_pix_to_img_big_end_32(t_img *img, int x, int y, int color)
+{
+	char	*pixel;
+
+	if (0 <= x && x < img->width && 0 <= y && y < img->height)
+	{
+		pixel = img->addr + (y * img->size_line + x * 4);
+		pixel[0] = (color >> 24) & 0xFF;
+		pixel[1] = (color >> 16) & 0xFF;
+		pixel[2] = (color >> 8) & 0xFF;
+		pixel[3] = (color >> 0) & 0xFF;
 	}
 }
