@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/20 00:32:55 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/20 04:30:36 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ static void	zero_memset_data(t_data *dt)
 	memset_zero_img(&dt->img_2d_wall);
 	memset_zero_img(&dt->img_2d_template);
 	memset_zero_img(&dt->img_2d_buffer);
-	memset_zero_img(&dt->img_3d_template);
+	memset_zero_img(&dt->img_3d_out_temp);
+	memset_zero_img(&dt->img_3d_ins_temp);
 	memset_zero_img(&dt->img_3d_buffer);
 	dt->img_drawn = 0;
 	dt->start2d = (t_fpos){0.0f, 0.0f};
@@ -93,7 +94,8 @@ t_data	init_data(const char **str_arr)
 	dt.img_2d_template = create_image(dt.mlx_ptr, map2d_x, map2d_y);
 	dt.img_2d_buffer = create_image(dt.mlx_ptr, map2d_x, map2d_y);
 	dt.hits = create_hit_array(dt.nb_of_rays);
-	dt.img_3d_template = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
+	dt.img_3d_out_temp = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
+	dt.img_3d_ins_temp = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
 	dt.img_3d_buffer = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
 	return (dt);
 }
@@ -108,7 +110,8 @@ void	free_data(t_data *dt)
 	free_image(dt->img_2d_wall, dt->mlx_ptr);
 	free_image(dt->img_2d_template, dt->mlx_ptr);
 	free_image(dt->img_2d_buffer, dt->mlx_ptr);
-	free_image(dt->img_3d_template, dt->mlx_ptr);
+	free_image(dt->img_3d_out_temp, dt->mlx_ptr);
+	free_image(dt->img_3d_ins_temp, dt->mlx_ptr);
 	free_image(dt->img_3d_buffer, dt->mlx_ptr);
 	if (dt->win_ptr)
 	{
@@ -172,7 +175,8 @@ int	error_detected_after_init_data(t_data *dt)
 	check_ptr_not_null(dt->img_2d_wall.img_ptr, "img_2d_wall", &error);
 	check_ptr_not_null(dt->img_2d_template.img_ptr, "img_2d_template", &error);
 	check_ptr_not_null(dt->img_2d_buffer.img_ptr, "img_2d_buffer", &error);
-	check_ptr_not_null(dt->img_3d_template.img_ptr, "img_3d_template", &error);
+	check_ptr_not_null(dt->img_3d_out_temp.img_ptr, "img_3d_out_temp", &error);
+	check_ptr_not_null(dt->img_3d_ins_temp.img_ptr, "img_3d_ins_temp", &error);
 	check_ptr_not_null(dt->img_3d_buffer.img_ptr, "img_3d_buffer", &error);
 	return (error);
 }

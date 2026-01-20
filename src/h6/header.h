@@ -6,16 +6,16 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/20 00:18:35 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/20 05:19:29 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HEADER_H
 # define HEADER_H
 // -[ Debug/UI toggles ]--------------------------------------------------------
-# define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
 # define DRAW_2DIMG 1			// 0: do not draw 2d image (map), else: draw it
-# define DRAW_2D_RAYS 2			// 0: none, 1: first/last, 2: all rays
+# define DRAW_2D_RAYS 1			// 0: none, 1: first/last, 2: all rays
+# define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
 //-[ Window ]-------------------------------------------------------------------
 # define WIN_TITLE "Caster the Ghost: (3D Monochrome-RayCasting)"
 # define WIN_BORDER 5			// space between window border & images
@@ -28,15 +28,19 @@
 // To-Do replace by resolution
 # define IMG3D_WIDTH 1024
 # define IMG3D_HEIGHT 896
-# define FLOOR_RGB 0x00FF00
-# define CEIL_RGB 0x0000FF
+//# define FLOOR3D_RGB 0x00FF00
+//# define CEIL3D_RGB 0x0000FF
+# define FLOOR3D_RGB 0x4A5866
+# define CEIL3D_RGB 0xC7AF36
 // -[ Engine ]------------------------------------------------------------------
-# define POS_SPEED .1f		// Position Var. Speed==movement-speed:step/move
-# define ANG_SPEED 1.f		// Angle Var. Speed==rotation-speed:degree/move
-# define FPS 1000			// Desired frames per second
+# define POS_SPEED .2f		// Position Var. Speed==movement-speed:step/move
+# define ANG_SPEED 2.f		// Angle Var. Speed==rotation-speed:degree/move
+# define FPS 20			// Desired frames per second
 # define FPS_DELTA 10		// Number of images to consider for FPS calculation
-# define FOV 64.f			// Player's Hori-Field-Of-View Angle(in degrees)
-# define FOV_PRE .0625		// Hori-Field-Of-View-Precision(in degrees)
+# define FOV 64.f			// Player's Hori-Field-Of-View Angle(in degrees)2**6
+# define FOV_PRE .0625		// Hori-Field-Of-View-Precision(in degrees)2**-4
+//# define FOV 32.f			// Player's Hori-Field-Of-View Angle(in degrees)2**5
+//# define FOV_PRE .003125		// Hori-Field-Of-View-Precision(in degrees)2**-5
 // TODO: dist_min should be replace by objects sizes (x:width, y:height)
 # define DIST_MIN .8f		// Distance where OBJECTS_HEIGHT == IMG3D_HEIGHT
 //=[ Variables ]================================================================
@@ -53,14 +57,21 @@
 # define LA_KEY 65361
 # define RA_KEY 65363
 //-[ Colors ]-------------------------------------------------------------------
+# define DARK_FACTOR .5f // dark-factor for inside3D 0.4f=darker, 1.4f=lighter
 # define BLACK_COLOR 0x000000
 # define RED_COLOR 0xFF0000
 # define GREEN_COLOR 0x00FF00
 # define BLUE_COLOR 0x0000FF
 # define YELLOW_COLOR 0xFFFF00
 # define WHITE_COLOR 0xFFFFFF
-# define FLOOR_COLOR 0xAAAAAA
-# define WALL_COLOR 0x333333
+# define FLOOR2D_COLOR 0xAAAAAA
+# define WALL2D_COLOR 0x333333
+# define LIGHT_GREEN_COLOR 0x255C33
+# define DARK_GREEN_COLOR 0x13381D
+# define LIGHT_RED_COLOR 0xA82727
+# define DARK_RED_COLOR 0x6E1A1A
+# define DARK_BLUE_COLOR 0x180D3B
+# define LIGHT_BLUE_COLOR 0x3F278F
 // =[ Include ]=================================================================
 # include "mlx.h"
 # include <math.h>
@@ -69,6 +80,19 @@
 # include <string.h>
 # include <sys/time.h>
 # include <unistd.h>
+// =[ ENUMERATION ] ============================================================
+typedef enum e_wall_type
+{
+	WIW=-4, // West Outside Wall
+	SIW=-3, // South Inside Wall
+	EIW=-2, // East Inside Wall
+	NIW=-1, // North Inside Wall
+	UNSET=0,
+	NOW=1, // North Outside Wall
+	EOW=2, // East Outside Wall
+	SOW=3, // South Outside Wall
+	WOW=4, // West Outside Wall
+}	t_wall_type;
 // =[ Structures ]==============================================================
 typedef struct s_ipos
 {
@@ -85,9 +109,13 @@ typedef struct s_fpos
 typedef struct s_hit
 {
 	int		valid;	//sentinel-> valid_hit = 1; invalid_hit = 0
-	t_fpos	pos;
-	t_fpos	angle; // x: degree, y: tan(radian)
+	t_ipos	type;	// x: wall_type(enum), y: coloration
+	t_fpos	pos;	// 2d position of the hit
+	t_fpos	dim;	// 3D size of the object hit (x:width, y:height)
+	t_fpos	angle;	// x: degree, y: radian
+	float	tan_angle;
 	float	distance;
+	float	dist_corr; // pre-compute cosf(radian(norm_angle(player.dir - hit.angle.x)))
 }	t_hit;
 
 typedef struct s_play
@@ -119,6 +147,7 @@ typedef struct s_img
 	int			endian;
 	void		(*put_pix_to_img)(struct s_img *img, int x, int y, int color);
 	void		(*draw_vlines)(struct s_img *, int, t_ipos, int);
+	int			(*dark_filter)(int color, float darkness_factor);
 }	t_img;
 
 typedef struct s_data
@@ -140,7 +169,8 @@ typedef struct s_data
 	t_img			img_2d_wall;
 	t_img			img_2d_template;
 	t_img			img_2d_buffer;
-	t_img			img_3d_template;
+	t_img			img_3d_out_temp;
+	t_img			img_3d_ins_temp;
 	t_img			img_3d_buffer;
 	int				img_drawn;
 	int				delay_between_frames_ms;
@@ -159,7 +189,7 @@ void	draw2d_player(t_img *img, t_play *p);								// ✅
 void	draw2d_hit_lines(t_data *dt);										// ✅
 int		draw_buffer_2dimg(t_data *dt);										// ✅
 // -[ draw_3dimg.c ]-----------------------------------------------------------2
-void	draw3d_obj_vlines(t_img *img, t_hit *hit, t_play play, int col_width);
+void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width);			// ✅
 int		draw_buffer_3dimg(t_data *dt);										// ✅
 // -[ draw_buffer_images.c ]---------------------------------------------------1
 int		draw_buffer_images(t_data *dt);										// ❌
@@ -215,11 +245,11 @@ void	free_hit_array(t_hit **hit_arr);									// ✅
 int		print_hit_array(t_hit *hit_arr);									// ✅
 t_data	init_data(const char **str_arr);									// ❌
 // -[ t_img_builders.c ]-------------------------------------------------------5
-int		build_img_text(t_img *img);											// ✅
+int		build_img_text(t_img *img, int color);								// ✅
 int		build_img_floor(t_img *img);										// ✅
 int		build_img_wall(t_img *img);											// ✅
 int		build_img_grid(t_maze *maze, t_img *grid, t_img *floor, t_img *wall);//✅
-int		build_img_3d(t_img *img);											// ✅
+int		build_img_3d(t_img *img, int ceil_color, int floor_color);			// ✅
 // -[ t_img_manipulations.c ]--------------------------------------------------3
 int		t_img_insert_rows_by_words(\
 		t_img *src, t_img *dst, int dst_x, int dst_y);						// ✅
@@ -252,6 +282,9 @@ void	free_player(t_play *player);										// ✅
 void	fpos_floor(t_ipos *a, const t_fpos *b);								// ✅
 void	fpos_ceil(t_ipos *a, const t_fpos *b);								// ✅
 void	fpos_round(t_ipos *a, const t_fpos *b);								// ✅
+// -[ utils_color.c ]---------------------------------------------------------2
+int		dark_filter_big_end(int color, float darkness_factor);			// ✅
+int		dark_filter_little_end(int color, float darkness_factor);		// ✅
 // -[ utils_fmath.c ]----------------------------------------------------------5
 float	ft_fmax(float a, float b);											// ✅
 float	ft_fmin(float a, float b);											// ✅

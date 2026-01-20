@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 19:24:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/18 16:33:00 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/20 02:58:41 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,27 @@
  *  - wall-outside(NSEW)
  *  - wall-inside(NSEW)
  *  - boundery(NSEW)
+	int		valid;	//sentinel-> valid_hit = 1; invalid_hit = 0
+	t_ipos	type;	// x: wall_type(enum), y: coloration
+	t_fpos	pos;	// 2d position of the hit
+	t_fpos	dim;	// 3D size of the object hit (x:width, y:height)
+	t_fpos	angle;	// x: degree, y: radian
+	float	tan_angle;
+	float	distance;
+	float	dist_corr; // pre-compute cosf(radian(norm_angle(player.dir - hit.angle.x)))
  */
 t_hit	init_hit(void)
 {
 	t_hit	hit;
 
 	hit.valid = 1;
+	hit.type = ipos_new(0, -1);
 	hit.pos = fpos_new(-1.f, -1.f);
+	hit.dim = fpos_new(0.f, 0.f);
 	hit.angle = fpos_new(-1.f, -1.f);
-	hit.distance = -1.f;
+	hit.tan_angle = 0.f;
+	hit.distance = 0.f;
+	hit.dist_corr = 0.f;
 	return (hit);
 }
 

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/19 18:21:55 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/20 05:18:22 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	print_start_infos(t_data dt, const char **str_arr, int bui_delay_ms)
 	printf("   ┗━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┴\n");
 	printf(" - player start pos=(%.2f, %.2f) dir=%.2f degrees\n", dt.player.pos.x, dt.player.pos.y, dt.player.dir);
 	printf(" - FOV=%.2f degrees / FOV_PRE=%.4f degrees\n", FOV, FOV_PRE);
-	printf(" - nb of rays X 3d columns width=%d X %d = %d VS %d\n", dt.nb_of_rays, dt.column_width, dt.column_width*dt.nb_of_rays, dt.img_3d_buffer.width);
+	printf(" - nb_of_rays X columns_width=%d X %d = %d VS %d\n", dt.nb_of_rays, dt.column_width, dt.column_width*dt.nb_of_rays, dt.img_3d_buffer.width);
 	printf(" - start left ray at angle=%.2f degrees\n", dt.hits[0].angle.x);
 	printf(" - end right ray at angle=%.2f degrees\n", dt.hits[dt.nb_of_rays - 1].angle.x);
 	printf(" - elem rotation per ray=%.4f degrees\n", dt.rot_elem);
@@ -78,6 +78,7 @@ int	main(void)
 	int				bui_delay_ms;
 	int				ms_duration;
 
+	/*
 	const char *str_arr[] = {
 		"111111111111111111111111111100000111111111111111111111111",
 		"100000000000000000000000000000000000000000000000000000001",
@@ -117,7 +118,6 @@ int	main(void)
 		"001111111111111111111111111000000000000000000000000000000",
 		"000000000000000000000000000000000000000000000000000000000",
 		NULL};
-	/*
 	const char *str_arr[] = {
 		"1111111111",
 		"1000000001",
@@ -188,20 +188,22 @@ int	main(void)
 		"001001000001000001", \
 		"000000000000000000", \
 		NULL };
-	const char	*str_arr[] = { \
-		"0000000", \
-		"0010100", \
-		"0100010", \
-		"100N001", \
-		"0100010", \
-		"0010100", \
-		"0000000", \
-		NULL };
 	*/
+	const char	*str_arr[] = { \
+		"111101111", \
+		"000000000", \
+		"100101001", \
+		"101000101", \
+		"1100N0011", \
+		"101000101", \
+		"100101001", \
+		"000000000", \
+		"111101111", \
+		NULL };
 	gettimeofday(&prog_start_time, NULL);
 	dt = init_data(str_arr);
 	//------------------------------------------------------TODO REMOVE
-	set_player(&dt.player, 3.5f, 3.5f, 45.0f);
+	//set_player(&dt.player, 3.5f, 3.5f, 45.0f);
 	//set_player(&dt.player, 3.5f, 3.5f, 3 * 45.0f);
 	//set_player(&dt.player, 3.5f, 3.5f, 5 * 45.0f);
 	//set_player(&dt.player, 3.5f, 3.5f, 7 * 45.0f);
@@ -209,15 +211,19 @@ int	main(void)
 	if (error_detected_after_init_data(&dt))
 		return (free_data(&dt), 1);
 	gettimeofday(&start_bui, NULL);
-	//if (!build_img_text(&dt.img_erase_txt))
-	//	return (fprintf(stderr, "Error: build_img_text() failed\n"), free_data(&dt), 1);
+	if (!build_img_text(&dt.img_erase_txt, BLACK_COLOR))
+		return (fprintf(stderr, "Error: build_img_text() failed\n"), free_data(&dt), 1);
 	if (!build_img_floor(&dt.img_2d_floor))
 		return (fprintf(stderr, "Error: build_img_floor() failed\n"), free_data(&dt), 1);
 	if (!build_img_wall(&dt.img_2d_wall))
 		return (fprintf(stderr, "Error: build_img_wall() failed\n"), free_data(&dt), 1);
 	if (!build_img_grid(&dt.maze, &dt.img_2d_template, &dt.img_2d_floor, &dt.img_2d_wall))
 		return (fprintf(stderr, "Error: build_img_grid() failed\n"), free_data(&dt), 1);
-	if (!build_img_3d(&dt.img_3d_template))
+	if (!build_img_3d(&dt.img_3d_out_temp, CEIL3D_RGB, FLOOR3D_RGB))
+		return (fprintf(stderr, "Error: build_img_3d() failed\n"), free_data(&dt), 1);
+	int dark_ceil = dt.img_3d_ins_temp.dark_filter(CEIL3D_RGB, DARK_FACTOR);
+	int dark_floor = dt.img_3d_ins_temp.dark_filter(FLOOR3D_RGB, DARK_FACTOR);
+	if (!build_img_3d(&dt.img_3d_ins_temp, dark_ceil, dark_floor))
 		return (fprintf(stderr, "Error: build_img_3d() failed\n"), free_data(&dt), 1);
 	gettimeofday(&end_bui, NULL);
 	bui_delay_ms = diff_time_in_ms(start_bui, end_bui);

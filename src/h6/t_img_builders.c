@@ -6,13 +6,13 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 16:20:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/19 19:36:44 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/20 05:17:37 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-int	build_img_text(t_img *img)
+int	build_img_text(t_img *img, int color)
 {
 	int	x;
 	int	y;
@@ -24,7 +24,7 @@ int	build_img_text(t_img *img)
 	{
 		y = -1;
 		while (++y < img->height)
-			img->put_pix_to_img(img, x, y, FLOOR_COLOR);
+			img->put_pix_to_img(img, x, y, color);
 	}
 	return (1);
 }
@@ -43,7 +43,7 @@ int	build_img_floor(t_img *img)
 		while (++y < img->height)
 		{
 			if (0 < x && x + 1 < img->width && 0 < y && y + 1 < img->height)
-				img->put_pix_to_img(img, x, y, FLOOR_COLOR);
+				img->put_pix_to_img(img, x, y, FLOOR2D_COLOR);
 			else
 				img->put_pix_to_img(img, x, y, WHITE_COLOR);
 		}
@@ -65,7 +65,7 @@ int	build_img_wall(t_img *img)
 		while (++y < img->height)
 		{
 			if (0 < x && x + 1 < img->width && 0 < y && y + 1 < img->height)
-				img->put_pix_to_img(img, x, y, WALL_COLOR);
+				img->put_pix_to_img(img, x, y, WALL2D_COLOR);
 		}
 	}
 	return (1);
@@ -94,7 +94,7 @@ int	build_img_grid(t_maze *maze, t_img *grid, t_img *floor, t_img *wall)
 	return (1);
 }
 
-int	build_img_3d(t_img *img)
+int	build_img_3d(t_img *img, int ceil_color, int floor_color)
 {
 	int	x;
 	int	y;
@@ -110,9 +110,9 @@ int	build_img_3d(t_img *img)
 		while (++y < img->height)
 		{
 			if (y < horizon)
-				img->put_pix_to_img(img, x, y, CEIL_RGB);
+				img->put_pix_to_img(img, x, y, ceil_color);
 			else
-				img->put_pix_to_img(img, x, y, FLOOR_RGB);
+				img->put_pix_to_img(img, x, y, floor_color);
 		}
 	}
 	return (1);
