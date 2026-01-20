@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 10:14:41 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/20 02:53:49 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/20 18:06:47 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	display_hits_infos(t_data *dt, int line_num)
 
 	y = 5 + 12 * line_num;
 	i = -1;
-	while (dt->hits[++i].valid && y + 12 <= dt->start2d.y)
+	while (dt->hits[++i].valid && y + 12 <= dt->start2d.y + WIN_BORDER)
 	{
 		snprintf(xray_str, sizeof(xray_str), \
 			"h[%d]:p(%.2f, %.2f), a:%.2f, d:%.2f", i, dt->hits[i].pos.x, \

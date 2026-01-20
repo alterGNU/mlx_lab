@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/20 05:18:22 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/20 18:07:57 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,23 +202,26 @@ int	main(void)
 		NULL };
 	gettimeofday(&prog_start_time, NULL);
 	dt = init_data(str_arr);
-	//------------------------------------------------------TODO REMOVE
-	//set_player(&dt.player, 3.5f, 3.5f, 45.0f);
-	//set_player(&dt.player, 3.5f, 3.5f, 3 * 45.0f);
-	//set_player(&dt.player, 3.5f, 3.5f, 5 * 45.0f);
-	//set_player(&dt.player, 3.5f, 3.5f, 7 * 45.0f);
-	//------------------------------------------------------TODO REMOVE
+	// TODO: Remove ----------------------------------------
+	set_player(&dt.player, 4.5f, 4.5f, 45.0f);
+	//set_player(&dt.player, 4.5f, 4.5f, 3 * 45.0f);
+	//set_player(&dt.player, 4.5f, 4.5f, 5 * 45.0f);
+	//set_player(&dt.player, 4.5f, 4.5f, 7 * 45.0f);
+	//------------------------------------------------------
 	if (error_detected_after_init_data(&dt))
 		return (free_data(&dt), 1);
 	gettimeofday(&start_bui, NULL);
+	if (DRAW_MINIMAP)
+	{
+		if (!build_img_floor(&dt.img_2d_floor))
+			return (fprintf(stderr, "Error: build_img_floor() failed\n"), free_data(&dt), 1);
+		if (!build_img_wall(&dt.img_2d_wall))
+			return (fprintf(stderr, "Error: build_img_wall() failed\n"), free_data(&dt), 1);
+		if (!build_img_grid(&dt.maze, &dt.img_2d_template, &dt.img_2d_floor, &dt.img_2d_wall))
+			return (fprintf(stderr, "Error: build_img_grid() failed\n"), free_data(&dt), 1);
+	}
 	if (!build_img_text(&dt.img_erase_txt, BLACK_COLOR))
 		return (fprintf(stderr, "Error: build_img_text() failed\n"), free_data(&dt), 1);
-	if (!build_img_floor(&dt.img_2d_floor))
-		return (fprintf(stderr, "Error: build_img_floor() failed\n"), free_data(&dt), 1);
-	if (!build_img_wall(&dt.img_2d_wall))
-		return (fprintf(stderr, "Error: build_img_wall() failed\n"), free_data(&dt), 1);
-	if (!build_img_grid(&dt.maze, &dt.img_2d_template, &dt.img_2d_floor, &dt.img_2d_wall))
-		return (fprintf(stderr, "Error: build_img_grid() failed\n"), free_data(&dt), 1);
 	if (!build_img_3d(&dt.img_3d_out_temp, CEIL3D_RGB, FLOOR3D_RGB))
 		return (fprintf(stderr, "Error: build_img_3d() failed\n"), free_data(&dt), 1);
 	int dark_ceil = dt.img_3d_ins_temp.dark_filter(CEIL3D_RGB, DARK_FACTOR);

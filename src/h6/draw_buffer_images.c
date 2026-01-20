@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/16 16:36:16 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/20 18:07:49 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	draw_buffer_images(t_data *dt)
 		return (printf("Error: Invalid data pointers\n"), 1);
 	if (gettimeofday(&act_time, NULL) < 0)
 		return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
-	if (DRAW_2DIMG)
+	if (DRAW_MINIMAP)
 		draw_buffer_2dimg(dt);
 	draw_buffer_3dimg(dt);
 	// FPS control to avoid busy-spinning
@@ -32,7 +32,7 @@ int	draw_buffer_images(t_data *dt)
 				return (perror("draw_buffer_image: gettimeofday() failed"), free_data(dt), 1);
 		}
 	}
-	if (DRAW_2DIMG)
+	if (DRAW_MINIMAP)
 		mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_2d_buffer.img_ptr, dt->start2d.x, dt->start2d.y);
 	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_3d_buffer.img_ptr, dt->start3d.x, dt->start3d.y);
 	dt->img_drawn++;

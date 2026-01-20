@@ -6,43 +6,44 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/20 05:19:29 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/20 18:07:51 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HEADER_H
 # define HEADER_H
 // -[ Debug/UI toggles ]--------------------------------------------------------
-# define DRAW_2DIMG 1			// 0: do not draw 2d image (map), else: draw it
-# define DRAW_2D_RAYS 1			// 0: none, 1: first/last, 2: all rays
-# define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
+# define DRAW_MINIMAP 0			// 0: do not draw 2d image (map), else: draw it
+# define DRAW_2D_RAYS 2			// 0: none, 1: first/last, 2: all rays
+# define DRAW_HITS_TXT 1		// 0: disable, 1: enable hit positions display
 //-[ Window ]-------------------------------------------------------------------
 # define WIN_TITLE "Caster the Ghost: (3D Monochrome-RayCasting)"
 # define WIN_BORDER 5			// space between window border & images
 # define WIN_DBG_TXT_LEN 250	// length(in pixels)of debug txt area
 //-[ 2DImage ]------------------------------------------------------------------
-# define TILE_X 16 				// width(in pixels) of one 2Dcell
-# define TILE_Y 16 				// height(in pixels) of one 2Dcell
-# define CIRCLE_RADIUS 8		// size of the player representation
+# define TILE_X 32 				// width(in pixels) of one 2Dcell
+# define TILE_Y 32 				// height(in pixels) of one 2Dcell
+# define CIRCLE_RADIUS 16		// size of the player representation
 //-[ 3DImage ]------------------------------------------------------------------
-// To-Do replace by resolution
-# define IMG3D_WIDTH 1024
-# define IMG3D_HEIGHT 896
-//# define FLOOR3D_RGB 0x00FF00
-//# define CEIL3D_RGB 0x0000FF
+// TODO: replace by resolution format string RESOLUTION "1024x768"
+//# define IMG3D_WIDTH 1024
+//# define IMG3D_HEIGHT 896
+# define IMG3D_WIDTH 512
+# define IMG3D_HEIGHT 512
 # define FLOOR3D_RGB 0x4A5866
 # define CEIL3D_RGB 0xC7AF36
 // -[ Engine ]------------------------------------------------------------------
 # define POS_SPEED .2f		// Position Var. Speed==movement-speed:step/move
 # define ANG_SPEED 2.f		// Angle Var. Speed==rotation-speed:degree/move
-# define FPS 20			// Desired frames per second
+//# define FPS 20			// Desired frames per second
+# define FPS 1000			// Desired frames per second
 # define FPS_DELTA 10		// Number of images to consider for FPS calculation
 # define FOV 64.f			// Player's Hori-Field-Of-View Angle(in degrees)2**6
-# define FOV_PRE .0625		// Hori-Field-Of-View-Precision(in degrees)2**-4
 //# define FOV 32.f			// Player's Hori-Field-Of-View Angle(in degrees)2**5
+//# define FOV_PRE 12.8		// 64/5=12.8->makes sure to get an ODD nb of rays
+//# define FOV_PRE 0.125		// Hori-Field-Of-View-Precision(in degrees)2**-3
+# define FOV_PRE .0625		// Hori-Field-Of-View-Precision(in degrees)2**-4
 //# define FOV_PRE .003125		// Hori-Field-Of-View-Precision(in degrees)2**-5
-// TODO: dist_min should be replace by objects sizes (x:width, y:height)
-# define DIST_MIN .8f		// Distance where OBJECTS_HEIGHT == IMG3D_HEIGHT
 //=[ Variables ]================================================================
 # define VALID_MAZE_CHARS "01NSEW"
 # define M_PI 3.1415926535

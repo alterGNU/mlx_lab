@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/20 04:30:36 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/20 18:08:08 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,7 @@ static void	zero_memset_data(t_data *dt)
 t_data	init_data(const char **str_arr)
 {
 	t_data	dt;
-	int		map2d_x;
-	int		map2d_y;
+	t_ipos	map2d;
 	int		img3d_width;
 
 	zero_memset_data(&dt);
@@ -62,37 +61,47 @@ t_data	init_data(const char **str_arr)
 	dt.mlx_ptr = mlx_init();
 	if (!dt.mlx_ptr)
 		return (dt);
-	map2d_x = dt.maze.width * TILE_X;
-	map2d_y = dt.maze.height * TILE_Y;
-	if (map2d_x <= 0 || map2d_y <= 0)
-		return (dt);
+	map2d = ipos_new(0, 0);
+	if (DRAW_MINIMAP)
+	{
+		ipos_set(&map2d, dt.maze.width * TILE_X, dt.maze.height * TILE_Y);
+		if (map2d.x <= 0 || map2d.y <= 0)
+			return (dt);
+	}
 	dt.nb_of_rays = get_nb_of_rays();
 	if (dt.nb_of_rays > 1)
 		dt.rot_elem = FOV / (dt.nb_of_rays - 1);
 	//if (FOV > FOV_PRE)
 	//	dt.rot_elem = FOV * FOV_PRE / (FOV - FOV_PRE);
 	dt.column_width = (int)(IMG3D_WIDTH / dt.nb_of_rays);
-	img3d_width = dt.nb_of_rays * dt.column_width;
-	if (DRAW_2DIMG)
-		dt.win_dim.x = ft_imax(map2d_x, WIN_DBG_TXT_LEN) + img3d_width + 3 * WIN_BORDER;
+	img3d_width = dt.nb_of_rays * dt.column_width; //NOTE: ensure width is multiple of nb_of_rays
+	if (DRAW_MINIMAP)
+	{
+		dt.win_dim.x = ft_imax(map2d.x, WIN_DBG_TXT_LEN) + img3d_width + 3 * WIN_BORDER;
+		dt.win_dim.y = ft_imax(map2d.y + 3 * WIN_BORDER, IMG3D_HEIGHT + 2 * WIN_BORDER);
+	}
 	else
+	{
 		dt.win_dim.x = WIN_DBG_TXT_LEN + img3d_width + 3 * WIN_BORDER;
-	dt.win_dim.y = ft_imax(map2d_y + WIN_DBG_TXT_LEN + 3 * WIN_BORDER, IMG3D_HEIGHT + 2 * WIN_BORDER);
+		dt.win_dim.y = IMG3D_HEIGHT + 2 * WIN_BORDER;
+	}
 	if (dt.win_dim.x <= 0 || dt.win_dim.y <= 0)
 		return (dt);
-	fpos_set(&dt.start2d, 5.0f, (float)dt.win_dim.y - (float)map2d_y - 5.0f);
-	fpos_set(&dt.start3d, (float)dt.win_dim.x - (float)img3d_width - 5.0f, 5.0f);
+	fpos_set(&dt.start2d, WIN_BORDER, (float)dt.win_dim.y - (float)map2d.y - WIN_BORDER);
+	fpos_set(&dt.start3d, (float)dt.win_dim.x - (float)img3d_width - WIN_BORDER, WIN_BORDER);
 	dt.win_ptr = mlx_new_window(dt.mlx_ptr, dt.win_dim.x, dt.win_dim.y, WIN_TITLE);
 	if (!dt.win_ptr)
 		return (dt);
-	if (DRAW_2DIMG)
-		dt.img_erase_txt = create_image(dt.mlx_ptr, ft_imax(map2d_x, WIN_DBG_TXT_LEN), 14);
+	if (DRAW_MINIMAP)
+	{
+		dt.img_2d_floor = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
+		dt.img_2d_wall = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
+		dt.img_2d_template = create_image(dt.mlx_ptr, map2d.x, map2d.y);
+		dt.img_2d_buffer = create_image(dt.mlx_ptr, map2d.x, map2d.y);
+		dt.img_erase_txt = create_image(dt.mlx_ptr, ft_imax(map2d.x, WIN_DBG_TXT_LEN), 14);
+	}
 	else
 		dt.img_erase_txt = create_image(dt.mlx_ptr, WIN_DBG_TXT_LEN, 14);
-	dt.img_2d_floor = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
-	dt.img_2d_wall = create_image(dt.mlx_ptr, TILE_X, TILE_Y);
-	dt.img_2d_template = create_image(dt.mlx_ptr, map2d_x, map2d_y);
-	dt.img_2d_buffer = create_image(dt.mlx_ptr, map2d_x, map2d_y);
 	dt.hits = create_hit_array(dt.nb_of_rays);
 	dt.img_3d_out_temp = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
 	dt.img_3d_ins_temp = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
@@ -171,10 +180,13 @@ int	error_detected_after_init_data(t_data *dt)
 	check_ptr_not_null(dt->mlx_ptr, "mlx_ptr", &error);
 	check_ptr_not_null(dt->win_ptr, "win_ptr", &error);
 	check_ptr_not_null(dt->img_erase_txt.img_ptr, "img_erase_txt", &error);
-	check_ptr_not_null(dt->img_2d_floor.img_ptr, "img_2d_floor", &error);
-	check_ptr_not_null(dt->img_2d_wall.img_ptr, "img_2d_wall", &error);
-	check_ptr_not_null(dt->img_2d_template.img_ptr, "img_2d_template", &error);
-	check_ptr_not_null(dt->img_2d_buffer.img_ptr, "img_2d_buffer", &error);
+	if (DRAW_MINIMAP)
+	{
+		check_ptr_not_null(dt->img_2d_floor.img_ptr, "img_2d_floor", &error);
+		check_ptr_not_null(dt->img_2d_wall.img_ptr, "img_2d_wall", &error);
+		check_ptr_not_null(dt->img_2d_template.img_ptr, "img_2d_template", &error);
+		check_ptr_not_null(dt->img_2d_buffer.img_ptr, "img_2d_buffer", &error);
+	}
 	check_ptr_not_null(dt->img_3d_out_temp.img_ptr, "img_3d_out_temp", &error);
 	check_ptr_not_null(dt->img_3d_ins_temp.img_ptr, "img_3d_ins_temp", &error);
 	check_ptr_not_null(dt->img_3d_buffer.img_ptr, "img_3d_buffer", &error);
