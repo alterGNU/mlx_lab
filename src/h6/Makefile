@@ -40,6 +40,7 @@ SRC			=	display_infos.c \
 				move_flags.c \
 				put_pix_to_img.c \
 				raycast_collision.c \
+				raycast_update_hit.c \
 				t_data_struct.c \
 				t_fpos_struct.c \
 				t_fpos_utils.c \

@@ -6,40 +6,46 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/20 18:07:51 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/21 03:25:28 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HEADER_H
 # define HEADER_H
 // -[ Debug/UI toggles ]--------------------------------------------------------
-# define DRAW_MINIMAP 0			// 0: do not draw 2d image (map), else: draw it
-# define DRAW_2D_RAYS 2			// 0: none, 1: first/last, 2: all rays
-# define DRAW_HITS_TXT 1		// 0: disable, 1: enable hit positions display
+# define DRAW_MINIMAP 1			// 0: do not draw 2d image (map), else: draw it
+# define DRAW_2D_RAYS 1			// 0: none, 1: first/last, 2: all rays
+# define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
 //-[ Window ]-------------------------------------------------------------------
 # define WIN_TITLE "Caster the Ghost: (3D Monochrome-RayCasting)"
 # define WIN_BORDER 5			// space between window border & images
 # define WIN_DBG_TXT_LEN 250	// length(in pixels)of debug txt area
 //-[ 2DImage ]------------------------------------------------------------------
-# define TILE_X 32 				// width(in pixels) of one 2Dcell
-# define TILE_Y 32 				// height(in pixels) of one 2Dcell
-# define CIRCLE_RADIUS 16		// size of the player representation
+//# define TILE_X 32 				// width(in pixels) of one 2Dcell
+//# define TILE_Y 32 				// height(in pixels) of one 2Dcell
+//# define CIRCLE_RADIUS 16		// size of the player representation
+# define TILE_X 16 				// width(in pixels) of one 2Dcell
+# define TILE_Y 16 				// height(in pixels) of one 2Dcell
+# define CIRCLE_RADIUS 8		// size of the player representation
 //-[ 3DImage ]------------------------------------------------------------------
 // TODO: replace by resolution format string RESOLUTION "1024x768"
-//# define IMG3D_WIDTH 1024
-//# define IMG3D_HEIGHT 896
-# define IMG3D_WIDTH 512
-# define IMG3D_HEIGHT 512
+# define IMG3D_WIDTH 1024
+# define IMG3D_HEIGHT 896
+//# define IMG3D_WIDTH 512
+//# define IMG3D_HEIGHT 512
 # define FLOOR3D_RGB 0x4A5866
 # define CEIL3D_RGB 0xC7AF36
 // -[ Engine ]------------------------------------------------------------------
-# define POS_SPEED .2f		// Position Var. Speed==movement-speed:step/move
+# define PRE_RAY 0.0001f	// Ray detection precision
+# define EPSILON 0.000001f	// Small value to avoid division by zero
+# define POS_SPEED .1f		// Position Var. Speed==movement-speed:step/move
 # define ANG_SPEED 2.f		// Angle Var. Speed==rotation-speed:degree/move
 //# define FPS 20			// Desired frames per second
 # define FPS 1000			// Desired frames per second
 # define FPS_DELTA 10		// Number of images to consider for FPS calculation
 # define FOV 64.f			// Player's Hori-Field-Of-View Angle(in degrees)2**6
 //# define FOV 32.f			// Player's Hori-Field-Of-View Angle(in degrees)2**5
+//# define FOV_PRE 64.		// 64/64=1
 //# define FOV_PRE 12.8		// 64/5=12.8->makes sure to get an ODD nb of rays
 //# define FOV_PRE 0.125		// Hori-Field-Of-View-Precision(in degrees)2**-3
 # define FOV_PRE .0625		// Hori-Field-Of-View-Precision(in degrees)2**-4
@@ -219,10 +225,11 @@ void	put_pix_to_img_little_end(t_img *img, int x, int y, int color);		// ✅
 void	put_pix_to_img_little_end_32(t_img *img, int x, int y, int color);	// ✅
 void	put_pix_to_img_big_end(t_img *img, int x, int y, int color);		// ✅
 void	put_pix_to_img_big_end_32(t_img *img, int x, int y, int color);		// ✅
-// -[ raycast_collisions.c ]---------------------------------------------------5
-int		collision_detected(const t_data *dt, t_fpos ray_pos, float angle);	// ❌
+// -[ raycast_collisions.c ]---------------------------------------------------3
+int		collision_detected(const t_data *dt, t_fpos ray_pos);				// ❌
 t_fpos	h_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
 t_fpos	v_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
+// -[raycast_update_hit.c ]----------------------------------------------------5
 void	found_hit_dda(const t_data *dt, t_hit *hit);						// ✅
 void	update_hit_tpos(t_data *dt);										// ✅
 // -[ t_data_struct.c ]-------------------------------------------------------5
@@ -244,7 +251,7 @@ t_hit	init_hit(void);														// ✅
 t_hit	*create_hit_array(int size);										// ✅
 void	free_hit_array(t_hit **hit_arr);									// ✅
 int		print_hit_array(t_hit *hit_arr);									// ✅
-t_data	init_data(const char **str_arr);									// ❌
+void	set_hit_type(t_hit *hit, int type, int color, float height);		// ✅
 // -[ t_img_builders.c ]-------------------------------------------------------5
 int		build_img_text(t_img *img, int color);								// ✅
 int		build_img_floor(t_img *img);										// ✅

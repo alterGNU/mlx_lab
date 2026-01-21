@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/20 18:07:57 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/21 03:25:03 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ static void	print_start_infos(t_data dt, const char **str_arr, int bui_delay_ms)
 	printf(" - start left ray at angle=%.2f degrees\n", dt.hits[0].angle.x);
 	printf(" - end right ray at angle=%.2f degrees\n", dt.hits[dt.nb_of_rays - 1].angle.x);
 	printf(" - elem rotation per ray=%.4f degrees\n", dt.rot_elem);
+	printf(" - Maze:");
+	print_maze(dt.maze);
 	printf("\n=============================================================\n");
 }
 
@@ -194,19 +196,21 @@ int	main(void)
 		"000000000", \
 		"100101001", \
 		"101000101", \
-		"1100N0011", \
+		"1100N0000", \
 		"101000101", \
 		"100101001", \
 		"000000000", \
 		"111101111", \
+		"000000000", \
 		NULL };
 	gettimeofday(&prog_start_time, NULL);
 	dt = init_data(str_arr);
 	// TODO: Remove ----------------------------------------
-	set_player(&dt.player, 4.5f, 4.5f, 45.0f);
+	//set_player(&dt.player, 4.5f, 4.5f, 45.0f);
 	//set_player(&dt.player, 4.5f, 4.5f, 3 * 45.0f);
 	//set_player(&dt.player, 4.5f, 4.5f, 5 * 45.0f);
 	//set_player(&dt.player, 4.5f, 4.5f, 7 * 45.0f);
+	//set_player(&dt.player, 4.5f, 4.5f, 0.0f);
 	//------------------------------------------------------
 	if (error_detected_after_init_data(&dt))
 		return (free_data(&dt), 1);

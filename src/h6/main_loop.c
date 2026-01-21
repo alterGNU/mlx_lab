@@ -6,14 +6,14 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/18 11:29:37 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/20 19:58:26 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
 /**
- * ADD: collision detection
+ * ADD: collision detection + use t_fpos
  * NOTE: Engine related-codex can be moved to an engine-file if needed.
  */
 static int	move_player_pos(t_data *dt, float rot, float speed)
