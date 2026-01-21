@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:13:33 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 17:21:08 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 00:50:21 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,8 @@ void	draw_hline(t_img *img, int x, t_fpos pos, int color)
  */
 void	draw_vlines_generic(t_img *img, int x, t_ipos y, int color)
 {
-	int		tmp;
-
 	if (x < 0 || x >= img->width)
 		return ;
-	if (y.x > y.y)
-	{
-		tmp = y.x;
-		y.x = y.y;
-		y.y = tmp;
-	}
 	y.x = ft_imax(y.x, 0);
 	y.y = ft_imin(y.y, img->height - 1);
 	while (y.x <= y.y)
@@ -59,16 +51,9 @@ void	draw_vlines_generic(t_img *img, int x, t_ipos y, int color)
 void	draw_vlines_little_end_32(t_img *img, int x, t_ipos y_inter, int color)
 {
 	char	*pixel;
-	int		tmp;
 
 	if (x < 0 || x >= img->width)
 		return ;
-	if (y_inter.x > y_inter.y)
-	{
-		tmp = y_inter.x;
-		y_inter.x = y_inter.y;
-		y_inter.y = tmp;
-	}
 	y_inter.x = ft_imax(y_inter.x, 0);
 	y_inter.y = ft_imin(y_inter.y, img->height - 1);
 	pixel = img->addr + (y_inter.x * img->size_line + x * 4);
@@ -86,16 +71,9 @@ void	draw_vlines_little_end_32(t_img *img, int x, t_ipos y_inter, int color)
 void	draw_vlines_big_end_32(t_img *img, int x, t_ipos y_inter, int color)
 {
 	char	*pixel;
-	int		tmp;
 
 	if (x < 0 || x >= img->width)
 		return ;
-	if (y_inter.x > y_inter.y)
-	{
-		tmp = y_inter.x;
-		y_inter.x = y_inter.y;
-		y_inter.y = tmp;
-	}
 	y_inter.x = ft_imax(y_inter.x, 0);
 	y_inter.y = ft_imin(y_inter.y, img->height - 1);
 	pixel = img->addr + (y_inter.x * img->size_line + x * 4);

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 17:46:03 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 00:49:57 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
  */
 void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width)
 {
+	int		tmp;
 	int		i;
 	int		j;
 	t_ipos	y_inter;
@@ -33,6 +34,12 @@ void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width)
 	{
 		y_inter.x = (img->height / 2) * (1 + hit[i].dim.y / hit[i].dist_corr);
 		y_inter.y = (img->height / 2) * (1 - hit[i].dim.y / hit[i].dist_corr);
+		if (y_inter.x > y_inter.y)
+		{
+			tmp = y_inter.x;
+			y_inter.x = y_inter.y;
+			y_inter.y = tmp;
+		}
 		j = 0;
 		while (j < col_width)
 		{
