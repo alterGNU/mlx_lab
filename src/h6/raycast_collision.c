@@ -6,18 +6,11 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 03:23:08 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/21 19:43:10 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
-
-/**
- * TODO-LIST: rewrite collision_detected()
- * -[] Should be called by mouvement fun. too! (if next step collides, block it)
- * -[] Can be OPTI a bit more (order! and some cases dont need to be checked)
- *   -> if(index_play <0 || dt->maze.cell_nb <= index_play) can be removed
- */
 
 static int	check_collision(const t_maze *maze, int play_case, t_ipos ray_floor)
 {
@@ -30,7 +23,10 @@ static int	check_collision(const t_maze *maze, int play_case, t_ipos ray_floor)
 }
 
 /**
- * NOT-OPTI: Order can be improved for performance
+ * FIXED: detect ray collision on diagonal walls
+ * NOTE	: if used for player collision detection will not work on diagonal walls
+ * TODO	: Copy and improve to be used for player collision, then rename for:
+ *        -> ray_collision_detection()
  */
 int	collision_detected(const t_data *dt, t_fpos ray_pos)
 {

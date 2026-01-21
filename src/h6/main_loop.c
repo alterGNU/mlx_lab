@@ -6,15 +6,16 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 04:26:32 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/21 19:43:10 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
 /**
- * ADD: collision detection + use t_fpos
- * NOTE: Engine related-codex can be moved to an engine-file if needed.
+ * FIX	: re-writte collision_detected() fun. to handle diagonal wall
+ * TODO	: could use a minimal distance to wall :DIST_MIN_WALL
+ * NOTE	: Engine related-codex can be moved to an engine-file if needed.
  */
 static int	move_player_pos(t_data *dt, float rot, float speed)
 {
@@ -39,6 +40,7 @@ static int	move_player_pos(t_data *dt, float rot, float speed)
  * Use set_player() instead of directly modifying dt->player.{pos, dir} 'cause:
  * -> set_player() is the function that updates dt->player.step_count
  * -> set_player() is the function that updates dt->player.play_str
+ * TODO: player.step_count wrongly incremented
  */
 static void	move_player(t_data *dt)
 {
@@ -58,16 +60,15 @@ static void	move_player(t_data *dt)
 		move_player_pos(dt, -90, POS_SPEED);
 }
 
-/**
- * ADD: player rotation counter?
- */
-static int	player_moved(t_play *old_play, t_play *new_play)
+static int	first_image(t_data *dt)
 {
-	if (old_play->pos.x != new_play->pos.x || \
-		old_play->pos.y != new_play->pos.y || \
-		old_play->dir != new_play->dir || \
-		old_play->step_count != new_play->step_count)
-		return (1);
+	if (gettimeofday(&dt->fps_start_inter, NULL) < 0)
+		return (perror("main_loop: !gettimeofday()"), free_data(dt), 1);
+	update_hit_tpos(dt);
+	display_player_infos(dt, 0);
+	display_fps_infos(dt, 1);
+	if (DRAW_HITS_TXT)
+		display_hits_infos(dt, 2);
 	return (0);
 }
 
@@ -77,17 +78,12 @@ int	main_loop(t_data *dt)
 
 	if (!dt->img_drawn)
 	{
-		if (gettimeofday(&dt->fps_start_inter, NULL) < 0)
-			return (perror("main_loop: !gettimeofday()"), free_data(dt), 1);
-		update_hit_tpos(dt);
-		display_player_infos(dt, 0);
-		display_fps_infos(dt, 1);
-		if (DRAW_HITS_TXT)
-			display_hits_infos(dt, 2);
+		if (first_image(dt))
+			return (1);
 	}
 	old_player = dt->player;
 	move_player(dt);
-	if (player_moved(&old_player, &dt->player))
+	if (player_diff(&old_player, &dt->player))
 	{
 		update_hit_tpos(dt);
 		display_player_infos(dt, 0);

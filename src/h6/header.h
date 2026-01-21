@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 03:48:16 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/21 19:43:10 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,24 @@
 # define HEADER_H
 // -[ Debug/UI toggles ]--------------------------------------------------------
 # define DRAW_MINIMAP 1			// 0: do not draw 2d image (map), else: draw it
-# define DRAW_2D_RAYS 1			// 0: none, 1: first/last, 2: all rays
+# define DRAW_2D_RAYS 2			// 0: none, 1: first/last, 2: all rays
 # define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
 //-[ Window ]-------------------------------------------------------------------
 # define WIN_TITLE "Caster the Ghost: (3D Monochrome-RayCasting)"
 # define WIN_BORDER 5			// space between window border & images
 # define WIN_DBG_TXT_LEN 250	// length(in pixels)of debug txt area
 //-[ 2DImage ]------------------------------------------------------------------
-//# define TILE_X 32 				// width(in pixels) of one 2Dcell
-//# define TILE_Y 32 				// height(in pixels) of one 2Dcell
-//# define CIRCLE_RADIUS 16		// size of the player representation
-# define TILE_X 16 				// width(in pixels) of one 2Dcell
-# define TILE_Y 16 				// height(in pixels) of one 2Dcell
+# define RAY2D_C 0xFFFF00		// color of the rays drawn on the 2D image
+# define FLOOR2D_COLOR 0xAAAAAA	// color of the floor in 2D image
+# define WALL2D_COLOR 0x333333	// color of the walls in 2D image
+# define TILE_X 32 				// width(in pixels) of one 2Dcell
+# define TILE_Y 32 				// height(in pixels) of one 2Dcell
 # define CIRCLE_RADIUS 8		// size of the player representation
+//# define TILE_X 16 				// width(in pixels) of one 2Dcell
+//# define TILE_Y 16 				// height(in pixels) of one 2Dcell
+//# define CIRCLE_RADIUS 4		// size of the player representation
 //-[ 3DImage ]------------------------------------------------------------------
+# define DARK_FACTOR .5f // dark-factor for inside3D 0.4f=darker, 1.4f=lighter
 // TODO: replace by resolution format string RESOLUTION "1024x768"
 # define IMG3D_WIDTH 1024
 # define IMG3D_HEIGHT 896
@@ -65,15 +69,12 @@
 # define LA_KEY 65361
 # define RA_KEY 65363
 //-[ Colors ]-------------------------------------------------------------------
-# define DARK_FACTOR .5f // dark-factor for inside3D 0.4f=darker, 1.4f=lighter
 # define BLACK_COLOR 0x000000
 # define RED_COLOR 0xFF0000
 # define GREEN_COLOR 0x00FF00
 # define BLUE_COLOR 0x0000FF
 # define YELLOW_COLOR 0xFFFF00
 # define WHITE_COLOR 0xFFFFFF
-# define FLOOR2D_COLOR 0xAAAAAA
-# define WALL2D_COLOR 0x333333
 # define LIGHT_GREEN_COLOR 0x255C33
 # define DARK_GREEN_COLOR 0x13381D
 # define LIGHT_RED_COLOR 0xA82727
@@ -202,17 +203,17 @@ void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width);			// ✅
 int		draw_buffer_3dimg(t_data *dt);										// ✅
 // -[ draw_buffer_images.c ]---------------------------------------------------1
 int		draw_buffer_images(t_data *dt);										// ❌
-// -[ draw_to_img.c ]----------------------------------------------------------6
-void	draw_vline(t_img *img, int x, t_ipos y_interval, int color);		// ✅
-void	draw_hline(t_img *img, int x, t_fpos pos, int color);				// ✅
-void	draw_circle(t_img *img, t_fpos c_pos, int r, int color);			// ❌
+// -[ draw_geo_shapes.c ]------------------------------------------------------5
 void	draw_dda_line(t_img *img, t_fpos a_pos, t_fpos b_pos, int color);	// ✅
+void	draw_dda_line_opti(t_img *img, t_fpos a_pos, t_fpos b_pos, int color);
+void	draw_circle(t_img *img, t_fpos c_pos, int r, int color);			// ✅
 void	draw_vector(t_img *img, t_fpos start, t_fpos vec, int color);		// ✅
-// -[ draw_vlines.c ]----------------------------------------------------------3
-void	draw_vlines_generic(t_img *img, int x, t_ipos y_inter, int color);
+void	draw_vector_opti(t_img *img, t_fpos c, t_fpos ang, int color);		// ✅
+// -[ draw_lines.c ]-----------------------------------------------------------4
+void	draw_hline(t_img *img, int x, t_fpos pos, int color);				// ✅
+void	draw_vlines_generic(t_img *img, int x, t_ipos y_inter, int color);	// ✅
 void	draw_vlines_little_end_32(t_img *img, int x, t_ipos y_inter, int color);
-void	draw_vlines_big_end_32(t_img *img, int x, t_ipos y_inter, int color);
-// -[ event_hooks.c ]----------------------------------------------------------3
+void	draw_vlines_big_end_32(t_img *img, int x, t_ipos y_inter, int color);//✅
 // -[ main_loop.c ]------------------------------------------------------------4
 int		main_loop(t_data *dt);												// ❌
 // -[ memcpy_utils.c ]---------------------------------------------------------2
@@ -266,10 +267,11 @@ int		t_img_insert_rows_by_words(\
 int		dup_t_img_by_words(t_img *src, t_img *dst);							// ✅
 // -[ t_img_struct.c ]---------------------------------------------------------5
 void	memset_zero_img(t_img *img);										// ✅
+void	set_img_fun_ptrs(t_img *img);										// ✅
 t_img	create_image(void *mlx_ptr, int width, int height);					// ✅
-void	print_t_img(t_img img);												// ✅
 void	free_image(t_img img, void *mlx_ptr);								// ✅
 int		is_img_valid(t_img *img);											// ✅
+//void	print_t_img(t_img img);
 // -[ t_ipos_struct.c ]--------------------------------------------------------4
 t_ipos	ipos_new(int x, int y);												// ✅
 void	ipos_set(t_ipos *pos, int x, int y);								// ✅
@@ -283,12 +285,14 @@ t_ipos	ipos_scal_new(const t_ipos *a, int b);								// ✅
 t_maze	set_maze_and_player(const char **str_arr, t_play *player);			// ❌
 void	free_maze(t_maze *maze);											// ✅
 void	print_maze(t_maze maze);											// ✅
+// -[ t_player_struct_utils.c ]------------------------------------------------2
+void	toggle_player_mode(t_play *player);									// ✅
+int		player_diff(const t_play *play_a, const t_play *play_b);			// ✅
 // -[ t_player_struct.c ]------------------------------------------------------4
 t_play	init_player(void);													// ✅
 void	set_player(t_play *play, float x, float y, float dir);				// ❌
 int		print_player(t_play play);											// ✅
 void	free_player(t_play *player);										// ✅
-void	toggle_player_mode(t_play *player);									// ✅
 // -[ t_pos conv.c ]----------------------------------------------------------3
 void	fpos_floor(t_ipos *a, const t_fpos *b);								// ✅
 void	fpos_ceil(t_ipos *a, const t_fpos *b);								// ✅

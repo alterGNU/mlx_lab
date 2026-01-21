@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:18:44 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/20 05:08:38 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/21 17:50:18 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,30 @@ void	memset_zero_img(t_img *img)
 	img->dark_filter = NULL;
 }
 
-/**
- * NORM-ME: Too many lines...static fun. to set function ptrs.
- */
+void	set_img_fun_ptrs(t_img *img)
+{
+	if (img->endian == 0)
+	{
+		img->dark_filter = &dark_filter_little_end;
+		if (img->bpp == 32)
+		{
+			img->put_pix_to_img = &put_pix_to_img_little_end_32;
+			img->draw_vlines = &draw_vlines_little_end_32;
+		}
+		else
+		{
+			img->put_pix_to_img = &put_pix_to_img_little_end;
+			img->draw_vlines = &draw_vlines_generic;
+		}
+	}
+	else
+	{
+		img->put_pix_to_img = &put_pix_to_img_big_end;
+		img->dark_filter = &dark_filter_big_end;
+		img->draw_vlines = &draw_vlines_generic;
+	}
+}
+
 t_img	create_image(void *mlx_ptr, int width, int height)
 {
 	t_img	img;
@@ -43,40 +64,21 @@ t_img	create_image(void *mlx_ptr, int width, int height)
 				&img.size_line, &img.endian);
 		img.width = width;
 		img.height = height;
-		if (img.endian == 0)
-		{
-			img.dark_filter = &dark_filter_little_end;
-			if (img.bpp == 32)
-			{
-				img.put_pix_to_img = &put_pix_to_img_little_end_32;
-				img.draw_vlines = &draw_vlines_little_end_32;
-			}
-			else
-			{
-				img.put_pix_to_img = &put_pix_to_img_little_end;
-				img.draw_vlines = &draw_vlines_generic;
-			}
-		}
-		else
-		{
-			img.put_pix_to_img = &put_pix_to_img_big_end;
-			img.dark_filter = &dark_filter_big_end;
-			img.draw_vlines = &draw_vlines_generic;
-		}
+		set_img_fun_ptrs(&img);
 	}
 	return (img);
 }
 
-void	print_t_img(t_img img)
-{
-	printf("\n   - img_ptr:   %p", img.img_ptr);
-	printf("\n   - addr:      %p", img.addr);
-	printf("\n   - width:     %d", img.width);
-	printf("\n   - height:    %d", img.height);
-	printf("\n   - bpp:       %d", img.bpp);
-	printf("\n   - size_line: %d", img.size_line);
-	printf("\n   - endian:    %d\n", img.endian);
-}
+//void	print_t_img(t_img img)
+//{
+//	printf("\n   - img_ptr:   %p", img.img_ptr);
+//	printf("\n   - addr:      %p", img.addr);
+//	printf("\n   - width:     %d", img.width);
+//	printf("\n   - height:    %d", img.height);
+//	printf("\n   - bpp:       %d", img.bpp);
+//	printf("\n   - size_line: %d", img.size_line);
+//	printf("\n   - endian:    %d\n", img.endian);
+//}
 
 void	free_image(t_img img, void *mlx_ptr)
 {

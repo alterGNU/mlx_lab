@@ -32,10 +32,10 @@ SRC			=	display_infos.c \
 				draw_2dimg.c \
 				draw_3dimg.c \
 				draw_buffer_images.c \
-				draw_to_img.c \
-				draw_vlines.c \
-				main.c \
+				draw_geo_shapes.c \
+				draw_lines.c \
 				main_loop.c \
+				main.c \
 				memcpy_utils.c \
 				move_flags.c \
 				put_pix_to_img.c \
@@ -51,6 +51,7 @@ SRC			=	display_infos.c \
 				t_ipos_struct.c \
 				t_ipos_utils.c \
 				t_maze_struct.c \
+				t_player_struct_utils.c \
 				t_player_struct.c \
 				t_pos_conv.c \
 				utils_color.c \

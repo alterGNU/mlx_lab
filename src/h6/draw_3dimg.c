@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/20 04:45:11 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/21 17:46:03 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,24 +17,26 @@
  * - Do not draw floor vertical lines [0 to y_start[
  * + Draw (only) the vertical lines of the objects [y_start to y_stop]
  * - Do not draw ceiling vertical lines [y_stop to img_3d_buffer.height[
- * NOT-OPTI: some of the calculations could be optimized outside the loop.
+ * TODO-LIST:
+ *  -[] should be able to draw object smaller that the column width
+ *  -[] use object dim.x too...j should start at (col_width - obj_width)/2
  */
 void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width)
 {
 	int		i;
 	int		j;
-	t_ipos	y_interval;
+	t_ipos	y_inter;
 
-	y_interval = ipos_new(0, 0);
+	y_inter = ipos_new(0, 0);
 	i = 0;
 	while (hit[i].valid)
 	{
-		y_interval.x = (img->height / 2) * (1 + hit[i].dim.y / hit[i].dist_corr);
-		y_interval.y = (img->height / 2) * (1 - hit[i].dim.y / hit[i].dist_corr);
+		y_inter.x = (img->height / 2) * (1 + hit[i].dim.y / hit[i].dist_corr);
+		y_inter.y = (img->height / 2) * (1 - hit[i].dim.y / hit[i].dist_corr);
 		j = 0;
 		while (j < col_width)
 		{
-			img->draw_vlines(img, i * col_width + j, y_interval, hit[i].type.y);
+			img->draw_vlines(img, i * col_width + j, y_inter, hit[i].type.y);
 			j++;
 		}
 		i++;

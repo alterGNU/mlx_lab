@@ -15,7 +15,7 @@
 #   - env_file --> contain the new MANPATH value (need to be manually sourced).
 #   - <script_parent_dir>/<date><time>.log --> each exec. generates a log file that contains all cmds output.
 #
-# TODO-LIST: install.sh features
+# DONE: install.sh features
 #  -[x] linux support.
 #  -[x] macOS support.
 #

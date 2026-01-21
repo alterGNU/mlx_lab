@@ -6,26 +6,30 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:34:13 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 03:48:43 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/21 19:44:24 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
+/**
+ * NOTE: player.mod:0 ghost_mode->no collision, 1: mortal_mode->collision enabled
+ */
 t_play	init_player(void)
 {
 	t_play	player;
 
 	player.pos = fpos_new(-0.1, -0.1);
 	player.dir = -1.0;
-	player.color = RED_COLOR;
+	player.color = BLUE_COLOR;
 	player.radius = CIRCLE_RADIUS;
 	player.step_count = 0;
 	player.play_str = calloc(sizeof(char), 64);
-	player.mode = 0; // 0: ghost_mode->no collision, 1: mortal_mode->collision enabled
+	player.mode = 0;
 	return (player);
 }
 
+//TODO: player.step_count wrongly incremented
 void	set_player(t_play *play, float x, float y, float dir)
 {
 	play->pos.x = x;
@@ -50,29 +54,14 @@ int	print_player(t_play play)
 	return (psf);
 }
 
+/**
+ * NOTE: player 
+ */
 void	free_player(t_play *player)
 {
 	if (player->play_str)
 	{
 		free(player->play_str);
 		player->play_str = NULL;
-	}
-}
-
-void	toggle_player_mode(t_play *player)
-{
-	if (player->mode)
-	{
-		player->mode = 0;
-		snprintf(player->play_str, 63, \
-			"Pos(%.2f, %.2f), Dir: %.2f, Mode=GHOST", player->pos.x, \
-			player->pos.y, player->dir);
-	}
-	else
-	{
-		player->mode = 1;
-		snprintf(player->play_str, 63, \
-			"Pos(%.2f, %.2f), Dir: %.2f, Mode=MORTAL", player->pos.x, \
-			player->pos.y, player->dir);
 	}
 }
