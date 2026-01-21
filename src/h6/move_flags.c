@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:00:58 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/08 18:33:49 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/21 03:46:32 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ int	key_pressed(int keycode, t_data *dt)
 		return (dt->mv_flags[4] = 'S', 1);
 	if (keycode == D_KEY)
 		return (dt->mv_flags[5] = 'D', 1);
+	if (keycode == G_KEY)
+		return (toggle_player_mode(&dt->player), 1);
 	return (0);
 }
 

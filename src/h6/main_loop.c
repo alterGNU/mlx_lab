@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/20 19:58:26 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/21 04:26:32 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,20 @@
  */
 static int	move_player_pos(t_data *dt, float rot, float speed)
 {
-	float	next_x;
-	float	next_y;
+	t_fpos	next_pos;
 
-	next_x = dt->player.pos.x + cosf(radian(dt->player.dir + rot)) * speed;
-	next_y = dt->player.pos.y - sinf(radian(dt->player.dir + rot)) * speed;
-	if (0 <= next_x && next_x < dt->maze.width && \
-		0 <= next_y && next_y < dt->maze.height)
-		return (set_player(&dt->player, next_x, next_y, dt->player.dir), 1);
+	next_pos = fpos_new(dt->player.pos.x + cosf(radian(dt->player.dir + rot)) \
+		* speed, dt->player.pos.y - sinf(radian(dt->player.dir + rot)) * speed);
+	if (!dt->player.mode)
+	{
+		if (0 <= next_pos.x && next_pos.x < dt->maze.width && \
+			0 <= next_pos.y && next_pos.y < dt->maze.height)
+			return (set_player(&dt->player, next_pos.x, next_pos.y, \
+				dt->player.dir), 1);
+	}
+	if (!collision_detected(dt, next_pos))
+		return (set_player(&dt->player, next_pos.x, next_pos.y, \
+				dt->player.dir), 1);
 	return (0);
 }
 

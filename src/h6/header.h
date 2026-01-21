@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 03:25:28 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/21 03:48:16 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@
 # define D_KEY 100
 # define Q_KEY 113
 # define E_KEY 101
+# define G_KEY 103
 # define LA_KEY 65361
 # define RA_KEY 65363
 //-[ Colors ]-------------------------------------------------------------------
@@ -133,6 +134,7 @@ typedef struct s_play
 	int		radius;
 	int		step_count;
 	char	*play_str;
+	int		mode; // 0: ghost_mode->no collision, 1: mortal_mode->collision enabled
 }	t_play;
 
 typedef struct s_maze
@@ -286,13 +288,14 @@ t_play	init_player(void);													// ✅
 void	set_player(t_play *play, float x, float y, float dir);				// ❌
 int		print_player(t_play play);											// ✅
 void	free_player(t_play *player);										// ✅
+void	toggle_player_mode(t_play *player);									// ✅
 // -[ t_pos conv.c ]----------------------------------------------------------3
 void	fpos_floor(t_ipos *a, const t_fpos *b);								// ✅
 void	fpos_ceil(t_ipos *a, const t_fpos *b);								// ✅
 void	fpos_round(t_ipos *a, const t_fpos *b);								// ✅
 // -[ utils_color.c ]---------------------------------------------------------2
-int		dark_filter_big_end(int color, float darkness_factor);			// ✅
-int		dark_filter_little_end(int color, float darkness_factor);		// ✅
+int		dark_filter_big_end(int color, float darkness_factor);				// ✅
+int		dark_filter_little_end(int color, float darkness_factor);			// ✅
 // -[ utils_fmath.c ]----------------------------------------------------------5
 float	ft_fmax(float a, float b);											// ✅
 float	ft_fmin(float a, float b);											// ✅

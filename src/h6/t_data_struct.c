@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/20 18:08:08 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/21 03:38:11 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static void	zero_memset_data(t_data *dt)
 {
 	dt->tile_dim = (t_fpos){0.0f, 0.0f};
-	dt->player = (t_play){{0.0f, 0.0f}, 0.0f, 0, 0, -1, NULL};
+	dt->player = (t_play){{0.0f, 0.0f}, 0.0f, 0, 0, -1, NULL, 0};
 	dt->maze = (t_maze){NULL, 0, 0, 0};
 	dt->mlx_ptr = NULL;
 	dt->win_ptr = NULL;
