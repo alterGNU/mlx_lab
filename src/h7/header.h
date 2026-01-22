@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 06:08:00 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 06:56:57 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@
 //# define FOV 32.f			// Player's Hori-Field-Of-View Angle(in degrees)2**5
 //# define FOV_PRE 64.		// 64/64=1
 //# define FOV_PRE 12.8		// 64/5=12.8->makes sure to get an ODD nb of rays
+//# define FOV_PRE 0.25			// Hori-Field-Of-View-Precision(in degrees)2**-2
 //# define FOV_PRE 0.125		// Hori-Field-Of-View-Precision(in degrees)2**-3
 # define FOV_PRE .0625		// Hori-Field-Of-View-Precision(in degrees)2**-4
 //# define FOV_PRE .003125		// Hori-Field-Of-View-Precision(in degrees)2**-5

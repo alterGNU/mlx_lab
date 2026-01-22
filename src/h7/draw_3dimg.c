@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 05:58:49 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 06:50:18 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,27 +84,28 @@ void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width, int *texture)
 		y_inter = ipos_new(line_offset, line_height + line_offset);
 		y_inter.x = ft_imax(y_inter.x, 0);
 		y_inter.y = ft_imin(y_inter.y, img->height - 1);
-		txt_pix = fpos_new(0.f, ty_offset * step.y);
+		if (hit[i].type.x % 2)
+		{
+			txt_pix.x = (float)(hit[i].pos.x - (int)hit[i].pos.x) * (float)text_dim.x;
+			if (hit[i].angle.x > 180.f)
+				txt_pix.x = (float)text_dim.x - txt_pix.x - 1.f;
+		}
+		else
+		{
+			txt_pix.x = (float)(hit[i].pos.y - (int)hit[i].pos.y) * (float)text_dim.x; // NOTE: ?? text_dim.y??
+			if (90.f < hit[i].angle.x && hit[i].angle.x < 270.f)
+				txt_pix.x = (float)text_dim.x - txt_pix.x - 1.f;
+		}
 		j = 0;
 		while (j < col_width)
 		{
 			img_pix = ipos_new(i * col_width + j, y_inter.x);
-			if (hit[i].type.x % 2)
-			{
-				txt_pix.x = (float)(hit[i].pos.x - (int)hit[i].pos.x) * (float)text_dim.x - j;
-				if (hit[i].angle.x > 180.f)
-					txt_pix.x = (float)text_dim.x - txt_pix.x - 1.f;
-			}
-			else
-			{
-				txt_pix.x = (float)(hit[i].pos.y - (int)hit[i].pos.y) * (float)text_dim.x - j;//NOTE: ?? text_dim.y??
-				if (90.f < hit[i].angle.x && hit[i].angle.x < 270.f)
-					txt_pix.x = (float)text_dim.x - txt_pix.x - 1.f;
-			}
+			txt_pix.y = ty_offset * step.y;
 			while (img_pix.y < y_inter.y)
 			{
 				index_text = (int)(txt_pix.y) * text_dim.x + (int)(txt_pix.x);
-				img->put_pix_to_img(img, img_pix.x, img_pix.y, texture[ft_imin(ft_imax(index_text, 0), text_dim.x * text_dim.y - 1)]);
+				img->put_pix_to_img(img, img_pix.x, img_pix.y, texture[ft_imax(0, ft_imin(index_text, text_dim.x * text_dim.y - 1))]);
+				//*(int *)(img->addr + img_pix.y * img->size_line + img_pix.x * 4) = texture[ft_imax(0, ft_imin(index_text, text_dim.x * text_dim.y - 1))];
 				img_pix.y++;
 				txt_pix.y += step.y;
 			}
