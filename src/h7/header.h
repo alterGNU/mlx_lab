@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 00:46:17 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 06:08:00 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define HEADER_H
 // -[ Debug/UI toggles ]--------------------------------------------------------
 # define DRAW_MINIMAP 1			// 0: do not draw 2d image (map), else: draw it
-# define DRAW_2D_RAYS 2			// 0: none, 1: first/last, 2: all rays
+# define DRAW_2D_RAYS 1			// 0: none, 1: first/last, 2: all rays
 # define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
 //-[ Window ]-------------------------------------------------------------------
 # define WIN_TITLE "Caster the Ghost: (3D Monochrome-RayCasting)"
@@ -34,7 +34,7 @@
 # define DARK_FACTOR .5f // dark-factor for inside3D 0.4f=darker, 1.4f=lighter
 // TODO: replace by resolution format string RESOLUTION "1024x768"
 # define IMG3D_WIDTH 1024
-# define IMG3D_HEIGHT 896
+# define IMG3D_HEIGHT 768
 //# define IMG3D_WIDTH 512
 //# define IMG3D_HEIGHT 512
 # define FLOOR3D_RGB 0x4A5866
@@ -199,9 +199,9 @@ void	display_hits_infos(t_data *dt, int line_num);						// ❌
 void	draw2d_player(t_img *img, t_play *p);								// ✅
 void	draw2d_hit_lines(t_data *dt);										// ✅
 int		draw_buffer_2dimg(t_data *dt);										// ✅
-// -[ draw_3dimg.c ]-----------------------------------------------------------2
-void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width, int *texture);
-//void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width);			// ✅
+// -[ draw_3dimg.c ]-----------------------------------------------------------3
+void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width);			// ✅
+void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width, int *texture);
 int		draw_buffer_3dimg(t_data *dt);										// ✅
 // -[ draw_buffer_images.c ]---------------------------------------------------1
 int		draw_buffer_images(t_data *dt);										// ❌
@@ -299,8 +299,9 @@ void	free_player(t_play *player);										// ✅
 void	fpos_floor(t_ipos *a, const t_fpos *b);								// ✅
 void	fpos_ceil(t_ipos *a, const t_fpos *b);								// ✅
 void	fpos_round(t_ipos *a, const t_fpos *b);								// ✅
-// -[ texture.c ]-------------------------------------------------------------1
+// -[ texture.c ]-------------------------------------------------------------2
 void	set_check_board(int *add);											// ❌
+void	set_brick_wall(int *add);											// ❌
 // -[ utils_color.c ]---------------------------------------------------------2
 int		dark_filter_big_end(int color, float darkness_factor);				// ✅
 int		dark_filter_little_end(int color, float darkness_factor);			// ✅
