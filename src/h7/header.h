@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 09:31:49 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 17:40:32 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # define DRAW_2D_RAYS 1			// 0: none, 1: first/last, 2: all rays
 # define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
 //-[ Window ]-------------------------------------------------------------------
-# define WIN_TITLE "Caster the Ghost: (3D Monochrome-RayCasting)"
+# define WIN_TITLE "Caster the Ghost: (3D Textured-RayCasting)"
 # define WIN_BORDER 5			// space between window border & images
 # define WIN_DBG_TXT_LEN 250	// length(in pixels)of debug txt area
 //-[ 2DImage ]------------------------------------------------------------------
