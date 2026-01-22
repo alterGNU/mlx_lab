@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:13:33 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 00:50:21 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 04:32:38 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ void	draw_vlines_generic(t_img *img, int x, t_ipos y, int color)
 {
 	if (x < 0 || x >= img->width)
 		return ;
-	y.x = ft_imax(y.x, 0);
-	y.y = ft_imin(y.y, img->height - 1);
 	while (y.x <= y.y)
 	{
 		img->put_pix_to_img(img, x, y.x, color);
@@ -54,8 +52,6 @@ void	draw_vlines_little_end_32(t_img *img, int x, t_ipos y_inter, int color)
 
 	if (x < 0 || x >= img->width)
 		return ;
-	y_inter.x = ft_imax(y_inter.x, 0);
-	y_inter.y = ft_imin(y_inter.y, img->height - 1);
 	pixel = img->addr + (y_inter.x * img->size_line + x * 4);
 	while (y_inter.x <= y_inter.y)
 	{
@@ -74,8 +70,6 @@ void	draw_vlines_big_end_32(t_img *img, int x, t_ipos y_inter, int color)
 
 	if (x < 0 || x >= img->width)
 		return ;
-	y_inter.x = ft_imax(y_inter.x, 0);
-	y_inter.y = ft_imin(y_inter.y, img->height - 1);
 	pixel = img->addr + (y_inter.x * img->size_line + x * 4);
 	while (y_inter.x <= y_inter.y)
 	{
