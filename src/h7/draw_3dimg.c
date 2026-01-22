@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 22:57:03 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/23 00:50:59 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width)
 void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width)
 {
 	int		i;
-	int		j;
 	t_ipos	y_inter;
 	float	line_height;
 	float	line_offset;
@@ -67,10 +66,10 @@ void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width)
 	float	ty_offset;
 	t_text	*txt;
 
-	y_inter = ipos_new(0, 0);
 	i = 0;
 	while (hit[i].valid)
 	{
+		// TODO: all this part can be pre-computed in update_hit_tpos()
 		txt = hit[i].texture;
 		line_height = hit[i].dim.y * img->height / hit[i].dist_corr;
 		step = fpos_new((float)txt->dim.x / (float)col_width, (float)txt->dim.y / line_height);
@@ -96,19 +95,21 @@ void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width)
 			if (90 < hit[i].angle.x && hit[i].angle.x < 270.f)
 				txt_pix.x = (float)txt->dim.x - txt_pix.x;
 		}
-		j = 0;
-		while (j < col_width)
+		// ------------------------------------------------------------------------------------------
+		img_pix = ipos_new(i * col_width, y_inter.x);
+		while (y_inter.x < y_inter.y)
 		{
-			img_pix = ipos_new(i * col_width + j, y_inter.x);
-			while (img_pix.y < y_inter.y)
+			index_text = (int)(txt_pix.y) * txt->dim.x + (int)(txt_pix.x);
+			index_text = ft_imax(0, ft_imin(index_text, txt->size - 1));
+			int j = 0;
+			while (j < col_width)
 			{
-				index_text = (int)(txt_pix.y) * txt->dim.x + (int)(txt_pix.x);
-				img->put_pix_to_img(img, img_pix.x, img_pix.y, txt->img[ft_imax(0, ft_imin(index_text, txt->size - 1))]);
-				//*(int *)(img->addr + img_pix.y * img->size_line + img_pix.x * 4) = txt->img[ft_imax(0, ft_imin(index_text, txt->size - 1))];
-				img_pix.y++;
-				txt_pix.y += step.y;
+				img->put_pix_to_img(img, img_pix.x + j++, y_inter.x, txt->img[index_text]);
+				// put_pix with little endian 32bits --256xrays-->from FPS:7.50 to FPS:15.00 --> X2
+				//*(int *)(img->addr + (y_inter.x * img->size_line + (img_pix.x + j++) * 4)) = txt->img[index_text];
 			}
-			j++;
+			txt_pix.y += step.y;
+			y_inter.x++;
 		}
 		i++;
 	}

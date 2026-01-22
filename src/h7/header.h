@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 20:53:51 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/23 00:53:12 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@
 //-[ 3DImage ]------------------------------------------------------------------
 # define DARK_FACTOR .5f // dark-factor for inside3D 0.4f=darker, 1.4f=lighter
 // TODO: replace by resolution format string RESOLUTION "1024x768"
+//# define IMG3D_WIDTH 1200
+//# define IMG3D_HEIGHT 800
 # define IMG3D_WIDTH 1024
 # define IMG3D_HEIGHT 768
 //# define IMG3D_WIDTH 512
