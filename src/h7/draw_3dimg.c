@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 01:32:06 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 04:25:20 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,30 +24,30 @@
  */
 void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width, int *texture)
 {
-	int		tmp;
 	int		i;
 	int		j;
 	t_ipos	y_inter;
+	float	line_height;
+	float	line_offset;
 	t_ipos	img_pix;
+	//t_fpos	txt_pix;
 
 	(void)texture;
 	y_inter = ipos_new(0, 0);
 	i = 0;
 	while (hit[i].valid)
 	{
-		y_inter.x = (img->height / 2) * (1 + hit[i].dim.y / hit[i].dist_corr);
-		y_inter.y = (img->height / 2) * (1 - hit[i].dim.y / hit[i].dist_corr);
-		if (y_inter.x > y_inter.y)
-		{
-			tmp = y_inter.x;
-			y_inter.x = y_inter.y;
-			y_inter.y = tmp;
-		}
+		line_height = hit[i].dim.y * img->height / hit[i].dist_corr;
+		if (line_height > img->height)
+			line_height = img->height;
+		line_offset = (img->height - line_height) / 2.0f;
+		y_inter = ipos_new(line_offset, line_height + line_offset);
 		y_inter.x = ft_imax(y_inter.x, 0);
 		y_inter.y = ft_imin(y_inter.y, img->height - 1);
 		j = 0;
 		while (j < col_width)
 		{
+			//img->draw_vlines(img, i * col_width + j, y_inter, hit[i].type.y);
 			img_pix = ipos_new(i * col_width + j, y_inter.x);
 			while (img_pix.y <= y_inter.y)
 			{
