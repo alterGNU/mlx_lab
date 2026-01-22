@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 00:48:50 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 01:32:06 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
  * + Draw (only) the vertical lines of the objects [y_start to y_stop]
  * - Do not draw ceiling vertical lines [y_stop to img_3d_buffer.height[
  * TODO-LIST:
+ *  -[] move texture in hit struct as a pointer to dt->textures
  *  -[] should be able to draw object smaller that the column width
  *  -[] use object dim.x too...j should start at (col_width - obj_width)/2
  */
@@ -27,6 +28,7 @@ void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width, int *texture)
 	int		i;
 	int		j;
 	t_ipos	y_inter;
+	t_ipos	img_pix;
 
 	(void)texture;
 	y_inter = ipos_new(0, 0);
@@ -41,10 +43,17 @@ void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width, int *texture)
 			y_inter.x = y_inter.y;
 			y_inter.y = tmp;
 		}
+		y_inter.x = ft_imax(y_inter.x, 0);
+		y_inter.y = ft_imin(y_inter.y, img->height - 1);
 		j = 0;
 		while (j < col_width)
 		{
-			img->draw_vlines(img, i * col_width + j, y_inter, hit[i].type.y);
+			img_pix = ipos_new(i * col_width + j, y_inter.x);
+			while (img_pix.y <= y_inter.y)
+			{
+				img->put_pix_to_img(img, img_pix.x, img_pix.y, hit[i].type.y);
+				img_pix.y++;
+			}
 			j++;
 		}
 		i++;
