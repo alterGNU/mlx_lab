@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 06:50:18 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 09:15:27 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width)
  *  -[] should be able to draw object smaller that the column width
  *  -[] use object dim.x too...j should start at (col_width - obj_width)/2
  * NOTE: texture need to be store in hit struct to avoid passing it as parameter
- */
 void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width, int *texture)
 {
 	int		i;
@@ -105,6 +104,68 @@ void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width, int *texture)
 			{
 				index_text = (int)(txt_pix.y) * text_dim.x + (int)(txt_pix.x);
 				img->put_pix_to_img(img, img_pix.x, img_pix.y, texture[ft_imax(0, ft_imin(index_text, text_dim.x * text_dim.y - 1))]);
+				*(int *)(img->addr + img_pix.y * img->size_line + img_pix.x * 4) = texture[ft_imax(0, ft_imin(index_text, text_dim.x * text_dim.y - 1))];
+				img_pix.y++;
+				txt_pix.y += step.y;
+			}
+			j++;
+		}
+		i++;
+	}
+}
+*/
+void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width)
+{
+	int		i;
+	int		j;
+	t_ipos	y_inter;
+	float	line_height;
+	float	line_offset;
+	t_ipos	img_pix;
+	t_fpos	step;
+	int		index_text;
+	t_fpos	txt_pix;
+	float	ty_offset;
+	t_text	*txt;
+
+	y_inter = ipos_new(0, 0);
+	i = 0;
+	while (hit[i].valid)
+	{
+		txt = hit[i].texture;
+		line_height = hit[i].dim.y * img->height / hit[i].dist_corr;
+		step = fpos_new((float)txt->dim.x / (float)col_width, (float)txt->dim.y / line_height);
+		ty_offset = 0.f;
+		if (line_height > img->height)
+		{
+			ty_offset = (line_height - (float)img->height) / 2.f;
+			line_height = img->height;
+		}
+		line_offset = (img->height - line_height) / 2.0f;
+		y_inter = ipos_new(line_offset, line_height + line_offset);
+		y_inter.x = ft_imax(y_inter.x, 0);
+		y_inter.y = ft_imin(y_inter.y, img->height - 1);
+		if (hit[i].type.x % 2)
+		{
+			txt_pix.x = (float)(hit[i].pos.x - (int)hit[i].pos.x) * (float)txt->dim.x;
+			if (hit[i].angle.x > 180.f)
+				txt_pix.x = (float)hit[i].texture->dim.x - txt_pix.x - 1.f;
+		}
+		else
+		{
+			txt_pix.x = (float)(hit[i].pos.y - (int)hit[i].pos.y) * (float)txt->dim.x; // NOTE: ?? text_dim.y??
+			if (90.f < hit[i].angle.x && hit[i].angle.x < 270.f)
+				txt_pix.x = (float)txt->dim.x - txt_pix.x - 1.f;
+		}
+		j = 0;
+		while (j < col_width)
+		{
+			img_pix = ipos_new(i * col_width + j, y_inter.x);
+			txt_pix.y = ty_offset * step.y;
+			while (img_pix.y < y_inter.y)
+			{
+				index_text = (int)(txt_pix.y) * txt->dim.x + (int)(txt_pix.x);
+				img->put_pix_to_img(img, img_pix.x, img_pix.y, txt->img[ft_imax(0, ft_imin(index_text, txt->size - 1))]);
 				//*(int *)(img->addr + img_pix.y * img->size_line + img_pix.x * 4) = texture[ft_imax(0, ft_imin(index_text, text_dim.x * text_dim.y - 1))];
 				img_pix.y++;
 				txt_pix.y += step.y;
@@ -132,6 +193,7 @@ int	draw_buffer_3dimg(t_data *dt)
 				free_data(dt), 1);
 	}
 	//draw3d_obj_vlines(&dt->img_3d_buffer, dt->hits, dt->column_width);
-	draw3d_obj_texture(&dt->img_3d_buffer, dt->hits, dt->column_width, dt->check_board_texture);
+	//draw3d_obj_texture(&dt->img_3d_buffer, dt->hits, dt->column_width, dt->check_board_texture);
+	draw3d_obj_texture(&dt->img_3d_buffer, dt->hits, dt->column_width);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 06:56:57 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 09:31:49 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,13 @@ typedef struct s_fpos
 	float	y;
 }	t_fpos;
 
+typedef struct s_text
+{
+	t_ipos	dim;
+	int		size;
+	int		*img;
+}	t_text;
+
 typedef struct s_hit
 {
 	int		valid;	//sentinel-> valid_hit = 1; invalid_hit = 0
@@ -126,6 +133,7 @@ typedef struct s_hit
 	float	tan_angle;
 	float	distance;
 	float	dist_corr; // pre-compute cosf(radian(norm_angle(player.dir - hit.angle.x)))
+	t_text	*texture;
 }	t_hit;
 
 typedef struct s_play
@@ -189,7 +197,12 @@ typedef struct s_data
 	struct timeval	fps_start_inter;
 	char			fps_str[64];
 	char			mv_flags[7];
-	int				*check_board_texture;
+	t_text			*txt_north;
+	t_text			*txt_south;
+	t_text			*txt_east;
+	t_text			*txt_west;
+	t_text			*txt_v;
+	t_text			*txt_h;
 }	t_data;
 // =[ Files & Fun. Signatures ]=================================================
 // -[ display_infos.c ]--------------------------------------------------------3
@@ -201,8 +214,9 @@ void	draw2d_player(t_img *img, t_play *p);								// ✅
 void	draw2d_hit_lines(t_data *dt);										// ✅
 int		draw_buffer_2dimg(t_data *dt);										// ✅
 // -[ draw_3dimg.c ]-----------------------------------------------------------3
-void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width);			// ✅
-void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width, int *texture);
+void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width);			// ❌
+//void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width, int *texture);
+void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width);			// ❌
 int		draw_buffer_3dimg(t_data *dt);										// ✅
 // -[ draw_buffer_images.c ]---------------------------------------------------1
 int		draw_buffer_images(t_data *dt);										// ❌
@@ -252,12 +266,13 @@ float	fpos_dist(t_fpos a, t_fpos b);										// ✅
 void	fpos_add(t_fpos *a, const t_fpos *b);								// ✅
 t_fpos	fpos_dot_new(const t_fpos a, const t_fpos b);						// ✅
 void	fpos_scal(t_fpos *a, float scalar);									// ✅
-// -[ t_hit_struct.c ]---------------------------------------------------------5
+// -[ t_hit_struct.c ]---------------------------------------------------------6
 t_hit	init_hit(void);														// ✅
 t_hit	*create_hit_array(int size);										// ✅
 void	free_hit_array(t_hit **hit_arr);									// ✅
 int		print_hit_array(t_hit *hit_arr);									// ✅
-void	set_hit_type(t_hit *hit, int type, int color, float height);		// ✅
+//void	set_hit_type(t_hit *hit, int type, int color, float height);		// ✅
+void	set_hit_type(const t_data *dt, t_hit *hit, int type);				// ✅
 // -[ t_img_builders.c ]-------------------------------------------------------5
 int		build_img_text(t_img *img, int color);								// ✅
 int		build_img_floor(t_img *img);										// ✅
@@ -300,9 +315,16 @@ void	free_player(t_play *player);										// ✅
 void	fpos_floor(t_ipos *a, const t_fpos *b);								// ✅
 void	fpos_ceil(t_ipos *a, const t_fpos *b);								// ✅
 void	fpos_round(t_ipos *a, const t_fpos *b);								// ✅
-// -[ texture.c ]-------------------------------------------------------------2
-void	set_check_board(int *add);											// ❌
-void	set_brick_wall(int *add);											// ❌
+// -[ t_texture_setters.c ]---------------------------------------------------6
+int		set_north_texture(t_data *dt);										// ❌
+int		set_east_texture(t_data *dt);										// ❌
+int		set_south_texture(t_data *dt);										// ❌
+int		set_west(t_data *dt);												// ❌
+int		set_horizontal_texture(t_data *dt);									// ❌
+int		set_vertical_texture(t_data *dt);									// ❌
+// -[ t_texture_struct.c ]-----------------------------------------------------2
+t_text	*init_texture(int width, int height);								// ✅
+void	free_texture(t_text **txt);											// ✅
 // -[ utils_color.c ]---------------------------------------------------------2
 int		dark_filter_big_end(int color, float darkness_factor);				// ✅
 int		dark_filter_little_end(int color, float darkness_factor);			// ✅

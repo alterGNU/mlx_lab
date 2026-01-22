@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 05:34:51 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 09:07:21 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,12 @@ static void	zero_memset_data(t_data *dt)
 	dt->rot_elem = 0.0f;
 	dt->nb_of_rays = 0;
 	dt->hits = NULL;
-	dt->check_board_texture = calloc(1025, sizeof(int));
+	dt->txt_north = NULL;
+	dt->txt_south = NULL;
+	dt->txt_east = NULL;
+	dt->txt_west = NULL;
+	dt->txt_v = NULL;
+	dt->txt_h = NULL;
 }
 
 /**
@@ -107,18 +112,23 @@ t_data	init_data(const char **str_arr)
 	dt.img_3d_out_temp = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
 	dt.img_3d_ins_temp = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
 	dt.img_3d_buffer = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
-	set_check_board(dt.check_board_texture);
-	//set_brick_wall(dt.check_board_texture);
+	set_north_texture(&dt);
+	set_south_texture(&dt);
+	set_east_texture(&dt);
+	set_west(&dt);
+	set_horizontal_texture(&dt);
+	set_vertical_texture(&dt);
 	return (dt);
 }
 
 void	free_data(t_data *dt)
 {
-	if (dt->check_board_texture)
-	{
-		free(dt->check_board_texture);
-		dt->check_board_texture = NULL;
-	}
+	free_texture(&dt->txt_north);
+	free_texture(&dt->txt_south);
+	free_texture(&dt->txt_east);
+	free_texture(&dt->txt_west);
+	free_texture(&dt->txt_v);
+	free_texture(&dt->txt_h);
 	free_hit_array(&dt->hits);
 	free_player(&dt->player);
 	free_maze(&dt->maze);
@@ -198,5 +208,11 @@ int	error_detected_after_init_data(t_data *dt)
 	check_ptr_not_null(dt->img_3d_out_temp.img_ptr, "img_3d_out_temp", &error);
 	check_ptr_not_null(dt->img_3d_ins_temp.img_ptr, "img_3d_ins_temp", &error);
 	check_ptr_not_null(dt->img_3d_buffer.img_ptr, "img_3d_buffer", &error);
+	check_ptr_not_null(dt->txt_north, "txt_north", &error);
+	check_ptr_not_null(dt->txt_south, "txt_south", &error);
+	check_ptr_not_null(dt->txt_east, "txt_east", &error);
+	check_ptr_not_null(dt->txt_west, "txt_west", &error);
+	check_ptr_not_null(dt->txt_v, "txt_v", &error);
+	check_ptr_not_null(dt->txt_h, "txt_h", &error);
 	return (error);
 }

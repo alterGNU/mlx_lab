@@ -6,22 +6,12 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 19:24:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/20 19:55:57 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 09:04:47 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-/**
- * int valid-->sentinel-> valid_hit = 1; invalid_hit = 0
- * t_ipos type-->x: wall_type(enum), y: coloration
- * t_fpos pos-->2d position of the hit
- * t_fpos dim-->3D size of the object hit (x:width, y:height)
- * t_fpos angle-->x: degree, y: radian
- * float tan_angle
- * float distance
- * float dist_corr-->pre-comp cosf(radian(norm_angle(player.dir-hit.angle.x)))
- */
 t_hit	init_hit(void)
 {
 	t_hit	hit;
@@ -34,6 +24,7 @@ t_hit	init_hit(void)
 	hit.tan_angle = 0.f;
 	hit.distance = 0.f;
 	hit.dist_corr = 0.f;
+	hit.texture = NULL;
 	return (hit);
 }
 
@@ -81,10 +72,33 @@ int	print_hit_array(t_hit *hit_arr)
 	return (psf += printf("NULL]"), psf);
 }
 
-void	set_hit_type(t_hit *hit, int type, int color, float height)
+//void	set_hit_type(t_hit *hit, int type, int color, float height)
+//{
+//	hit->type.x = type;
+//	hit->type.y = color;
+//	hit->dim.x = 1.0f;
+//	hit->dim.y = height;
+//}
+
+void	set_hit_type(const t_data *dt, t_hit *hit, int type)
 {
 	hit->type.x = type;
-	hit->type.y = color;
 	hit->dim.x = 1.0f;
-	hit->dim.y = height;
+	hit->dim.y = 1.f;
+	if (type < 0)
+	{
+		hit->dim.y = 0.8f;
+		if (type % 2)
+			hit->texture = dt->txt_v;
+		else
+			hit->texture = dt->txt_h;
+	}
+	if (type == NOW)
+		hit->texture = dt->txt_north;
+	if (type == SOW)
+		hit->texture = dt->txt_south;
+	if (type == EOW)
+		hit->texture = dt->txt_east;
+	if (type == WOW)
+		hit->texture = dt->txt_west;
 }
