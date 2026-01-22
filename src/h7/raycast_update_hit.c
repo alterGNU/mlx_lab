@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 09:26:47 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 23:00:51 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ void	found_hit_dda(const t_data *dt, t_hit *hit)
 	hit->dist_corr = hit->distance * cos_angle_corr;
 }
 
+// TODO: optimize drawing by pre-computing here multiple values...
 void	update_hit_tpos(t_data *dt)
 {
 	int		i;
