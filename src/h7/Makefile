@@ -54,6 +54,7 @@ SRC			=	display_infos.c \
 				t_player_struct_utils.c \
 				t_player_struct.c \
 				t_pos_conv.c \
+				texture.c \
 				utils_color.c \
 				utils_fmath.c \
 				utils_imath.c \

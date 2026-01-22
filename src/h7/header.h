@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 19:43:10 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 00:46:17 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,7 @@ typedef struct s_data
 	struct timeval	fps_start_inter;
 	char			fps_str[64];
 	char			mv_flags[7];
+	int				*check_board_texture;
 }	t_data;
 // =[ Files & Fun. Signatures ]=================================================
 // -[ display_infos.c ]--------------------------------------------------------3
@@ -199,7 +200,8 @@ void	draw2d_player(t_img *img, t_play *p);								// ✅
 void	draw2d_hit_lines(t_data *dt);										// ✅
 int		draw_buffer_2dimg(t_data *dt);										// ✅
 // -[ draw_3dimg.c ]-----------------------------------------------------------2
-void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width);			// ✅
+void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width, int *texture);
+//void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width);			// ✅
 int		draw_buffer_3dimg(t_data *dt);										// ✅
 // -[ draw_buffer_images.c ]---------------------------------------------------1
 int		draw_buffer_images(t_data *dt);										// ❌
@@ -297,6 +299,8 @@ void	free_player(t_play *player);										// ✅
 void	fpos_floor(t_ipos *a, const t_fpos *b);								// ✅
 void	fpos_ceil(t_ipos *a, const t_fpos *b);								// ✅
 void	fpos_round(t_ipos *a, const t_fpos *b);								// ✅
+// -[ texture.c ]-------------------------------------------------------------1
+void	set_check_board(int *add);											// ❌
 // -[ utils_color.c ]---------------------------------------------------------2
 int		dark_filter_big_end(int color, float darkness_factor);				// ✅
 int		dark_filter_little_end(int color, float darkness_factor);			// ✅

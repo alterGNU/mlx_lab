@@ -6,11 +6,30 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 03:25:03 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 00:12:10 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
+//TODO: move somewhere else or remove
+static void	print_texture(int *texture, int width, int height)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < height)
+	{
+		j = 0;
+		while (j < width)
+		{
+			printf("%d ", texture[i * width + j]);
+			j++;
+		}
+		printf("\n");
+		i++;
+	}
+}
 
 static void	print_start_infos(t_data dt, const char **str_arr, int bui_delay_ms)
 {
@@ -45,6 +64,8 @@ static void	print_start_infos(t_data dt, const char **str_arr, int bui_delay_ms)
 	printf(" - elem rotation per ray=%.4f degrees\n", dt.rot_elem);
 	printf(" - Maze:");
 	print_maze(dt.maze);
+	printf(" - TEXTURE:\n");
+	print_texture(dt.check_board_texture, 32, 32);
 	printf("\n=============================================================\n");
 }
 
@@ -192,11 +213,11 @@ int	main(void)
 		NULL };
 	*/
 	const char	*str_arr[] = { \
-		"111101111", \
+		"000010000", \
 		"000000000", \
-		"100101001", \
-		"101000101", \
-		"1100N0000", \
+		"1001N1001", \
+		"101010101", \
+		"110000000", \
 		"101000101", \
 		"100101001", \
 		"000000000", \

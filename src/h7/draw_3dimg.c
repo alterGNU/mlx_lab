@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 17:46:03 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 00:48:50 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,26 @@
  *  -[] should be able to draw object smaller that the column width
  *  -[] use object dim.x too...j should start at (col_width - obj_width)/2
  */
-void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width)
+void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width, int *texture)
 {
+	int		tmp;
 	int		i;
 	int		j;
 	t_ipos	y_inter;
 
+	(void)texture;
 	y_inter = ipos_new(0, 0);
 	i = 0;
 	while (hit[i].valid)
 	{
 		y_inter.x = (img->height / 2) * (1 + hit[i].dim.y / hit[i].dist_corr);
 		y_inter.y = (img->height / 2) * (1 - hit[i].dim.y / hit[i].dist_corr);
+		if (y_inter.x > y_inter.y)
+		{
+			tmp = y_inter.x;
+			y_inter.x = y_inter.y;
+			y_inter.y = tmp;
+		}
 		j = 0;
 		while (j < col_width)
 		{
@@ -59,6 +67,6 @@ int	draw_buffer_3dimg(t_data *dt)
 		return (fprintf(stderr, "Error: dup_t_img_by_words() failed\n"), \
 				free_data(dt), 1);
 	}
-	draw3d_obj_vlines(&dt->img_3d_buffer, dt->hits, dt->column_width);
+	draw3d_obj_vlines(&dt->img_3d_buffer, dt->hits, dt->column_width, dt->check_board_texture);
 	return (0);
 }

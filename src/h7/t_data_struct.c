@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 03:38:11 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/22 00:12:10 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ static void	zero_memset_data(t_data *dt)
 	dt->rot_elem = 0.0f;
 	dt->nb_of_rays = 0;
 	dt->hits = NULL;
+	dt->check_board_texture = calloc(1025, sizeof(int));
 }
 
 /**
@@ -106,11 +107,17 @@ t_data	init_data(const char **str_arr)
 	dt.img_3d_out_temp = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
 	dt.img_3d_ins_temp = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
 	dt.img_3d_buffer = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
+	set_check_board(dt.check_board_texture);
 	return (dt);
 }
 
 void	free_data(t_data *dt)
 {
+	if (dt->check_board_texture)
+	{
+		free(dt->check_board_texture);
+		dt->check_board_texture = NULL;
+	}
 	free_hit_array(&dt->hits);
 	free_player(&dt->player);
 	free_maze(&dt->maze);
