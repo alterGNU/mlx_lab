@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 10:14:41 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 01:22:22 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/23 02:33:32 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	display_hits_infos(t_data *dt, int line_num)
 	{
 		snprintf(xray_str, sizeof(xray_str), \
 			"h[%d]:p(%.2f, %.2f), a:%.2f, d:%.2f", i, dt->hits[i].pos.x, \
-			dt->hits[i].pos.y, dt->hits[i].angle.x, dt->hits[i].distance);
+			dt->hits[i].pos.y, dt->hits[i].angle.x, dt->hits[i].dist.x);
 		mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, \
 			dt->img_erase_txt.img_ptr, 5, y - 6);
 		mlx_string_put(dt->mlx_ptr, dt->win_ptr, 5, y + 6, WHITE_COLOR, \

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 19:24:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 09:04:47 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/23 02:29:40 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,7 @@ t_hit	init_hit(void)
 	hit.dim = fpos_new(0.f, 0.f);
 	hit.angle = fpos_new(-1.f, -1.f);
 	hit.tan_angle = 0.f;
-	hit.distance = 0.f;
-	hit.dist_corr = 0.f;
+	hit.dist = fpos_new(0.f, 0.f);
 	hit.texture = NULL;
 	return (hit);
 }
@@ -66,7 +65,7 @@ int	print_hit_array(t_hit *hit_arr)
 		psf += fpos_print(hit_arr[i].pos);
 		psf += printf(", ang");
 		psf += fpos_print(hit_arr[i].angle);
-		psf += printf(", dist:%.2f}, ", hit_arr[i].distance);
+		psf += printf(", dist:%.2f}, ", hit_arr[i].dist.x);
 		i++;
 	}
 	return (psf += printf("NULL]"), psf);

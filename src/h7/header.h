@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/23 00:53:12 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/23 02:28:58 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,8 +134,7 @@ typedef struct s_hit
 	t_fpos	dim;	// 3D size of the object hit (x:width, y:height)
 	t_fpos	angle;	// x: degree, y: radian
 	float	tan_angle;
-	float	distance;
-	float	dist_corr; // pre-compute cosf(radian(norm_angle(player.dir - hit.angle.x)))
+	t_fpos	dist;	// x: real distance, y: corrected distance(fish-eye effect)
 	t_text	*texture;
 }	t_hit;
 

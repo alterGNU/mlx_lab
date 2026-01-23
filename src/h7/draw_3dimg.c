@@ -6,12 +6,13 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/23 00:50:59 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/23 02:34:20 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
+// TODO: adpat too
 void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width)
 {
 	int		i;
@@ -24,7 +25,7 @@ void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width)
 	i = 0;
 	while (hit[i].valid)
 	{
-		line_height = hit[i].dim.y * img->height / hit[i].dist_corr;
+		line_height = hit[i].dim.y * img->height / hit[i].dist.y;
 		if (line_height > img->height)
 			line_height = img->height;
 		line_offset = (img->height - line_height) / 2.0f;
@@ -60,19 +61,24 @@ void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width)
 	float	line_height;
 	float	line_offset;
 	t_ipos	img_pix;
-	t_fpos	step;
+	float	ty_step;
+	float	ty_offset;
 	int		index_text;
 	t_fpos	txt_pix;
-	float	ty_offset;
 	t_text	*txt;
 
 	i = 0;
 	while (hit[i].valid)
 	{
 		// TODO: all this part can be pre-computed in update_hit_tpos()
+		// -> float line_height : use to define t_fpos y_inter
+		// -> float ty_step : ty step on texture pixel column-->used to define txt_pix.y = ty_offset * ty_step
+		// -> float ty_offset : ty offset on texture pixel column-->used to define txt_pix.y = ty_offset * ty_step
+		// -> t_ipos y_inter : y start and y end on img where to draw the vertical line
+		// -> t_fpos txt_pix : x and y pixel position on texture to sample color from
 		txt = hit[i].texture;
-		line_height = hit[i].dim.y * img->height / hit[i].dist_corr;
-		step = fpos_new((float)txt->dim.x / (float)col_width, (float)txt->dim.y / line_height);
+		line_height = hit[i].dim.y * img->height / hit[i].dist.y;
+		ty_step = (float)txt->dim.y / line_height;
 		ty_offset = 0.f;
 		if (line_height > img->height)
 		{
@@ -83,15 +89,16 @@ void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width)
 		y_inter = ipos_new(line_offset, line_height + line_offset);
 		y_inter.x = ft_imax(y_inter.x, 0);
 		y_inter.y = ft_imin(y_inter.y, img->height - 1);
+		txt_pix.y = ty_offset * ty_step;
 		if (hit[i].type.x % 2)
 		{
-			txt_pix = fpos_new((float)(hit[i].pos.x - (int)hit[i].pos.x) * (float)txt->dim.x, ty_offset * step.y);
+			txt_pix.x = (float)(hit[i].pos.x - (int)hit[i].pos.x) * (float)txt->dim.x;
 			if (hit[i].angle.x > 180.f)
 				txt_pix.x = (float)txt->dim.x - txt_pix.x;
 		}
 		else
 		{
-			txt_pix = fpos_new((float)(hit[i].pos.y - (int)hit[i].pos.y) * (float)txt->dim.x, ty_offset * step.y);
+			txt_pix.x = (float)(hit[i].pos.y - (int)hit[i].pos.y) * (float)txt->dim.x;
 			if (90 < hit[i].angle.x && hit[i].angle.x < 270.f)
 				txt_pix.x = (float)txt->dim.x - txt_pix.x;
 		}
@@ -100,15 +107,19 @@ void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width)
 		while (y_inter.x < y_inter.y)
 		{
 			index_text = (int)(txt_pix.y) * txt->dim.x + (int)(txt_pix.x);
-			index_text = ft_imax(0, ft_imin(index_text, txt->size - 1));
+			//*(int *)(img->addr + (y_inter.x * img->size_line + img_pix.x * 4)) = txt->img[ft_imax(0, ft_imin(index_text, txt->size - 1))];
+			int color = txt->img[ft_imax(0, ft_imin(index_text, txt->size - 1))];
+			//int *dest = (int *)(img->addr + (y_inter.x * img->size_line + img_pix.x * 4));
 			int j = 0;
 			while (j < col_width)
 			{
-				img->put_pix_to_img(img, img_pix.x + j++, y_inter.x, txt->img[index_text]);
+				img->put_pix_to_img(img, img_pix.x + j++, y_inter.x, color);
 				// put_pix with little endian 32bits --256xrays-->from FPS:7.50 to FPS:15.00 --> X2
-				//*(int *)(img->addr + (y_inter.x * img->size_line + (img_pix.x + j++) * 4)) = txt->img[index_text];
+				// --1024xrays-->from FPS:5 to FPS:7 --> +2
+				// --256xrays-->from FPS:7.50 to FPS:15.00 --> X2
+				//dest[j++] = color;
 			}
-			txt_pix.y += step.y;
+			txt_pix.y += ty_step;
 			y_inter.x++;
 		}
 		i++;
