@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:18:44 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 06:09:13 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:18:29 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,14 +65,14 @@ t_ima	*open_image(t_data *dt, const char *path)
 	memset_zero_img(img);
 	img->path = ft_strdup((char *)path);
 	if (!img->path)
-		return (ft_free((void **)&img->path), NULL);
+		return (ft_free((void **)&img->path), ft_free((void **)&img), NULL);
 	img->endian = -1;
 	if (dt->mlx_ptr)
 	{
 		img->img_ptr = mlx_xpm_file_to_image(dt->mlx_ptr, img->path, \
 			&img->dim.x, &img->dim.y);
 		if (!img->img_ptr)
-			return (ft_free((void **)&img->path), NULL);
+			return (ft_free((void **)&img->path), ft_free((void **)&img), NULL);
 		img->addr = mlx_get_data_addr(img->img_ptr, &img->bpp, &img->size_line, \
 			&img->endian);
 		set_ima_fun_ptrs(img);

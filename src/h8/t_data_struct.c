@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 06:00:47 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:16:35 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,5 +249,9 @@ int	error_detected_after_init_data(t_data *dt)
 	check_ptr_not_null(dt->txt_west, "txt_west", &error);
 	check_ptr_not_null(dt->txt_v, "txt_v", &error);
 	check_ptr_not_null(dt->txt_h, "txt_h", &error);
+	check_ptr_not_null(dt->ima_north, "ima_north", &error);
+	check_ptr_not_null(dt->ima_south, "ima_south", &error);
+	check_ptr_not_null(dt->ima_east, "ima_east", &error);
+	check_ptr_not_null(dt->ima_west, "ima_west", &error);
 	return (error);
 }
