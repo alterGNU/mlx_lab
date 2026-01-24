@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 10:14:41 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/23 17:49:36 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 18:49:40 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,13 @@ void	display_hits_infos(t_data *dt, int line_num)
 			xray_str);
 		y += 12;
 	}
+}
+
+void	display_function_called(t_data *dt, int line_num)
+{
+	int		y;
+
+	y = 5 + 12 * line_num;
+	mlx_put_image_to_window(dt->mlx_ptr, dt->win_ptr, dt->img_erase_txt.img_ptr, 5, y - 6);
+	mlx_string_put(dt->mlx_ptr, dt->win_ptr, 5, y + 6, WHITE_COLOR, dt->funcalled);
 }

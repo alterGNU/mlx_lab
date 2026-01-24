@@ -6,15 +6,16 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 08:14:52 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 19:21:19 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HEADER_H
 # define HEADER_H
-// -[ Debug/UI toggles ]------------------------t-------------------------------
+// -[ Debug/UI toggles ]--------------------------------------------------------
+# define DISPLAY_FUNCALLED 0	// 0: disabled, 1: enabled 
 # define DRAW_FUN_AUTO 1		// 0: fun draw 3d not autonomous, 1: autonomous
-# define OPTI_MODE 0			// 0: generic, 1: for little-endian 32bpp
+# define OPTI_MODE 1			// 0: generic, 1: for little-endian 32bpp
 # define DRAW_MINIMAP 1			// 0: do not draw 2d image (map), else: draw it
 # define DRAW_2D_RAYS 1			// 0: none, 1: first/last, 2: all rays
 # define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
@@ -38,9 +39,9 @@
 # define RAY2D_C 0xFFFF00		// color of the rays drawn on the 2D image
 # define FLOOR2D_COLOR 0xAAAAAA	// color of the floor in 2D image
 # define WALL2D_COLOR 0x333333	// color of the walls in 2D image
-# define TILE_X 32 				// width(in pixels) of one 2Dcell
-# define TILE_Y 32 				// height(in pixels) of one 2Dcell
-# define CIRCLE_RADIUS 8		// size of the player representation
+# define TILE_X 16 				// width(in pixels) of one 2Dcell
+# define TILE_Y 16 				// height(in pixels) of one 2Dcell
+# define CIRCLE_RADIUS 4		// size of the player representation
 //# define TILE_X 16 				// width(in pixels) of one 2Dcell
 //# define TILE_Y 16 				// height(in pixels) of one 2Dcell
 //# define CIRCLE_RADIUS 4		// size of the player representation
@@ -67,8 +68,8 @@
 # define PATH_SOUTH_IMAGE "../../textures/wall2.xpm"
 # define PATH_EAST_IMAGE  "../../textures/wall3.xpm"
 # define PATH_WEST_IMAGE  "../../textures/wall4.xpm"
-# define PATH_VINS_IMAGE  "../../textures/wall5.xpm"
-# define PATH_HINS_IMAGE  "../../textures/wall6.xpm"
+# define PATH_VINS_IMAGE  "../../textures/matrix.xpm"
+# define PATH_HINS_IMAGE  "../../textures/matrix.xpm"
 // -[ Engine ]------------------------------------------------------------------
 # define PRE_RAY 0.0001f	// Ray detection precision
 # define EPSILON 0.000001f	// Small value to avoid division by zero
@@ -174,7 +175,8 @@ typedef struct s_maze
 	int				cell_nb;
 }	t_maze;
 
-// NOTE: in cub3d can be insert to/or/replace by the t_plan struct
+typedef struct s_hit	t_hit;
+
 typedef struct s_ima
 {
 	char			id[3];
@@ -188,8 +190,10 @@ typedef struct s_ima
 	void			(*put_pix_to_img)(struct s_ima *, int, int, int);
 	void			(*draw_vlines)(struct s_ima *, int, t_ipos, int);
 	int				(*dark_filter)(int color, float darkness_factor);
+	//void			(*cpy_col)(struct s_ima *, struct s_ima *, t_hit *, int);
 }	t_ima;
 
+// NOTE: in cub3d can be insert to/or/replace by the t_plan struct
 typedef struct s_hit
 {
 	int				valid;	//sentinel-> valid_hit = 1; invalid_hit = 0
@@ -212,6 +216,7 @@ typedef struct s_hit
 typedef struct s_data
 {
 	char			txt_mode_str[8];
+	char			funcalled[32];
 	int				txt_mode;
 	t_fpos			tile_dim;
 	t_play			player;
@@ -253,10 +258,11 @@ typedef struct s_data
 	t_ima			*ima_hins;
 }	t_data;
 // =[ Files & Fun. Signatures ]=================================================
-// -[ display_infos.c ]--------------------------------------------------------3
-void	display_player_infos(t_data *dt, int line_num);						// ✅
+// -[ display_infos.c ]--------------------------------------------------------4
+void	display_player_infos(t_data *dt, int line_num);						// ❌
 void	display_fps_infos(t_data *dt, int line_num);						// ❌
 void	display_hits_infos(t_data *dt, int line_num);						// ❌
+void	display_function_called(t_data *dt, int line_num);					// ❌
 // -[ draw_2dimg.c ]-----------------------------------------------------------3
 void	draw2d_player(t_ima *img, t_play *p);								// ✅
 void	draw2d_hit_lines(t_data *dt);										// ✅
@@ -270,11 +276,12 @@ void	draw3d_obj_texture_auto(t_ima *img, t_hit *hit, int col_width);		// ❌
 void	draw3d_obj_texture_auto_le32(t_ima *img, t_hit *hit, int col_width);// ❌
 void	draw3d_obj_ima_xpm_auto(t_ima *img, t_hit *hit, int col_width);		// ❌
 void	draw3d_obj_ima_xpm_auto_le32(t_ima *img, t_hit *hit, int col_width);// ❌
-// -[ draw_3dfun.c ]-----------------------------------------------------------4
+// -[ draw_3dfun.c ]-----------------------------------------------------------5
 void	draw3d_obj_vlines(t_ima *img, t_hit *hit, int col_width);			// ✅
 void	draw3d_obj_vlines_le32(t_ima *img, t_hit *hit, int col_width);		// ✅
 void	draw3d_obj_texture(t_ima *img, t_hit *hit, int col_width);			// ✅
 void	draw3d_obj_texture_le32(t_ima *img, t_hit *hit, int col_width);		// ✅
+void	draw3d_obj_ima_xpm(t_ima *img, t_hit *hit, int col_width);			// ✅
 // -[ draw_buffer_images.c ]---------------------------------------------------1
 int		draw_buffer_images(t_data *dt);										// ❌
 // -[ draw_geo_shapes.c ]------------------------------------------------------5
@@ -319,8 +326,9 @@ void	update_hit_tpos(t_data *dt);										// ✅
 t_data	init_data(const char **str_arr);									// ❌
 void	free_data(t_data *dt);												// ✅
 int		error_detected_after_init_data(t_data *dt);							// ❌
-// -[ t_data_struct_utils.c ]--------------------------------------------------2
+// -[ t_data_struct_utils.c ]--------------------------------------------------3
 void	set_txt_mode_str(t_data *dt);										// ❌
+void	set_funcalled(t_data *dt);											// ❌
 void	toggle_texture_mode(t_data *dt);									// ✅
 // -[ t_fpos_struct.c ]--------------------------------------------------------4
 t_fpos	fpos_new(float x, float y);											// ✅
