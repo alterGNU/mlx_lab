@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 19:24:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/23 18:17:48 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 07:00:18 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ t_hit	init_hit(void)
 	hit.txt_pix = fpos_new(-1.f, -1.f);
 	hit.txt_ty = fpos_new(0.f, 0.f);
 	hit.texture = NULL;
+	hit.ima_xpm = NULL;
 	return (hit);
 }
 
@@ -56,4 +57,23 @@ void	set_hit_texture(const t_data *dt, t_hit *hit)
 		hit->texture = dt->txt_east;
 	if (hit->type.x == WOW)
 		hit->texture = dt->txt_west;
+}
+
+void	set_hit_ima_xpm(const t_data *dt, t_hit *hit)
+{
+	if (hit->type.x < 0)
+	{
+		if (hit->type.x % 2)
+			hit->ima_xpm = dt->ima_vins;
+		else
+			hit->ima_xpm = dt->ima_hins;
+	}
+	if (hit->type.x == NOW)
+		hit->ima_xpm = dt->ima_north;
+	if (hit->type.x == SOW)
+		hit->ima_xpm = dt->ima_south;
+	if (hit->type.x == EOW)
+		hit->ima_xpm = dt->ima_east;
+	if (hit->type.x == WOW)
+		hit->ima_xpm = dt->ima_west;
 }

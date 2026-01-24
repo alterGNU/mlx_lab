@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 06:33:09 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 07:06:53 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,11 +141,21 @@ void	update_hit_tpos(t_data *dt)
 		dt->hits[i].tan_angle = tanf(dt->hits[i].angle.y);
 		found_hit_set_type(dt, &dt->hits[i]);
 		set_hit_obj_dim(&dt->hits[i]);
-		if (dt->txt_mode) // NOTE: this way should include image texture mode too
+		if (dt->txt_mode == 1)
 		{
 			set_hit_texture(dt, &dt->hits[i]);
 			if (DRAW_FUN_AUTO == 0)
 				precomp_hit_vtext(&dt->hits[i], (float)dt->img_3d_buffer.dim.y);
+		}
+		else if (dt->txt_mode == 2)
+		{
+			//set_hit_ima_xpm(dt, &dt->hits[i]);
+			set_hit_texture(dt, &dt->hits[i]);
+			if (DRAW_FUN_AUTO == 0)
+				precomp_hit_vtext(&dt->hits[i], (float)dt->img_3d_buffer.dim.y);
+			// ADD: precomp_hit_vxpm();
+			//if (DRAW_FUN_AUTO == 0)
+			//	precomp_hit_vxpm(&dt->hits[i], (float)dt->img_3d_buffer.dim.y);
 		}
 		else
 		{

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 06:16:35 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:52:55 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ static void	zero_memset_data(t_data *dt)
 	dt->ima_south = NULL;
 	dt->ima_east = NULL;
 	dt->ima_west = NULL;
+	dt->ima_vins = NULL;
+	dt->ima_hins = NULL;
 }
 
 /**
@@ -124,6 +126,8 @@ t_data	init_data(const char **str_arr)
 	set_wall_image(&dt, "SO", PATH_SOUTH_IMAGE);
 	set_wall_image(&dt, "EA", PATH_EAST_IMAGE);
 	set_wall_image(&dt, "WE", PATH_WEST_IMAGE);
+	set_wall_image(&dt, "VI", PATH_VINS_IMAGE);
+	set_wall_image(&dt, "HI", PATH_HINS_IMAGE);
 	set_north_texture(&dt);
 	set_south_texture(&dt);
 	set_east_texture(&dt);
@@ -157,6 +161,16 @@ void	free_data(t_data *dt)
 	{
 		free_image(*(dt->ima_west), dt->mlx_ptr);
 		ft_free((void **)&dt->ima_west);
+	}
+	if (dt->ima_vins)
+	{
+		free_image(*(dt->ima_vins), dt->mlx_ptr);
+		ft_free((void **)&dt->ima_vins);
+	}
+	if (dt->ima_hins)
+	{
+		free_image(*(dt->ima_hins), dt->mlx_ptr);
+		ft_free((void **)&dt->ima_hins);
 	}
 	free_texture(&dt->txt_north);
 	free_texture(&dt->txt_south);
@@ -253,5 +267,7 @@ int	error_detected_after_init_data(t_data *dt)
 	check_ptr_not_null(dt->ima_south, "ima_south", &error);
 	check_ptr_not_null(dt->ima_east, "ima_east", &error);
 	check_ptr_not_null(dt->ima_west, "ima_west", &error);
+	check_ptr_not_null(dt->ima_vins, "ima_vins", &error);
+	check_ptr_not_null(dt->ima_hins, "ima_hins", &error);
 	return (error);
 }

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:18:44 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 06:35:52 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 07:04:51 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,10 @@ void	set_wall_image(t_data *dt, const char *id, const char *path)
 		dt->ima_east = open_image(dt, path);
 	else if (ft_strncmp(id, "WE", 3) == 0)
 		dt->ima_west = open_image(dt, path);
+	else if (ft_strncmp(id, "VI", 3) == 0)
+		dt->ima_vins = open_image(dt, path);
+	else if (ft_strncmp(id, "HI", 3) == 0)
+		dt->ima_hins = open_image(dt, path);
 }
 
 void	free_image(t_ima img, void *mlx_ptr)

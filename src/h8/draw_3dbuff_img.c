@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 04:34:30 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:41:12 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ int	draw_buffer_3dimg(t_data *dt)
 				draw3d_obj_vlines_auto_le32(&dt->img_3d_buffer, dt->hits, dt->column_width);
 			else if (dt->txt_mode == 1)
 				draw3d_obj_texture_auto_le32(&dt->img_3d_buffer, dt->hits, dt->column_width);
-			// ADD: else{draw3d_obj_image_le32();}
+			//else
+			//	draw3d_obj_ima_xpm_auto_le32(&dt->img_3d_buffer, dt->hits, dt->column_width);
 		}
 		else
 		{
@@ -38,7 +39,8 @@ int	draw_buffer_3dimg(t_data *dt)
 				draw3d_obj_vlines_auto(&dt->img_3d_buffer, dt->hits, dt->column_width);
 			else if (dt->txt_mode == 1)
 				draw3d_obj_texture_auto(&dt->img_3d_buffer, dt->hits, dt->column_width);
-			// ADD: else{draw3d_obj_image();}
+			else
+				draw3d_obj_ima_xpm_auto(&dt->img_3d_buffer, dt->hits, dt->column_width);
 		}
 	}
 	else
@@ -49,7 +51,8 @@ int	draw_buffer_3dimg(t_data *dt)
 				draw3d_obj_vlines_le32(&dt->img_3d_buffer, dt->hits, dt->column_width);
 			else if (dt->txt_mode == 1)
 				draw3d_obj_texture_le32(&dt->img_3d_buffer, dt->hits, dt->column_width);
-			// ADD: else{draw3d_obj_image_auto_le32();}
+			//else
+			//	draw3d_obj_ima_xpm_le32(&dt->img_3d_buffer, dt->hits, dt->column_width);
 		}
 		else
 		{
@@ -57,7 +60,8 @@ int	draw_buffer_3dimg(t_data *dt)
 				draw3d_obj_vlines(&dt->img_3d_buffer, dt->hits, dt->column_width);
 			else if (dt->txt_mode == 1)
 				draw3d_obj_texture(&dt->img_3d_buffer, dt->hits, dt->column_width);
-			// ADD: else{draw3d_obj_image_auto();}
+			//else
+			//	draw3d_obj_ima_xpm(&dt->img_3d_buffer, dt->hits, dt->column_width);
 		}
 	}
 	return (0);

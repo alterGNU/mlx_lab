@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 06:21:56 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 07:04:01 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define HEADER_H
 // -[ Debug/UI toggles ]------------------------t-------------------------------
 # define DRAW_FUN_AUTO 1		// 0: fun draw 3d not autonomous, 1: autonomous
-# define OPTI_MODE 1			// 0: generic, 1: for little-endian 32bpp
+# define OPTI_MODE 0			// 0: generic, 1: for little-endian 32bpp
 # define DRAW_MINIMAP 1			// 0: do not draw 2d image (map), else: draw it
 # define DRAW_2D_RAYS 1			// 0: none, 1: first/last, 2: all rays
 # define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
@@ -67,6 +67,8 @@
 # define PATH_SOUTH_IMAGE "../../textures/wall2.xpm"
 # define PATH_EAST_IMAGE  "../../textures/wall3.xpm"
 # define PATH_WEST_IMAGE  "../../textures/wall4.xpm"
+# define PATH_VINS_IMAGE  "../../textures/wall5.xpm"
+# define PATH_HINS_IMAGE  "../../textures/wall6.xpm"
 // -[ Engine ]------------------------------------------------------------------
 # define PRE_RAY 0.0001f	// Ray detection precision
 # define EPSILON 0.000001f	// Small value to avoid division by zero
@@ -153,23 +155,6 @@ typedef struct s_text
 	int				*img;
 }	t_text;
 
-typedef struct s_hit
-{
-	int				valid;	//sentinel-> valid_hit = 1; invalid_hit = 0
-	t_ipos			type;	// x: wall_type(enum), y: coloration
-	t_fpos			pos;	// 2d position of the hit
-	t_fpos			dim;	// 3D size of the object hit (x:width, y:height)
-	t_fpos			angle;	// x: degree, y: radian
-	float			tan_angle;
-	t_fpos			dist;	// x: real distance, y: corrected distance(fish-eye effect)
-	t_ipos			img_pix;// pixel coord. in image.
-	t_ipos			y_inter;// x:y start in image, y:y stop in image.
-	t_fpos			txt_pix;// pixel coord. in texture image.
-	t_fpos			txt_ty;	// x:step on texture pixel column, y:offset on texture pixel column
-	t_text			*texture;
-	unsigned int	color;
-}	t_hit;
-
 typedef struct s_play
 {
 	t_fpos			pos;
@@ -204,6 +189,25 @@ typedef struct s_ima
 	void			(*draw_vlines)(struct s_ima *, int, t_ipos, int);
 	int				(*dark_filter)(int color, float darkness_factor);
 }	t_ima;
+
+typedef struct s_hit
+{
+	int				valid;	//sentinel-> valid_hit = 1; invalid_hit = 0
+	t_ipos			type;	// x: wall_type(enum), y: coloration
+	t_fpos			pos;	// 2d position of the hit
+	t_fpos			dim;	// 3D size of the object hit (x:width, y:height)
+	t_fpos			angle;	// x: degree, y: radian
+	float			tan_angle;
+	t_fpos			dist;	// x: real distance, y: corrected distance(fish-eye effect)
+	t_ipos			img_pix;// pixel coord. in image.
+	t_ipos			y_inter;// x:y start in image, y:y stop in image.
+	t_fpos			txt_pix;// pixel coord. in texture image.
+	t_fpos			txt_ty;	// x:step on texture pixel column, y:offset on texture pixel column
+	t_text			*texture;
+	t_ima			*ima_xpm;
+	unsigned int	color;
+}	t_hit;
+
 
 typedef struct s_data
 {
@@ -245,6 +249,8 @@ typedef struct s_data
 	t_ima			*ima_south;
 	t_ima			*ima_east;
 	t_ima			*ima_west;
+	t_ima			*ima_vins;
+	t_ima			*ima_hins;
 }	t_data;
 // =[ Files & Fun. Signatures ]=================================================
 // -[ display_infos.c ]--------------------------------------------------------3
@@ -257,11 +263,12 @@ void	draw2d_hit_lines(t_data *dt);										// ✅
 int		draw_buffer_2dimg(t_data *dt);										// ✅
 // -[ draw_3dbuff_img.c ]------------------------------------------------------1
 int		draw_buffer_3dimg(t_data *dt);										// ✅
-// -[ draw_3dfun_auto.c ]------------------------------------------------------4
+// -[ draw_3dfun_auto.c ]------------------------------------------------------5
 void	draw3d_obj_vlines_auto(t_ima *img, t_hit *hit, int col_width);		// ✅
 void	draw3d_obj_vlines_auto_le32(t_ima *img, t_hit *hit, int col_width);	// ✅
 void	draw3d_obj_texture_auto(t_ima *img, t_hit *hit, int col_width);		// ✅
 void	draw3d_obj_texture_auto_le32(t_ima *img, t_hit *hit, int col_width);// ✅
+void	draw3d_obj_ima_xpm_auto(t_ima *img, t_hit *hit, int col_width);		// ✅
 // -[ draw_3dfun.c ]-----------------------------------------------------------4
 void	draw3d_obj_vlines(t_ima *img, t_hit *hit, int col_width);			// ✅
 void	draw3d_obj_vlines_le32(t_ima *img, t_hit *hit, int col_width);		// ✅
@@ -329,10 +336,11 @@ float	fpos_prod(const t_fpos a);											// ✅
 t_hit	*create_hit_array(int size);										// ✅
 void	free_hit_array(t_hit **hit_arr);									// ✅
 int		print_hit_array(t_hit *hit_arr);									// ✅
-// -[ t_hit_struct.c ]---------------------------------------------------------6
+// -[ t_hit_struct.c ]---------------------------------------------------------4
 t_hit	init_hit(void);														// ✅
 void	set_hit_obj_dim(t_hit *hit);										// ✅
 void	set_hit_texture(const t_data *dt, t_hit *hit);						// ✅
+void	set_hit_ima_xpm(const t_data *dt, t_hit *hit);						// ✅
 // -[ t_ima_builders.c ]-------------------------------------------------------5
 int		build_img_text(t_ima *img, int color);								// ✅
 int		build_img_floor(t_ima *img);										// ✅
