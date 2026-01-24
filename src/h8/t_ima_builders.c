@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/05 16:20:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 04:35:44 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 04:39:21 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ int	build_img_text(t_ima *img, int color)
 	if (!img || !img->addr)
 		return (0);
 	x = -1;
-	while (++x < img->width)
+	while (++x < img->dim.x)
 	{
 		y = -1;
-		while (++y < img->height)
+		while (++y < img->dim.y)
 			img->put_pix_to_img(img, x, y, color);
 	}
 	return (1);
@@ -37,12 +37,12 @@ int	build_img_floor(t_ima *img)
 	if (!img || !img->addr)
 		return (0);
 	x = -1;
-	while (++x < img->width)
+	while (++x < img->dim.x)
 	{
 		y = -1;
-		while (++y < img->height)
+		while (++y < img->dim.y)
 		{
-			if (0 < x && x + 1 < img->width && 0 < y && y + 1 < img->height)
+			if (0 < x && x + 1 < img->dim.x && 0 < y && y + 1 < img->dim.y)
 				img->put_pix_to_img(img, x, y, FLOOR2D_COLOR);
 			else
 				img->put_pix_to_img(img, x, y, WHITE_COLOR);
@@ -59,12 +59,12 @@ int	build_img_wall(t_ima *img)
 	if (!img || !img->addr)
 		return (0);
 	x = -1;
-	while (++x < img->width)
+	while (++x < img->dim.x)
 	{
 		y = -1;
-		while (++y < img->height)
+		while (++y < img->dim.y)
 		{
-			if (0 < x && x + 1 < img->width && 0 < y && y + 1 < img->height)
+			if (0 < x && x + 1 < img->dim.x && 0 < y && y + 1 < img->dim.y)
 				img->put_pix_to_img(img, x, y, WALL2D_COLOR);
 		}
 	}
@@ -100,14 +100,14 @@ int	build_img_3d(t_ima *img, int ceil_color, int floor_color)
 	int	y;
 	int	horizon;
 
-	horizon = img->height / 2;
+	horizon = img->dim.y / 2;
 	if (!img || !img->addr)
 		return (0);
 	x = -1;
-	while (++x < img->width)
+	while (++x < img->dim.x)
 	{
 		y = -1;
-		while (++y < img->height)
+		while (++y < img->dim.y)
 		{
 			if (y < horizon)
 				img->put_pix_to_img(img, x, y, ceil_color);

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 00:04:25 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 04:35:49 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 04:43:22 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,14 @@ int	t_ima_insert_rows_by_words(t_ima *src, t_ima *dst, int dst_x, int dst_y)
 
 	if (!dst || !src || !dst->addr || !src->addr || dst_x < 0 || dst_y < 0)
 		return (printf("Invalid arguments\n"));
-	if (dst_x + src->width > dst->width || dst_y + src->height > dst->height)
+	if (dst_x + src->dim.x > dst->dim.x || dst_y + src->dim.y > dst->dim.y)
 		return (printf("Source image exceeds destination bounds\n"));
 	if (src->bpp != dst->bpp)
 		return (printf("Different bpp not supported\n"));
 	bypp = dst->bpp / 8;
-	row_bytes = (size_t)(src->width * bypp);
+	row_bytes = (size_t)(src->dim.x * bypp);
 	row = -1;
-	while (++row < src->height)
+	while (++row < src->dim.y)
 	{
 		src_row = src->addr + (row * src->size_line);
 		dst_row = dst->addr + ((dst_y + row) * dst->size_line + dst_x * bypp);
@@ -46,8 +46,7 @@ static void	copy_t_ima_metadata(t_ima *src, t_ima *dst)
 	dst->endian = src->endian;
 	dst->size_line = src->size_line;
 	dst->bpp = src->bpp;
-	dst->height = src->height;
-	dst->width = src->width;
+	dst->dim = src->dim;
 }
 
 int	dup_t_ima_by_words(t_ima *src, t_ima *dst)
@@ -57,7 +56,7 @@ int	dup_t_ima_by_words(t_ima *src, t_ima *dst)
 	if (!is_img_valid(src) || !is_img_valid(dst))
 		return (0);
 	copy_t_ima_metadata(src, dst);
-	length = (size_t)(src->size_line * src->height);
+	length = (size_t)(src->size_line * src->dim.y);
 	ft_memcpy_by_words(dst->addr, src->addr, length);
 	return (1);
 }

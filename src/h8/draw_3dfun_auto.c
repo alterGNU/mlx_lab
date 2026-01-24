@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 04:34:30 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 04:39:18 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,15 @@ void	draw3d_obj_vlines_auto(t_ima *img, t_hit *hit, int col_width)
 	i = 0;
 	while (hit[i].valid)
 	{
-		line_height = hit[i].dim.y * img->height / hit[i].dist.y;
-		if (line_height > img->height)
-			line_height = img->height;
-		line_offset = (img->height - line_height) / 2.0f;
+		line_height = hit[i].dim.y * img->dim.y / hit[i].dist.y;
+		if (line_height > img->dim.y)
+			line_height = img->dim.y;
+		line_offset = (img->dim.y - line_height) / 2.0f;
 		y_inter = ipos_new(line_offset, line_height + line_offset);
 		if (y_inter.x < 0)
 			y_inter.x = 0;
-		if (y_inter.y > img->height - 1)
-			y_inter.y = img->height - 1;
+		if (y_inter.y > img->dim.y - 1)
+			y_inter.y = img->dim.y - 1;
 		j = 0;
 		while (j < col_width)
 			img->draw_vlines(img, i * col_width + j++, y_inter, hit[i].type.y);
@@ -57,20 +57,20 @@ void	draw3d_obj_vlines_auto_le32(t_ima *img, t_hit *hit, int col_width)
 	i = 0;
 	while (hit[i].valid)
 	{
-		line_height = hit[i].dim.y * img->height / hit[i].dist.y;
-		if (line_height > img->height)
-			line_height = img->height;
-		line_offset = (img->height - line_height) / 2.0f;
+		line_height = hit[i].dim.y * img->dim.y / hit[i].dist.y;
+		if (line_height > img->dim.y)
+			line_height = img->dim.y;
+		line_offset = (img->dim.y - line_height) / 2.0f;
 		y_inter = ipos_new(line_offset, line_height + line_offset);
 		if (y_inter.x < 0)
 			y_inter.x = 0;
-		if (y_inter.y > img->height - 1)
-			y_inter.y = img->height - 1;
+		if (y_inter.y > img->dim.y - 1)
+			y_inter.y = img->dim.y - 1;
 		j = -1;
 		while (++j < col_width)
 		{
 			x = i * col_width + j;
-			if (x < 0 || x >= img->width)
+			if (x < 0 || x >= img->dim.x)
 				continue ;
 			pixel = img->addr + (y_inter.x * img->size_line + x * 4);
 			y = y_inter.x;
@@ -123,18 +123,18 @@ void	draw3d_obj_texture_auto(t_ima *img, t_hit *hit, int col_width)
 		// -> t_ipos y_inter : y start and y end on img where to draw the vertical line
 		// -> t_fpos txt_pix : x and y pixel position on texture to sample color from
 		txt = hit[i].texture;
-		line_height = hit[i].dim.y * img->height / hit[i].dist.y;
+		line_height = hit[i].dim.y * img->dim.y / hit[i].dist.y;
 		ty_step = (float)txt->dim.y / line_height;
 		ty_offset = 0.f;
-		if (line_height > img->height)
+		if (line_height > img->dim.y)
 		{
-			ty_offset = (line_height - (float)img->height) / 2.f;
-			line_height = img->height;
+			ty_offset = (line_height - (float)img->dim.y) / 2.f;
+			line_height = img->dim.y;
 		}
-		line_offset = (img->height - line_height) / 2.0f;
+		line_offset = (img->dim.y - line_height) / 2.0f;
 		y_inter = ipos_new(line_offset, line_height + line_offset);
 		y_inter.x = ft_imax(y_inter.x, 0);
-		y_inter.y = ft_imin(y_inter.y, img->height - 1);
+		y_inter.y = ft_imin(y_inter.y, img->dim.y - 1);
 		txt_pix.y = ty_offset * ty_step;
 		if (hit[i].type.x % 2)
 		{
@@ -191,18 +191,18 @@ void	draw3d_obj_texture_auto_le32(t_ima *img, t_hit *hit, int col_width)
 		// -> t_ipos y_inter : y start and y end on img where to draw the vertical line
 		// -> t_fpos txt_pix : x and y pixel position on texture to sample color from
 		txt = hit[i].texture;
-		line_height = hit[i].dim.y * img->height / hit[i].dist.y;
+		line_height = hit[i].dim.y * img->dim.y / hit[i].dist.y;
 		ty_step = (float)txt->dim.y / line_height;
 		ty_offset = 0.f;
-		if (line_height > img->height)
+		if (line_height > img->dim.y)
 		{
-			ty_offset = (line_height - (float)img->height) / 2.f;
-			line_height = img->height;
+			ty_offset = (line_height - (float)img->dim.y) / 2.f;
+			line_height = img->dim.y;
 		}
-		line_offset = (img->height - line_height) / 2.0f;
+		line_offset = (img->dim.y - line_height) / 2.0f;
 		y_inter = ipos_new(line_offset, line_height + line_offset);
 		y_inter.x = ft_imax(y_inter.x, 0);
-		y_inter.y = ft_imin(y_inter.y, img->height - 1);
+		y_inter.y = ft_imin(y_inter.y, img->dim.y - 1);
 		txt_pix.y = ty_offset * ty_step;
 		if (hit[i].type.x % 2)
 		{

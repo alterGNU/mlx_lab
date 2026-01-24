@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:13:33 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 04:34:35 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 04:39:20 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	put_pix_to_img_little_end(t_ima *img, int x, int y, int color)
 	char	*pixel;
 	int		i;
 
-	if (0 <= x && x < img->width && 0 <= y && y < img->height)
+	if (0 <= x && x < img->dim.x && 0 <= y && y < img->dim.y)
 	{
 		pixel = img->addr + (y * img->size_line + x * (img->bpp / 8));
 		i = img->bpp - 8;
@@ -47,7 +47,7 @@ void	put_pix_to_img_little_end(t_ima *img, int x, int y, int color)
  */
 void	put_pix_to_img_little_end_32(t_ima *img, int x, int y, int color)
 {
-	if (0 <= x && x < img->width && 0 <= y && y < img->height)
+	if (0 <= x && x < img->dim.x && 0 <= y && y < img->dim.y)
 		*(int *)(img->addr + (y * img->size_line + x * 4)) = color;
 }
 
@@ -62,7 +62,7 @@ void	put_pix_to_img_big_end(t_ima *img, int x, int y, int color)
 	char	*pixel;
 	int		i;
 
-	if (0 <= x && x < img->width && 0 <= y && y < img->height)
+	if (0 <= x && x < img->dim.x && 0 <= y && y < img->dim.y)
 	{
 		pixel = img->addr + (y * img->size_line + x * (img->bpp / 8));
 		i = img->bpp - 8;
@@ -81,7 +81,7 @@ void	put_pix_to_img_big_end_32(t_ima *img, int x, int y, int color)
 {
 	char	*pixel;
 
-	if (0 <= x && x < img->width && 0 <= y && y < img->height)
+	if (0 <= x && x < img->dim.x && 0 <= y && y < img->dim.y)
 	{
 		pixel = img->addr + (y * img->size_line + x * 4);
 		pixel[0] = (color >> 24) & 0xFF;

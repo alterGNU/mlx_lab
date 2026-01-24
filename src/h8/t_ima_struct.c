@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:18:44 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 04:35:54 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 04:40:27 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ void	memset_zero_img(t_ima *img)
 {
 	img->img_ptr = NULL;
 	img->addr = NULL;
-	img->width = 0;
-	img->height = 0;
+	img->dim.x = 0;
+	img->dim.y = 0;
 	img->bpp = 0;
 	img->size_line = 0;
 	img->endian = 0;
@@ -62,8 +62,8 @@ t_ima	create_image(void *mlx_ptr, int width, int height)
 		if (img.img_ptr)
 			img.addr = mlx_get_data_addr(img.img_ptr, &img.bpp, \
 				&img.size_line, &img.endian);
-		img.width = width;
-		img.height = height;
+		img.dim.x = width;
+		img.dim.y = height;
 		set_ima_fun_ptrs(&img);
 	}
 	return (img);
@@ -73,8 +73,8 @@ t_ima	create_image(void *mlx_ptr, int width, int height)
 //{
 //	printf("\n   - img_ptr:   %p", img.img_ptr);
 //	printf("\n   - addr:      %p", img.addr);
-//	printf("\n   - width:     %d", img.width);
-//	printf("\n   - height:    %d", img.height);
+//	printf("\n   - width:     %d", img.dim.x);
+//	printf("\n   - height:    %d", img.dim.y);
 //	printf("\n   - bpp:       %d", img.bpp);
 //	printf("\n   - size_line: %d", img.size_line);
 //	printf("\n   - endian:    %d\n", img.endian);
@@ -93,7 +93,7 @@ int	is_img_valid(t_ima *img)
 		return (0);
 	if (!img->img_ptr || !img->addr)
 		return (0);
-	if (img->width <= 0 || img->height <= 0)
+	if (img->dim.x <= 0 || img->dim.y <= 0)
 		return (0);
 	if (img->bpp <= 0 || img->size_line <= 0)
 		return (0);

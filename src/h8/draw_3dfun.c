@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 04:34:31 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 04:38:58 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	draw3d_obj_vlines_le32(t_ima *img, t_hit *hit, int col_width)
 		while (++j < col_width)
 		{
 			x = i * col_width + j;
-			if (x < 0 || x >= img->width)
+			if (x < 0 || x >= img->dim.x)
 				continue ;
 			pixel = img->addr + (hit[i].y_inter.x * img->size_line + x * 4);
 			y = hit[i].y_inter.x;

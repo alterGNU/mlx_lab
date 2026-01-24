@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 04:36:16 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 04:38:05 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,9 +189,7 @@ typedef struct s_img
 {
 	void			*img_ptr;
 	char			*addr;
-	//t_ipos			dim; // TODO: replace width & height by dim.x and dim.y
-	int				width;
-	int				height;
+	t_ipos			dim; // TODO: replace width & height by dim.x and dim.y
 	int				bpp;
 	int				size_line;
 	int				endian;

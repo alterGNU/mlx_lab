@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/23 19:09:39 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 04:41:15 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,18 @@ static void	print_start_infos(t_data dt, const char **str_arr, int bui_delay_ms)
 	printf("   │ .....        ┃                                 ┃  ┆\n");
 	printf("   │ Hit[i] infos ┃                                 ┃  ┆\n");
 	printf("   │              ┃                                 ┃  ┆\n");
-	printf("   │ (%04d, %04d) ┃              %4d               ┃%4d p\n", (int)dt.start2d.x, (int)dt.start2d.y, (int)dt.img_3d_buffer.width, (int)dt.win_dim.y);
+	printf("   │ (%04d, %04d) ┃              %4d               ┃%4d p\n", (int)dt.start2d.x, (int)dt.start2d.y, (int)dt.img_3d_buffer.dim.x, (int)dt.win_dim.y);
 	printf("   │ 🡷Insert img2d┃                ╳                ┃  ┆\n");
-	printf("   ┢━━━━━━━━━━━━━━┫              %4d               ┃  ┆\n",  (int)dt.img_3d_buffer.height);
+	printf("   ┢━━━━━━━━━━━━━━┫              %4d               ┃  ┆\n",  (int)dt.img_3d_buffer.dim.y);
 	printf("   ┃              ┃                                 ┃  ┆\n") ;
-	printf("   ┃    %4d      ┃                                 ┃  ┆\n", (int)dt.img_2d_buffer.width);
+	printf("   ┃    %4d      ┃                                 ┃  ┆\n", (int)dt.img_2d_buffer.dim.x);
 	printf("   ┃      ╳       ┃                                 ┃  ┆\n");
-	printf("   ┃    %4d      ┃                                 ┃  ┆\n", (int)dt.img_2d_buffer.height);
+	printf("   ┃    %4d      ┃                                 ┃  ┆\n", (int)dt.img_2d_buffer.dim.y);
 	printf("   ┃              ┃                                 ┃  ┆\n");
 	printf("   ┗━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  ┴\n");
 	printf(" - player start pos=(%.2f, %.2f) dir=%.2f degrees\n", dt.player.pos.x, dt.player.pos.y, dt.player.dir);
 	printf(" - FOV=%.2f degrees / FOV_PRE=%.4f degrees\n", FOV, FOV_PRE);
-	printf(" - nb_of_rays X columns_width=%d X %d = %d VS %d\n", dt.nb_of_rays, dt.column_width, dt.column_width*dt.nb_of_rays, dt.img_3d_buffer.width);
+	printf(" - nb_of_rays X columns_width=%d X %d = %d VS %d\n", dt.nb_of_rays, dt.column_width, dt.column_width*dt.nb_of_rays, dt.img_3d_buffer.dim.x);
 	printf(" - start left ray at angle=%.2f degrees\n", dt.hits[0].angle.x);
 	printf(" - end right ray at angle=%.2f degrees\n", dt.hits[dt.nb_of_rays - 1].angle.x);
 	printf(" - elem rotation per ray=%.4f degrees\n", dt.rot_elem);
