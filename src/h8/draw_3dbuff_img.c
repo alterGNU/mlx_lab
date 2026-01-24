@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 06:41:12 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 08:08:48 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ int	draw_buffer_3dimg(t_data *dt)
 				draw3d_obj_vlines_auto_le32(&dt->img_3d_buffer, dt->hits, dt->column_width);
 			else if (dt->txt_mode == 1)
 				draw3d_obj_texture_auto_le32(&dt->img_3d_buffer, dt->hits, dt->column_width);
-			//else
-			//	draw3d_obj_ima_xpm_auto_le32(&dt->img_3d_buffer, dt->hits, dt->column_width);
+			else
+				draw3d_obj_ima_xpm_auto_le32(&dt->img_3d_buffer, dt->hits, dt->column_width);
 		}
 		else
 		{

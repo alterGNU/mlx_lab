@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 07:04:01 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 08:14:52 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,11 +264,12 @@ int		draw_buffer_2dimg(t_data *dt);										// ✅
 // -[ draw_3dbuff_img.c ]------------------------------------------------------1
 int		draw_buffer_3dimg(t_data *dt);										// ✅
 // -[ draw_3dfun_auto.c ]------------------------------------------------------5
-void	draw3d_obj_vlines_auto(t_ima *img, t_hit *hit, int col_width);		// ✅
-void	draw3d_obj_vlines_auto_le32(t_ima *img, t_hit *hit, int col_width);	// ✅
-void	draw3d_obj_texture_auto(t_ima *img, t_hit *hit, int col_width);		// ✅
-void	draw3d_obj_texture_auto_le32(t_ima *img, t_hit *hit, int col_width);// ✅
-void	draw3d_obj_ima_xpm_auto(t_ima *img, t_hit *hit, int col_width);		// ✅
+void	draw3d_obj_vlines_auto(t_ima *img, t_hit *hit, int col_width);		// ❌
+void	draw3d_obj_vlines_auto_le32(t_ima *img, t_hit *hit, int col_width); // ❌
+void	draw3d_obj_texture_auto(t_ima *img, t_hit *hit, int col_width);		// ❌
+void	draw3d_obj_texture_auto_le32(t_ima *img, t_hit *hit, int col_width);// ❌
+void	draw3d_obj_ima_xpm_auto(t_ima *img, t_hit *hit, int col_width);		// ❌
+void	draw3d_obj_ima_xpm_auto_le32(t_ima *img, t_hit *hit, int col_width);// ❌
 // -[ draw_3dfun.c ]-----------------------------------------------------------4
 void	draw3d_obj_vlines(t_ima *img, t_hit *hit, int col_width);			// ✅
 void	draw3d_obj_vlines_le32(t_ima *img, t_hit *hit, int col_width);		// ✅
