@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/23 20:56:23 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 03:00:40 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,17 @@ int	draw_buffer_3dimg(t_data *dt)
 	{
 		if (OPTI_MODE)
 		{
-			if (WALL_TXT_MODE == 0)
+			if (dt->txt_mode == 0)
 				draw3d_obj_vlines_auto_le32(&dt->img_3d_buffer, dt->hits, dt->column_width);
-			else if (WALL_TXT_MODE == 1)
+			else if (dt->txt_mode == 1)
 				draw3d_obj_texture_auto_le32(&dt->img_3d_buffer, dt->hits, dt->column_width);
 			// ADD: else{draw3d_obj_image_le32();}
 		}
 		else
 		{
-			if (WALL_TXT_MODE == 0)
+			if (dt->txt_mode == 0)
 				draw3d_obj_vlines_auto(&dt->img_3d_buffer, dt->hits, dt->column_width);
-			else if (WALL_TXT_MODE == 1)
+			else if (dt->txt_mode == 1)
 				draw3d_obj_texture_auto(&dt->img_3d_buffer, dt->hits, dt->column_width);
 			// ADD: else{draw3d_obj_image();}
 		}
@@ -45,17 +45,17 @@ int	draw_buffer_3dimg(t_data *dt)
 	{
 		if (OPTI_MODE)
 		{
-			if (WALL_TXT_MODE == 0)
+			if (dt->txt_mode == 0)
 				draw3d_obj_vlines_le32(&dt->img_3d_buffer, dt->hits, dt->column_width);
-			else if (WALL_TXT_MODE == 1)
+			else if (dt->txt_mode == 1)
 				draw3d_obj_texture_le32(&dt->img_3d_buffer, dt->hits, dt->column_width);
 			// ADD: else{draw3d_obj_image_auto_le32();}
 		}
 		else
 		{
-			if (WALL_TXT_MODE == 0)
+			if (dt->txt_mode == 0)
 				draw3d_obj_vlines(&dt->img_3d_buffer, dt->hits, dt->column_width);
-			else if (WALL_TXT_MODE == 1)
+			else if (dt->txt_mode == 1)
 				draw3d_obj_texture(&dt->img_3d_buffer, dt->hits, dt->column_width);
 			// ADD: else{draw3d_obj_image_auto();}
 		}

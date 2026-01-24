@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 02:42:35 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 03:01:00 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 // -[ Debug/UI toggles ]------------------------t-------------------------------
 # define DRAW_FUN_AUTO 1		// 0: fun draw 3d not autonomous, 1: autonomous
 # define OPTI_MODE 1			// 0: generic, 1: for little-endian 32bpp
-# define WALL_TXT_MODE 1		// 0: color, 1: texture, 2: image
 # define DRAW_MINIMAP 1			// 0: do not draw 2d image (map), else: draw it
 # define DRAW_2D_RAYS 1			// 0: none, 1: first/last, 2: all rays
 # define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
@@ -93,6 +92,7 @@
 # define Q_KEY 113
 # define E_KEY 101
 # define G_KEY 103
+# define T_KEY 116
 # define LA_KEY 65361
 # define RA_KEY 65363
 //-[ Colors ]-------------------------------------------------------------------
@@ -202,6 +202,7 @@ typedef struct s_img
 typedef struct s_data
 {
 	char			txt_mode_str[8];
+	int				txt_mode;
 	t_fpos			tile_dim;
 	t_play			player;
 	t_maze			maze;
@@ -294,8 +295,9 @@ void	update_hit_tpos(t_data *dt);										// ✅
 t_data	init_data(const char **str_arr);									// ❌
 void	free_data(t_data *dt);												// ✅
 int		error_detected_after_init_data(t_data *dt);							// ❌
-// -[ t_data_struct_utils.c ]--------------------------------------------------1
-void	set_txt_mode_str(t_data *dt);
+// -[ t_data_struct_utils.c ]--------------------------------------------------2
+void	set_txt_mode_str(t_data *dt);										// ❌
+void	toggle_texture_mode(t_data *dt);									// ✅
 // -[ t_fpos_struct.c ]--------------------------------------------------------4
 t_fpos	fpos_new(float x, float y);											// ✅
 t_fpos	fpos_set(t_fpos *pos, float x, float y);							// ✅

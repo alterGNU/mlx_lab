@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:00:58 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 03:46:32 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 02:53:07 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	init_movement_flags(t_data *dt)
 	dt->mv_flags[6] = '\0';
 }
 
+// BUG: toggle_player_mode should trigger display infos
 int	key_pressed(int keycode, t_data *dt)
 {
 	if (keycode == ESC_KEY)
@@ -41,6 +42,8 @@ int	key_pressed(int keycode, t_data *dt)
 		return (dt->mv_flags[5] = 'D', 1);
 	if (keycode == G_KEY)
 		return (toggle_player_mode(&dt->player), 1);
+	if (keycode == T_KEY)
+		return (toggle_texture_mode(dt), 1);
 	return (0);
 }
 

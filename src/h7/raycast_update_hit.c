@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/23 20:48:59 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 03:00:48 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ void	update_hit_tpos(t_data *dt)
 		dt->hits[i].tan_angle = tanf(dt->hits[i].angle.y);
 		found_hit_set_type(dt, &dt->hits[i]);
 		set_hit_obj_dim(&dt->hits[i]);
-		if (WALL_TXT_MODE == 1)
+		if (dt->txt_mode == 1)
 		{
 			set_hit_texture(dt, &dt->hits[i]);
 			if (DRAW_FUN_AUTO == 0)
@@ -152,6 +152,6 @@ void	update_hit_tpos(t_data *dt)
 			if (DRAW_FUN_AUTO == 0)
 				precomp_hit_vline(&dt->hits[i], (float)dt->img_3d_buffer.height);
 		}
-		// ADD: else if (WALL_TXT_MODE == 2){set_image_texture();}
+		// ADD: else if (dt->txt_mode == 2){set_image_texture();}
 	}
 }
