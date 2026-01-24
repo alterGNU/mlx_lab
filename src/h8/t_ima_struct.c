@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:18:44 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 06:18:29 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:35:52 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ t_ima	create_image(void *mlx_ptr, int width, int height)
 }
 
 // NOTE: can be malloc too...do not forget to adapt panic button.
-// FIXME: can not use real strcmp().
 t_ima	*open_image(t_data *dt, const char *path)
 {
 	t_ima	*img;
@@ -80,16 +79,15 @@ t_ima	*open_image(t_data *dt, const char *path)
 	return (img);
 }
 
-// FIX-ME: can not use real strcmp().
 void	set_wall_image(t_data *dt, const char *id, const char *path)
 {
-	if (strcmp(id, "NO") == 0)
+	if (ft_strncmp(id, "NO", 3) == 0)
 		dt->ima_north = open_image(dt, path);
-	else if (strcmp(id, "SO") == 0)
+	else if (ft_strncmp(id, "SO", 3) == 0)
 		dt->ima_south = open_image(dt, path);
-	else if (strcmp(id, "EA") == 0)
+	else if (ft_strncmp(id, "EA", 3) == 0)
 		dt->ima_east = open_image(dt, path);
-	else if (strcmp(id, "WE") == 0)
+	else if (ft_strncmp(id, "WE", 3) == 0)
 		dt->ima_west = open_image(dt, path);
 }
 

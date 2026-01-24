@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 04:14:44 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 05:08:47 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:21:43 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,4 +129,30 @@ void	*ft_memset(void *pt, int value, size_t length)
 	while (i < length)
 		str[i++] = (unsigned char) value;
 	return (pt);
+}
+
+/**
+ * Compare two strings <s1>, <s2> lexicographically up to <length> bytes.
+ *
+ * Compares the first n bytes of s1 and s2. Returns a negative value
+ * if s1 is less than s2, 0 if equal, or positive if s1 is greater.
+ *
+ * @param s1       : First string to compare (can be NULL)
+ * @param s2       : Second string to compare (can be NULL)
+ * @param length   : Maximum number of bytes to compare
+ * @return         : Difference between first differing bytes
+ * @example        : ft_strncmp("abc", "abd", 2)-->0
+ * @example        : ft_strncmp("abc", "abd", 3)-->negative value
+ * @example        : ft_strncmp("b", "a", 1)-->positive value
+ */
+int	ft_strncmp(const char *s1, const char *s2, size_t length)
+{
+	size_t	i;
+
+	i = 0;
+	if (!length)
+		return (i);
+	while (s1[i] && s2[i] && s1[i] == s2[i] && i < length - 1)
+		i++;
+	return ((int)(((unsigned char)(s1[i])) - ((unsigned char)(s2[i]))));
 }

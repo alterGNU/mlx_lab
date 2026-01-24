@@ -6,19 +6,18 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 19:24:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/23 18:18:05 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:31:48 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-// FIX-ME: Can not use real calloc!
 t_hit	*create_hit_array(int size)
 {
 	t_hit	*array;
 	int		i;
 
-	array = (t_hit *)calloc(size + 1, sizeof(t_hit));
+	array = (t_hit *)ft_calloc(size + 1, sizeof(t_hit));
 	if (!array)
 		return (NULL);
 	i = -1;

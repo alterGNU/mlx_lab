@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 06:02:04 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:21:56 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,11 +280,12 @@ void	draw_hline(t_ima *img, int x, t_fpos pos, int color);				// ✅
 void	draw_vlines_generic(t_ima *img, int x, t_ipos y_inter, int color);	// ✅
 void	draw_vlines_little_end_32(t_ima *img, int x, t_ipos y_inter, int color);
 void	draw_vlines_big_end_32(t_ima *img, int x, t_ipos y_inter, int color);//✅
-// -[ libft.c ]----------------------------------------------------------------4
+// -[ libft.c ]----------------------------------------------------------------3
 void	*ft_free(void **ptr);												// ✅
 char	*ft_strdup(const char *src);										// ✅
 void	*ft_calloc(size_t nb, size_t n);									// ✅
 void	*ft_memset(void *pt, int value, size_t length);						// ✅
+int		ft_strncmp(const char *s1, const char *s2, size_t length);			// ✅
 // -[ main_loop.c ]------------------------------------------------------------4
 int		main_loop(t_data *dt);												// ❌
 // -[ memcpy_utils.c ]---------------------------------------------------------2
