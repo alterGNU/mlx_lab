@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 16:54:50 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/18 15:24:06 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 02:48:13 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,9 @@ void	fpos_scal(t_fpos *a, float scalar)
 {
 	a->x *= scalar;
 	a->y *= scalar;
+}
+
+float	fpos_prod(const t_fpos a)
+{
+	return (a.x * a.y);
 }

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 19:43:10 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/23 16:24:35 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ static int	first_image(t_data *dt)
 	return (0);
 }
 
+// BUG: fps_str not updated correctly when play-mode changes wihtout moving
 int	main_loop(t_data *dt)
 {
 	t_play	old_player;
@@ -85,8 +86,8 @@ int	main_loop(t_data *dt)
 	move_player(dt);
 	if (player_diff(&old_player, &dt->player))
 	{
-		update_hit_tpos(dt);
 		display_player_infos(dt, 0);
+		update_hit_tpos(dt);
 	}
 	if (draw_buffer_images(dt))
 		return (free_data(dt), exit(1), 1);

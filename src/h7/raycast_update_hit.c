@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/23 02:32:44 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/23 20:48:59 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,47 +15,47 @@
 static void	set_hit_type_ver(const t_data *dt, const t_fpos hit_v, t_hit *hit)
 {
 	t_ipos	play;
-	int		type;
 
 	play = ipos_new((int)dt->player.pos.x, (int)dt->player.pos.y);
 	if (dt->maze.mat[play.y * dt->maze.width + play.x] == 1)
 	{
-		type = WIW;
 		if (dt->player.pos.x < hit_v.x)
-			type = EIW;
+			hit->type = ipos_new(EIW, EIW_COLOR);
+		else
+			hit->type = ipos_new(WIW, WIW_COLOR);
 	}
 	else
 	{
-		type = WOW;
 		if (dt->player.pos.x < hit_v.x)
-			type = EOW;
+			hit->type = ipos_new(EOW, EOW_COLOR);
+		else
+			hit->type = ipos_new(WOW, WOW_COLOR);
 	}
-	set_hit_type(dt, hit, type);
 }
 
 static void	set_hit_type_hor(const t_data *dt, const t_fpos hit_h, t_hit *hit)
 {
 	t_ipos	play;
-	int		type;
 
 	play = ipos_new((int)dt->player.pos.x, (int)dt->player.pos.y);
 	if (dt->maze.mat[play.y * dt->maze.width + play.x] == 1)
 	{
 
-		type = NIW;
 		if (dt->player.pos.y < hit_h.y)
-			type = SIW;
+			hit->type = ipos_new(SIW, SIW_COLOR);
+		else
+			hit->type = ipos_new(NIW, NIW_COLOR);
 	}
 	else
 	{
-		type = NOW;
 		if (dt->player.pos.y < hit_h.y)
-			type = SOW;
+			hit->type = ipos_new(SOW, SOW_COLOR);
+		else
+			hit->type = ipos_new(NOW, NOW_COLOR);
 	}
-	set_hit_type(dt, hit, type);
 }
 
-void	found_hit_dda(const t_data *dt, t_hit *hit)
+void	found_hit_set_type(const t_data *dt, t_hit *hit)
 {
 	t_fpos	hit_h;
 	t_fpos	hit_v;
@@ -82,7 +82,48 @@ void	found_hit_dda(const t_data *dt, t_hit *hit)
 		cosf(radian(norm_angle(dt->player.dir - hit->angle.x)));
 }
 
-// TODO: optimize drawing by pre-computing here multiple values...
+static void	precomp_hit_vtext(t_hit *hit, float img_height)
+{
+	t_fpos	line;
+
+	line.x = hit->dim.y * img_height / hit->dist.y;
+	hit->txt_ty = fpos_new((float)hit->texture->dim.y / line.x, 0.f);
+	if (line.x > img_height)
+	{
+		hit->txt_ty.y = (line.x - (float)img_height) / 2.f;
+		line.x = img_height;
+	}
+	line.y = (img_height - line.x) / 2.0f;
+	hit->y_inter = ipos_new(ft_imax(line.y, 0), \
+		ft_imin(line.x + line.y, img_height - 1));
+	if (hit->type.x % 2)
+	{
+		hit->txt_pix = fpos_new(fmodf(hit->pos.x, 1.0f) * (float)hit->texture->dim.x, fpos_prod(hit->txt_ty));
+		if (hit->angle.x > 180.f)
+			hit->txt_pix.x = (float)hit->texture->dim.x - hit->txt_pix.x;
+	}
+	else
+	{
+		hit->txt_pix = fpos_new(fmodf(hit->pos.y, 1.0f) * (float)hit->texture->dim.x, fpos_prod(hit->txt_ty));
+		if (90 < hit->angle.x && hit->angle.x < 270.f)
+			hit->txt_pix.x = (float)hit->texture->dim.x - hit->txt_pix.x;
+	}
+}
+
+static void	precomp_hit_vline(t_hit *hit, float img_height)
+{
+	t_fpos	line;
+
+	line.x = hit->dim.y * img_height / hit->dist.y;
+	if (line.x > img_height)
+	{
+		hit->txt_ty.y = (line.x - (float)img_height) / 2.f;
+		line.x = img_height;
+	}
+	line.y = (img_height - line.x) / 2.0f;
+	hit->y_inter = ipos_new(ft_imax(line.y, 0), ft_imin(line.x + line.y, img_height - 1));
+}
+
 void	update_hit_tpos(t_data *dt)
 {
 	int		i;
@@ -98,6 +139,19 @@ void	update_hit_tpos(t_data *dt)
 		dt->hits[i].angle.x = norm_angle(angle_start - i * dt->rot_elem);
 		dt->hits[i].angle.y = radian(dt->hits[i].angle.x);
 		dt->hits[i].tan_angle = tanf(dt->hits[i].angle.y);
-		found_hit_dda(dt, &dt->hits[i]);
+		found_hit_set_type(dt, &dt->hits[i]);
+		set_hit_obj_dim(&dt->hits[i]);
+		if (WALL_TXT_MODE == 1)
+		{
+			set_hit_texture(dt, &dt->hits[i]);
+			if (DRAW_FUN_AUTO == 0)
+				precomp_hit_vtext(&dt->hits[i], (float)dt->img_3d_buffer.height);
+		}
+		else
+		{
+			if (DRAW_FUN_AUTO == 0)
+				precomp_hit_vline(&dt->hits[i], (float)dt->img_3d_buffer.height);
+		}
+		// ADD: else if (WALL_TXT_MODE == 2){set_image_texture();}
 	}
 }

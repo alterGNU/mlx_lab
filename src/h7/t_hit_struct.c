@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 19:24:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/23 02:29:40 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/23 18:17:48 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,81 +23,37 @@ t_hit	init_hit(void)
 	hit.angle = fpos_new(-1.f, -1.f);
 	hit.tan_angle = 0.f;
 	hit.dist = fpos_new(0.f, 0.f);
+	hit.img_pix = ipos_new(-1, -1);
+	hit.y_inter = ipos_new(-1, -1);
+	hit.txt_pix = fpos_new(-1.f, -1.f);
+	hit.txt_ty = fpos_new(0.f, 0.f);
 	hit.texture = NULL;
 	return (hit);
 }
 
-t_hit	*create_hit_array(int size)
+void	set_hit_obj_dim(t_hit *hit)
 {
-	t_hit	*array;
-	int		i;
-
-	array = (t_hit *)calloc(size + 1, sizeof(t_hit));
-	if (!array)
-		return (NULL);
-	i = -1;
-	while (++i <= size)
-		array[i] = init_hit();
-	array[size].valid = 0;
-	return (array);
+	if (hit->type.x < 0)
+		hit->dim = fpos_new(1.f, .8f);
+	else
+		hit->dim = fpos_new(1.f, 1.f);
 }
 
-void	free_hit_array(t_hit **hit_arr)
+void	set_hit_texture(const t_data *dt, t_hit *hit)
 {
-	if (!hit_arr || !*hit_arr)
-		return ;
-	free(*hit_arr);
-	*hit_arr = NULL;
-}
-
-int	print_hit_array(t_hit *hit_arr)
-{
-	int	i;
-	int	psf;
-
-	if (!hit_arr)
-		return (printf("NULL\n"));
-	psf = printf("[");
-	i = 0;
-	while (hit_arr[i].valid)
+	if (hit->type.x < 0)
 	{
-		psf += printf("{pos");
-		psf += fpos_print(hit_arr[i].pos);
-		psf += printf(", ang");
-		psf += fpos_print(hit_arr[i].angle);
-		psf += printf(", dist:%.2f}, ", hit_arr[i].dist.x);
-		i++;
-	}
-	return (psf += printf("NULL]"), psf);
-}
-
-//void	set_hit_type(t_hit *hit, int type, int color, float height)
-//{
-//	hit->type.x = type;
-//	hit->type.y = color;
-//	hit->dim.x = 1.0f;
-//	hit->dim.y = height;
-//}
-
-void	set_hit_type(const t_data *dt, t_hit *hit, int type)
-{
-	hit->type.x = type;
-	hit->dim.x = 1.0f;
-	hit->dim.y = 1.f;
-	if (type < 0)
-	{
-		hit->dim.y = 0.8f;
-		if (type % 2)
+		if (hit->type.x % 2)
 			hit->texture = dt->txt_v;
 		else
 			hit->texture = dt->txt_h;
 	}
-	if (type == NOW)
+	if (hit->type.x == NOW)
 		hit->texture = dt->txt_north;
-	if (type == SOW)
+	if (hit->type.x == SOW)
 		hit->texture = dt->txt_south;
-	if (type == EOW)
+	if (hit->type.x == EOW)
 		hit->texture = dt->txt_east;
-	if (type == WOW)
+	if (hit->type.x == WOW)
 		hit->texture = dt->txt_west;
 }

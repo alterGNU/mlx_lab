@@ -6,18 +6,33 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/23 02:28:58 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 02:42:35 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HEADER_H
 # define HEADER_H
-// -[ Debug/UI toggles ]--------------------------------------------------------
+// -[ Debug/UI toggles ]------------------------t-------------------------------
+# define DRAW_FUN_AUTO 1		// 0: fun draw 3d not autonomous, 1: autonomous
+# define OPTI_MODE 1			// 0: generic, 1: for little-endian 32bpp
+# define WALL_TXT_MODE 1		// 0: color, 1: texture, 2: image
 # define DRAW_MINIMAP 1			// 0: do not draw 2d image (map), else: draw it
 # define DRAW_2D_RAYS 1			// 0: none, 1: first/last, 2: all rays
 # define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
 //-[ Window ]-------------------------------------------------------------------
-# define WIN_TITLE "Caster the Ghost: (3D Textured-RayCasting)"
+# if DRAW_FUN_AUTO > 0
+#  if OPTI_MODE > 0
+#   define WIN_TITLE "Caster the Ghost-(MODE:AUTONOMOUS+OPTI)"
+#  else
+#   define WIN_TITLE "Caster the Ghost-(MODE:AUTONOMOUS)"
+#  endif
+# else
+#  if OPTI_MODE > 0
+#   define WIN_TITLE "Caster the Ghost-(MODE:OPTI)"
+#  else
+#   define WIN_TITLE "Caster the Ghost-(MODE:GENERIC)"
+#  endif
+# endif
 # define WIN_BORDER 5			// space between window border & images
 # define WIN_DBG_TXT_LEN 250	// length(in pixels)of debug txt area
 //-[ 2DImage ]------------------------------------------------------------------
@@ -41,6 +56,14 @@
 //# define IMG3D_HEIGHT 512
 # define FLOOR3D_RGB 0x4A5866
 # define CEIL3D_RGB 0xC7AF36
+# define NOW_COLOR 0x912a2a
+# define EOW_COLOR 0x7a1b1b
+# define SOW_COLOR 0x541818
+# define WOW_COLOR 0x6e2b2b
+# define NIW_COLOR 0X519137
+# define EIW_COLOR 0x35751b
+# define SIW_COLOR 0X224215
+# define WIW_COLOR 0x406930
 // -[ Engine ]------------------------------------------------------------------
 # define PRE_RAY 0.0001f	// Ray detection precision
 # define EPSILON 0.000001f	// Small value to avoid division by zero
@@ -109,70 +132,76 @@ typedef enum e_wall_type
 // =[ Structures ]==============================================================
 typedef struct s_ipos
 {
-	int	x;
-	int	y;
+	int				x;
+	int				y;
 }	t_ipos;
 
 typedef struct s_fpos
 {
-	float	x;
-	float	y;
+	float			x;
+	float			y;
 }	t_fpos;
 
 typedef struct s_text
 {
-	t_ipos	dim;
-	int		size;
-	int		*img;
+	t_ipos			dim;
+	int				size;
+	int				*img;
 }	t_text;
 
 typedef struct s_hit
 {
-	int		valid;	//sentinel-> valid_hit = 1; invalid_hit = 0
-	t_ipos	type;	// x: wall_type(enum), y: coloration
-	t_fpos	pos;	// 2d position of the hit
-	t_fpos	dim;	// 3D size of the object hit (x:width, y:height)
-	t_fpos	angle;	// x: degree, y: radian
-	float	tan_angle;
-	t_fpos	dist;	// x: real distance, y: corrected distance(fish-eye effect)
-	t_text	*texture;
+	int				valid;	//sentinel-> valid_hit = 1; invalid_hit = 0
+	t_ipos			type;	// x: wall_type(enum), y: coloration
+	t_fpos			pos;	// 2d position of the hit
+	t_fpos			dim;	// 3D size of the object hit (x:width, y:height)
+	t_fpos			angle;	// x: degree, y: radian
+	float			tan_angle;
+	t_fpos			dist;	// x: real distance, y: corrected distance(fish-eye effect)
+	t_ipos			img_pix;// pixel coord. in image.
+	t_ipos			y_inter;// x:y start in image, y:y stop in image.
+	t_fpos			txt_pix;// pixel coord. in texture image.
+	t_fpos			txt_ty;	// x:step on texture pixel column, y:offset on texture pixel column
+	t_text			*texture;
+	unsigned int	color;
 }	t_hit;
 
 typedef struct s_play
 {
-	t_fpos	pos;
-	float	dir;
-	int		color;
-	int		radius;
-	int		step_count;
-	char	*play_str;
-	int		mode; // 0: ghost_mode->no collision, 1: mortal_mode->collision enabled
+	t_fpos			pos;
+	float			dir;
+	unsigned int	color;
+	int				radius;
+	int				step_count;
+	char			*play_str;
+	int				mode; // 0: ghost_mode->no collision, 1: mortal_mode->collision enabled
 }	t_play;
 
 typedef struct s_maze
 {
-	int		*mat;
-	int		width;
-	int		height;
-	int		cell_nb;
+	int				*mat;
+	int				width;
+	int				height;
+	int				cell_nb;
 }	t_maze;
 
 typedef struct s_img
 {
-	void		*img_ptr;
-	char		*addr;
-	int			width;
-	int			height;
-	int			bpp;
-	int			size_line;
-	int			endian;
-	void		(*put_pix_to_img)(struct s_img *img, int x, int y, int color);
-	void		(*draw_vlines)(struct s_img *, int, t_ipos, int);
-	int			(*dark_filter)(int color, float darkness_factor);
+	void			*img_ptr;
+	char			*addr;
+	int				width;
+	int				height;
+	int				bpp;
+	int				size_line;
+	int				endian;
+	void			(*put_pix_to_img)(struct s_img *, int, int, int);
+	void			(*draw_vlines)(struct s_img *, int, t_ipos, int);
+	int				(*dark_filter)(int color, float darkness_factor);
 }	t_img;
 
 typedef struct s_data
 {
+	char			txt_mode_str[8];
 	t_fpos			tile_dim;
 	t_play			player;
 	t_maze			maze;
@@ -215,11 +244,18 @@ void	display_hits_infos(t_data *dt, int line_num);						// ❌
 void	draw2d_player(t_img *img, t_play *p);								// ✅
 void	draw2d_hit_lines(t_data *dt);										// ✅
 int		draw_buffer_2dimg(t_data *dt);										// ✅
-// -[ draw_3dimg.c ]-----------------------------------------------------------3
-void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width);			// ❌
-//void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width, int *texture);
-void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width);			// ❌
+// -[ draw_3dbuff_img.c ]------------------------------------------------------1
 int		draw_buffer_3dimg(t_data *dt);										// ✅
+// -[ draw_3dfun_auto.c ]------------------------------------------------------4
+void	draw3d_obj_vlines_auto(t_img *img, t_hit *hit, int col_width);		// ✅
+void	draw3d_obj_vlines_auto_le32(t_img *img, t_hit *hit, int col_width);	// ✅
+void	draw3d_obj_texture_auto(t_img *img, t_hit *hit, int col_width);		// ✅
+void	draw3d_obj_texture_auto_le32(t_img *img, t_hit *hit, int col_width);// ✅
+// -[ draw_3dfun.c ]-----------------------------------------------------------4
+void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width);			// ✅
+void	draw3d_obj_vlines_le32(t_img *img, t_hit *hit, int col_width);		// ✅
+void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width);			// ✅
+void	draw3d_obj_texture_le32(t_img *img, t_hit *hit, int col_width);		// ✅
 // -[ draw_buffer_images.c ]---------------------------------------------------1
 int		draw_buffer_images(t_data *dt);										// ❌
 // -[ draw_geo_shapes.c ]------------------------------------------------------5
@@ -252,29 +288,33 @@ int		collision_detected(const t_data *dt, t_fpos ray_pos);				// ❌
 t_fpos	h_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
 t_fpos	v_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
 // -[raycast_update_hit.c ]----------------------------------------------------5
-void	found_hit_dda(const t_data *dt, t_hit *hit);						// ✅
+void	found_hit_set_type(const t_data *dt, t_hit *hit);					// ✅
 void	update_hit_tpos(t_data *dt);										// ✅
-// -[ t_data_struct.c ]-------------------------------------------------------5
+// -[ t_data_struct.c ]--------------------------------------------------------5
 t_data	init_data(const char **str_arr);									// ❌
 void	free_data(t_data *dt);												// ✅
 int		error_detected_after_init_data(t_data *dt);							// ❌
+// -[ t_data_struct_utils.c ]--------------------------------------------------1
+void	set_txt_mode_str(t_data *dt);
 // -[ t_fpos_struct.c ]--------------------------------------------------------4
 t_fpos	fpos_new(float x, float y);											// ✅
 t_fpos	fpos_set(t_fpos *pos, float x, float y);							// ✅
 int		fpos_print(t_fpos pos);												// ✅
 t_fpos	fpos_dup(t_fpos src);												// ✅
-// -[ t_fpos_utils.c ]---------------------------------------------------------4
+// -[ t_fpos_utils.c ]---------------------------------------------------------5
 float	fpos_dist(t_fpos a, t_fpos b);										// ✅
 void	fpos_add(t_fpos *a, const t_fpos *b);								// ✅
 t_fpos	fpos_dot_new(const t_fpos a, const t_fpos b);						// ✅
 void	fpos_scal(t_fpos *a, float scalar);									// ✅
-// -[ t_hit_struct.c ]---------------------------------------------------------6
-t_hit	init_hit(void);														// ✅
+float	fpos_prod(const t_fpos a);											// ✅
+// -[ t_hit_array.c ]----------------------------------------------------------3
 t_hit	*create_hit_array(int size);										// ✅
 void	free_hit_array(t_hit **hit_arr);									// ✅
 int		print_hit_array(t_hit *hit_arr);									// ✅
-//void	set_hit_type(t_hit *hit, int type, int color, float height);		// ✅
-void	set_hit_type(const t_data *dt, t_hit *hit, int type);				// ✅
+// -[ t_hit_struct.c ]---------------------------------------------------------6
+t_hit	init_hit(void);														// ✅
+void	set_hit_obj_dim(t_hit *hit);										// ✅
+void	set_hit_texture(const t_data *dt, t_hit *hit);						// ✅
 // -[ t_img_builders.c ]-------------------------------------------------------5
 int		build_img_text(t_img *img, int color);								// ✅
 int		build_img_floor(t_img *img);										// ✅

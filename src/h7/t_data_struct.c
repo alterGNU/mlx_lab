@@ -6,14 +6,16 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 09:07:21 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/23 18:25:41 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
+// FIX-ME: can not use memset function
 static void	zero_memset_data(t_data *dt)
 {
+	memset(dt->txt_mode_str, 0, sizeof(dt->txt_mode_str));
 	dt->tile_dim = (t_fpos){0.0f, 0.0f};
 	dt->player = (t_play){{0.0f, 0.0f}, 0.0f, 0, 0, -1, NULL, 0};
 	dt->maze = (t_maze){NULL, 0, 0, 0};
@@ -60,6 +62,7 @@ t_data	init_data(const char **str_arr)
 	int		img3d_width;
 
 	zero_memset_data(&dt);
+	set_txt_mode_str(&dt);
 	fpos_set(&dt.tile_dim, (float)TILE_X, (float)TILE_Y);
 	init_movement_flags(&dt);
 	dt.player = init_player();
@@ -84,7 +87,7 @@ t_data	init_data(const char **str_arr)
 	if (DRAW_MINIMAP)
 	{
 		dt.win_dim.x = ft_imax(map2d.x, WIN_DBG_TXT_LEN) + img3d_width + 3 * WIN_BORDER;
-		dt.win_dim.y = ft_imax(map2d.y + 3 * WIN_BORDER, IMG3D_HEIGHT + 2 * WIN_BORDER);
+		dt.win_dim.y = ft_imax(map2d.y + 24, IMG3D_HEIGHT) + 2 * WIN_BORDER;
 	}
 	else
 	{

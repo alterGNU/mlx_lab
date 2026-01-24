@@ -23,6 +23,7 @@ RM			=	rm -rf
 CC			=	cc
 F_ADD		=	-lX11 -lXext -lm
 FLAGS		=	-Wall -Wextra -Werror -I. -I$(MLX_DIR)
+#FLAGS		=	-Wall -Wextra -Werror -I. -I$(MLX_DIR) -O1 -fno-builtin
 #FLAGS		=	-Wall -Wextra -Werror -I. -I$(MLX_DIR) -O2 -fno-builtin -march=native
 #FLAGS		=	-Wall -Wextra -Werror -I. -I$(MLX_DIR) -O3 -ffast-math -march=native
 # -[ VALGRIND ]-----------------------------------------------------------------------------------------------
@@ -30,7 +31,9 @@ VAL			=	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --undef
 # =[ OBJECTS ]================================================================================================
 SRC			=	display_infos.c \
 				draw_2dimg.c \
-				draw_3dimg.c \
+				draw_3dbuff_img.c \
+				draw_3dfun_auto.c \
+				draw_3dfun.c \
 				draw_buffer_images.c \
 				draw_geo_shapes.c \
 				draw_lines.c \
@@ -42,8 +45,10 @@ SRC			=	display_infos.c \
 				raycast_collision.c \
 				raycast_update_hit.c \
 				t_data_struct.c \
+				t_data_struct_utils.c \
 				t_fpos_struct.c \
 				t_fpos_utils.c \
+				t_hit_array.c \
 				t_hit_struct.c \
 				t_img_builders.c \
 				t_img_manipulations.c \

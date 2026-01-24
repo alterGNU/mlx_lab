@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 10:14:41 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/23 02:33:32 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/23 17:49:36 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ void	display_fps_infos(t_data *dt, int line_num)
 	if (delta_ms)
 		fps = FPS_DELTA * 1000.f / (float)delta_ms;
 	snprintf(dt->fps_str, sizeof(dt->fps_str), \
-		"FPS: %.2f ---> player have %d rays", fps, dt->nb_of_rays);
+		//"FPS: %.2f ---> player have %d rays", fps, dt->nb_of_rays);
+		"mode %s with %d rays --> FPS=%.2f",dt->txt_mode_str, dt->nb_of_rays, fps);
 	coloration = GREEN_COLOR;
 	if (fps < 50.f)
 		coloration = RED_COLOR;
