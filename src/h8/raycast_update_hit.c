@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 07:06:53 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 07:36:56 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,10 +149,7 @@ void	update_hit_tpos(t_data *dt)
 		}
 		else if (dt->txt_mode == 2)
 		{
-			//set_hit_ima_xpm(dt, &dt->hits[i]);
-			set_hit_texture(dt, &dt->hits[i]);
-			if (DRAW_FUN_AUTO == 0)
-				precomp_hit_vtext(&dt->hits[i], (float)dt->img_3d_buffer.dim.y);
+			set_hit_ima_xpm(dt, &dt->hits[i]);
 			// ADD: precomp_hit_vxpm();
 			//if (DRAW_FUN_AUTO == 0)
 			//	precomp_hit_vxpm(&dt->hits[i], (float)dt->img_3d_buffer.dim.y);

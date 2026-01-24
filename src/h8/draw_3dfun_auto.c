@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 04:39:18 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 07:38:31 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,6 +229,72 @@ void	draw3d_obj_texture_auto_le32(t_ima *img, t_hit *hit, int col_width)
 				dest[j++] = color;
 			txt_pix.y += ty_step;
 			y_inter.x++;
+		}
+		i++;
+	}
+}
+
+void	draw3d_obj_ima_xpm_auto(t_ima *img, t_hit *hit, int col_width)
+{
+	int		i;
+	int		y;
+	t_ipos		y_inter;
+	float		line_height;
+	float		line_offset;
+	t_ipos		img_pix;
+	float		ty_step;
+	float		ty_offset;
+	t_fpos		txt_pix;
+	t_ima		*xpm;
+	int		bytes_per_px;
+	int		src_x;
+	int		src_y;
+	int		color;
+
+	i = 0;
+	while (hit[i].valid)
+	{
+		// precompute-----------------------------------------------------------------
+		xpm = hit[i].ima_xpm;
+		line_height = hit[i].dim.y * img->dim.y / hit[i].dist.y;
+		ty_step = (float)xpm->dim.y / line_height;
+		ty_offset = 0.f;
+		if (line_height > img->dim.y)
+		{
+			ty_offset = (line_height - (float)img->dim.y) / 2.f;
+			line_height = img->dim.y;
+		}
+		line_offset = (img->dim.y - line_height) / 2.0f;
+		y_inter = ipos_new(line_offset, line_height + line_offset);
+		y_inter.x = ft_imax(y_inter.x, 0);
+		y_inter.y = ft_imin(y_inter.y, img->dim.y - 1);
+		txt_pix.y = ty_offset * ty_step;
+		if (hit[i].type.x % 2)
+		{
+			txt_pix.x = (float)(hit[i].pos.x - (int)hit[i].pos.x) * (float)xpm->dim.x;
+			if (hit[i].angle.x > 180.f)
+				txt_pix.x = (float)xpm->dim.x - txt_pix.x;
+		}
+		else
+		{
+			txt_pix.x = (float)(hit[i].pos.y - (int)hit[i].pos.y) * (float)xpm->dim.x;
+			if (90 < hit[i].angle.x && hit[i].angle.x < 270.f)
+				txt_pix.x = (float)xpm->dim.x - txt_pix.x;
+		}
+		// ------------------------------------------------------------------------------------------
+		img_pix = ipos_new(i * col_width, y_inter.x);
+		bytes_per_px = xpm->bpp / 8;
+		y = y_inter.x;
+		while (y < y_inter.y)
+		{
+			src_y = ft_imax(0, ft_imin((int)txt_pix.y, xpm->dim.y - 1));
+			src_x = ft_imax(0, ft_imin((int)txt_pix.x, xpm->dim.x - 1));
+			color = *(int *)(xpm->addr + (src_y * xpm->size_line + src_x * bytes_per_px));
+			int j = 0;
+			while (j < col_width)
+				img->put_pix_to_img(img, img_pix.x + j++, y, color);
+			txt_pix.y += ty_step;
+			y++;
 		}
 		i++;
 	}
