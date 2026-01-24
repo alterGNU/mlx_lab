@@ -6,13 +6,12 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 01:03:23 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:26:36 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-// NORM-ME: this function is too long(>25 lines)
 int	draw_buffer_images(t_data *dt)
 {
 	struct timeval	act_time;

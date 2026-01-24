@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 02:39:48 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:28:34 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,12 +116,6 @@ void	draw3d_obj_texture_auto(t_img *img, t_hit *hit, int col_width)
 	i = 0;
 	while (hit[i].valid)
 	{
-		// TODO: all this part can be pre-computed in update_hit_tpos()
-		// -> float line_height : use to define t_fpos y_inter
-		// -> float ty_step : ty step on texture pixel column-->used to define txt_pix.y = ty_offset * ty_step
-		// -> float ty_offset : ty offset on texture pixel column-->used to define txt_pix.y = ty_offset * ty_step
-		// -> t_ipos y_inter : y start and y end on img where to draw the vertical line
-		// -> t_fpos txt_pix : x and y pixel position on texture to sample color from
 		txt = hit[i].texture;
 		line_height = hit[i].dim.y * img->height / hit[i].dist.y;
 		ty_step = (float)txt->dim.y / line_height;
@@ -184,12 +178,6 @@ void	draw3d_obj_texture_auto_le32(t_img *img, t_hit *hit, int col_width)
 	i = 0;
 	while (hit[i].valid)
 	{
-		// TODO: all this part can be pre-computed in update_hit_tpos()
-		// -> float line_height : use to define t_fpos y_inter
-		// -> float ty_step : ty step on texture pixel column-->used to define txt_pix.y = ty_offset * ty_step
-		// -> float ty_offset : ty offset on texture pixel column-->used to define txt_pix.y = ty_offset * ty_step
-		// -> t_ipos y_inter : y start and y end on img where to draw the vertical line
-		// -> t_fpos txt_pix : x and y pixel position on texture to sample color from
 		txt = hit[i].texture;
 		line_height = hit[i].dim.y * img->height / hit[i].dist.y;
 		ty_step = (float)txt->dim.y / line_height;

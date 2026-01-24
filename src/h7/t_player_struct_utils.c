@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:34:13 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 19:43:10 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:29:40 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,6 @@ void	toggle_player_mode(t_play *player)
 	}
 }
 
-/**
- * TODO-LIST:
- * -[x] Can be moved to struct_player_utils.c
- * -[x] Can be renamed to play_diff()
- * -[] Can add player->rot_count increment each time rotation is done
- */
 int	player_diff(const t_play *play_a, const t_play *play_b)
 {
 	if (play_a->pos.x != play_b->pos.x || \

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 02:41:43 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:28:19 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,6 @@ void	draw3d_obj_vlines_le32(t_img *img, t_hit *hit, int col_width)
  * - Do not draw floor vertical lines [0 to y_start[
  * + Draw (only) the vertical lines of the objects [y_start to y_stop]
  * - Do not draw ceiling vertical lines [y_stop to img_3d_buffer.height[
- * TODO-LIST:
- *  -[] create all 3 fun. draw3d_obj_{vlines,texture,image}()
- *  -[] move texture in hit struct as a pointer to dt->textures
- *  -[] should be able to draw object smaller that the column width
- *  -[] use object dim.x too...j should start at (col_width - obj_width)/2
  * NOTE: texture need to be store in hit struct to avoid passing it as parameter
  */
 void	draw3d_obj_texture(t_img *img, t_hit *hit, int col_width)

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/03 16:19:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/23 19:09:39 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:28:50 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,13 +212,6 @@ int	main(void)
 		NULL };
 	gettimeofday(&prog_start_time, NULL);
 	dt = init_data(str_arr);
-	// TODO: Remove ----------------------------------------
-	//set_player(&dt.player, 4.5f, 4.5f, 45.0f);
-	//set_player(&dt.player, 4.5f, 4.5f, 3 * 45.0f);
-	//set_player(&dt.player, 4.5f, 4.5f, 5 * 45.0f);
-	//set_player(&dt.player, 4.5f, 4.5f, 7 * 45.0f);
-	//set_player(&dt.player, 4.5f, 4.5f, 0.0f);
-	//------------------------------------------------------
 	if (error_detected_after_init_data(&dt))
 		return (free_data(&dt), 1);
 	gettimeofday(&start_bui, NULL);

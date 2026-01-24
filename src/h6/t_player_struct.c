@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:34:13 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 19:44:24 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:27:33 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ t_play	init_player(void)
 	return (player);
 }
 
-//TODO: player.step_count wrongly incremented
 void	set_player(t_play *play, float x, float y, float dir)
 {
 	play->pos.x = x;

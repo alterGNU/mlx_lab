@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 03:00:48 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:29:31 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,5 @@ void	update_hit_tpos(t_data *dt)
 			if (DRAW_FUN_AUTO == 0)
 				precomp_hit_vline(&dt->hits[i], (float)dt->img_3d_buffer.height);
 		}
-		// ADD: else if (dt->txt_mode == 2){set_image_texture();}
 	}
 }

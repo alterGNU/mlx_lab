@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/22 04:29:14 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:26:51 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,6 @@
  * - Do not draw floor vertical lines [0 to y_start[
  * + Draw (only) the vertical lines of the objects [y_start to y_stop]
  * - Do not draw ceiling vertical lines [y_stop to img_3d_buffer.height[
- * TODO-LIST:
- *  -[] should be able to draw object smaller that the column width
- *  -[] use object dim.x too...j should start at (col_width - obj_width)/2
  */
 void	draw3d_obj_vlines(t_img *img, t_hit *hit, int col_width)
 {

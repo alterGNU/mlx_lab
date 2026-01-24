@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 16:54:50 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 18:46:39 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:27:28 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,6 @@ t_fpos	fpos_new(float x, float y)
 	return (pos);
 }
 
-/**
- * TODO: Should be a void function?-> faster
- */
 t_fpos	fpos_set(t_fpos *pos, float x, float y)
 {
 	if (!pos)

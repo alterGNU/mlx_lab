@@ -6,14 +6,12 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 17:54:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 03:01:42 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:29:26 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-// FIX-ME: can not use snprintf function
-// ADD: image mode "image" later (replace texture mode)
 void	set_txt_mode_str(t_data *dt)
 {
 	if (dt->txt_mode == 0)

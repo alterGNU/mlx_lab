@@ -6,13 +6,12 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 03:02:18 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:29:18 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-// FIX-ME: can not use memset function
 static void	zero_memset_data(t_data *dt)
 {
 	memset(dt->txt_mode_str, 0, sizeof(dt->txt_mode_str));

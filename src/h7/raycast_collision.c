@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 13:51:46 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 19:43:10 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:29:12 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ static int	check_collision(const t_maze *maze, int play_case, t_ipos ray_floor)
 /**
  * FIXED: detect ray collision on diagonal walls
  * NOTE	: if used for player collision detection will not work on diagonal walls
- * TODO	: Copy and improve to be used for player collision, then rename for:
  *        -> ray_collision_detection()
  */
 int	collision_detected(const t_data *dt, t_fpos ray_pos)

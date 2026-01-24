@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 10:14:41 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/23 17:49:36 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:28:00 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ void	display_player_infos(t_data *dt, int line_num)
 		dt->mlx_ptr, dt->win_ptr, 5, y + 6, WHITE_COLOR, dt->player.play_str);
 }
 
-// FIXME: should not use snprintf function!
 void	display_fps_infos(t_data *dt, int line_num)
 {
 	int		y;
@@ -47,7 +46,6 @@ void	display_fps_infos(t_data *dt, int line_num)
 	mlx_string_put(dt->mlx_ptr, dt->win_ptr, 5, y + 6, coloration, dt->fps_str);
 }
 
-// FIXME: should not use snprintf function!
 void	display_hits_infos(t_data *dt, int line_num)
 {
 	int		i;

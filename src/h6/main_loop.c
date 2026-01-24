@@ -6,17 +6,12 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:25:21 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/21 19:43:10 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:27:13 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-/**
- * FIX	: re-writte collision_detected() fun. to handle diagonal wall
- * TODO	: could use a minimal distance to wall :DIST_MIN_WALL
- * NOTE	: Engine related-codex can be moved to an engine-file if needed.
- */
 static int	move_player_pos(t_data *dt, float rot, float speed)
 {
 	t_fpos	next_pos;
@@ -40,7 +35,6 @@ static int	move_player_pos(t_data *dt, float rot, float speed)
  * Use set_player() instead of directly modifying dt->player.{pos, dir} 'cause:
  * -> set_player() is the function that updates dt->player.step_count
  * -> set_player() is the function that updates dt->player.play_str
- * TODO: player.step_count wrongly incremented
  */
 static void	move_player(t_data *dt)
 {
