@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 04:38:05 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:02:04 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,10 @@
 # define EIW_COLOR 0x35751b
 # define SIW_COLOR 0X224215
 # define WIW_COLOR 0x406930
+# define PATH_NORTH_IMAGE "../../textures/wall1.xpm"
+# define PATH_SOUTH_IMAGE "../../textures/wall2.xpm"
+# define PATH_EAST_IMAGE  "../../textures/wall3.xpm"
+# define PATH_WEST_IMAGE  "../../textures/wall4.xpm"
 // -[ Engine ]------------------------------------------------------------------
 # define PRE_RAY 0.0001f	// Ray detection precision
 # define EPSILON 0.000001f	// Small value to avoid division by zero
@@ -185,16 +189,19 @@ typedef struct s_maze
 	int				cell_nb;
 }	t_maze;
 
-typedef struct s_img
+// NOTE: in cub3d can be insert to/or/replace by the t_plan struct
+typedef struct s_ima
 {
+	char			id[3];
+	char			*path;
 	void			*img_ptr;
 	char			*addr;
-	t_ipos			dim; // TODO: replace width & height by dim.x and dim.y
+	t_ipos			dim;
 	int				bpp;
 	int				size_line;
 	int				endian;
-	void			(*put_pix_to_img)(struct s_img *, int, int, int);
-	void			(*draw_vlines)(struct s_img *, int, t_ipos, int);
+	void			(*put_pix_to_img)(struct s_ima *, int, int, int);
+	void			(*draw_vlines)(struct s_ima *, int, t_ipos, int);
 	int				(*dark_filter)(int color, float darkness_factor);
 }	t_ima;
 
@@ -234,6 +241,10 @@ typedef struct s_data
 	t_text			*txt_west;
 	t_text			*txt_v;
 	t_text			*txt_h;
+	t_ima			*ima_north;
+	t_ima			*ima_south;
+	t_ima			*ima_east;
+	t_ima			*ima_west;
 }	t_data;
 // =[ Files & Fun. Signatures ]=================================================
 // -[ display_infos.c ]--------------------------------------------------------3
@@ -269,6 +280,11 @@ void	draw_hline(t_ima *img, int x, t_fpos pos, int color);				// ✅
 void	draw_vlines_generic(t_ima *img, int x, t_ipos y_inter, int color);	// ✅
 void	draw_vlines_little_end_32(t_ima *img, int x, t_ipos y_inter, int color);
 void	draw_vlines_big_end_32(t_ima *img, int x, t_ipos y_inter, int color);//✅
+// -[ libft.c ]----------------------------------------------------------------4
+void	*ft_free(void **ptr);												// ✅
+char	*ft_strdup(const char *src);										// ✅
+void	*ft_calloc(size_t nb, size_t n);									// ✅
+void	*ft_memset(void *pt, int value, size_t length);						// ✅
 // -[ main_loop.c ]------------------------------------------------------------4
 int		main_loop(t_data *dt);												// ❌
 // -[ memcpy_utils.c ]---------------------------------------------------------2
@@ -326,13 +342,15 @@ int		build_img_3d(t_ima *img, int ceil_color, int floor_color);			// ✅
 int		t_ima_insert_rows_by_words(\
 		t_ima *src, t_ima *dst, int dst_x, int dst_y);						// ✅
 int		dup_t_ima_by_words(t_ima *src, t_ima *dst);							// ✅
+// -[ t_ima_struct_utils.c ]---------------------------------------------------2
+int		is_img_valid(t_ima *img);											// ✅
+void	set_ima_fun_ptrs(t_ima *img);										// ✅
 // -[ t_ima_struct.c ]---------------------------------------------------------5
 void	memset_zero_img(t_ima *img);										// ✅
-void	set_ima_fun_ptrs(t_ima *img);										// ✅
 t_ima	create_image(void *mlx_ptr, int width, int height);					// ✅
+t_ima	*open_image(t_data *dt, const char *path);							// ✅
+void	set_wall_image(t_data *dt, const char *id, const char *path);		// ✅
 void	free_image(t_ima img, void *mlx_ptr);								// ✅
-int		is_img_valid(t_ima *img);											// ✅
-//void	print_t_ima(t_ima img);
 // -[ t_ipos_struct.c ]--------------------------------------------------------4
 t_ipos	ipos_new(int x, int y);												// ✅
 void	ipos_set(t_ipos *pos, int x, int y);								// ✅

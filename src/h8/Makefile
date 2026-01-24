@@ -37,6 +37,7 @@ SRC			=	display_infos.c \
 				draw_buffer_images.c \
 				draw_geo_shapes.c \
 				draw_lines.c \
+				libft.c \
 				main_loop.c \
 				main.c \
 				memcpy_utils.c \
@@ -52,6 +53,7 @@ SRC			=	display_infos.c \
 				t_hit_struct.c \
 				t_ima_builders.c \
 				t_ima_manipulations.c \
+				t_ima_struct_utils.c \
 				t_ima_struct.c \
 				t_ipos_struct.c \
 				t_ipos_utils.c \

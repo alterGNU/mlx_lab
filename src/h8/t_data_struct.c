@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 03:02:18 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:00:47 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,10 @@ static void	zero_memset_data(t_data *dt)
 	dt->txt_west = NULL;
 	dt->txt_v = NULL;
 	dt->txt_h = NULL;
+	dt->ima_north = NULL;
+	dt->ima_south = NULL;
+	dt->ima_east = NULL;
+	dt->ima_west = NULL;
 }
 
 /**
@@ -116,6 +120,10 @@ t_data	init_data(const char **str_arr)
 	dt.img_3d_out_temp = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
 	dt.img_3d_ins_temp = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
 	dt.img_3d_buffer = create_image(dt.mlx_ptr, img3d_width, IMG3D_HEIGHT);
+	set_wall_image(&dt, "NO", PATH_NORTH_IMAGE);
+	set_wall_image(&dt, "SO", PATH_SOUTH_IMAGE);
+	set_wall_image(&dt, "EA", PATH_EAST_IMAGE);
+	set_wall_image(&dt, "WE", PATH_WEST_IMAGE);
 	set_north_texture(&dt);
 	set_south_texture(&dt);
 	set_east_texture(&dt);
@@ -125,8 +133,31 @@ t_data	init_data(const char **str_arr)
 	return (dt);
 }
 
+// TODO: remove textures once replace by t_ima
 void	free_data(t_data *dt)
 {
+	if (!dt)
+		return ;
+	if (dt->ima_north)
+	{
+		free_image(*(dt->ima_north), dt->mlx_ptr);
+		ft_free((void **)&dt->ima_north);
+	}
+	if (dt->ima_south)
+	{
+		free_image(*(dt->ima_south), dt->mlx_ptr);
+		ft_free((void **)&dt->ima_south);
+	}
+	if (dt->ima_east)
+	{
+		free_image(*(dt->ima_east), dt->mlx_ptr);
+		ft_free((void **)&dt->ima_east);
+	}
+	if (dt->ima_west)
+	{
+		free_image(*(dt->ima_west), dt->mlx_ptr);
+		ft_free((void **)&dt->ima_west);
+	}
 	free_texture(&dt->txt_north);
 	free_texture(&dt->txt_south);
 	free_texture(&dt->txt_east);

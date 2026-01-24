@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:18:44 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 04:40:27 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 06:09:13 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 
 void	memset_zero_img(t_ima *img)
 {
+	img->id[0] = '\0';
+	img->id[1] = '\0';
+	img->id[2] = '\0';
+	img->path = NULL;
 	img->img_ptr = NULL;
 	img->addr = NULL;
 	img->dim.x = 0;
@@ -26,30 +30,6 @@ void	memset_zero_img(t_ima *img)
 	img->dark_filter = NULL;
 }
 
-void	set_ima_fun_ptrs(t_ima *img)
-{
-	if (img->endian == 0)
-	{
-		img->dark_filter = &dark_filter_little_end;
-		if (img->bpp == 32)
-		{
-			img->put_pix_to_img = &put_pix_to_img_little_end_32;
-			img->draw_vlines = &draw_vlines_little_end_32;
-		}
-		else
-		{
-			img->put_pix_to_img = &put_pix_to_img_little_end;
-			img->draw_vlines = &draw_vlines_generic;
-		}
-	}
-	else
-	{
-		img->put_pix_to_img = &put_pix_to_img_big_end;
-		img->dark_filter = &dark_filter_big_end;
-		img->draw_vlines = &draw_vlines_generic;
-	}
-}
-
 t_ima	create_image(void *mlx_ptr, int width, int height)
 {
 	t_ima	img;
@@ -60,44 +40,69 @@ t_ima	create_image(void *mlx_ptr, int width, int height)
 	{
 		img.img_ptr = mlx_new_image(mlx_ptr, width, height);
 		if (img.img_ptr)
+		{
 			img.addr = mlx_get_data_addr(img.img_ptr, &img.bpp, \
 				&img.size_line, &img.endian);
+			set_ima_fun_ptrs(&img);
+		}
 		img.dim.x = width;
 		img.dim.y = height;
-		set_ima_fun_ptrs(&img);
 	}
 	return (img);
 }
 
-//void	print_t_ima(t_ima img)
-//{
-//	printf("\n   - img_ptr:   %p", img.img_ptr);
-//	printf("\n   - addr:      %p", img.addr);
-//	printf("\n   - width:     %d", img.dim.x);
-//	printf("\n   - height:    %d", img.dim.y);
-//	printf("\n   - bpp:       %d", img.bpp);
-//	printf("\n   - size_line: %d", img.size_line);
-//	printf("\n   - endian:    %d\n", img.endian);
-//}
+// NOTE: can be malloc too...do not forget to adapt panic button.
+// FIXME: can not use real strcmp().
+t_ima	*open_image(t_data *dt, const char *path)
+{
+	t_ima	*img;
+
+	if (!path)
+		return (NULL);
+	img = (t_ima *)malloc(sizeof(t_ima));
+	if (!img)
+		return (NULL);
+	memset_zero_img(img);
+	img->path = ft_strdup((char *)path);
+	if (!img->path)
+		return (ft_free((void **)&img->path), NULL);
+	img->endian = -1;
+	if (dt->mlx_ptr)
+	{
+		img->img_ptr = mlx_xpm_file_to_image(dt->mlx_ptr, img->path, \
+			&img->dim.x, &img->dim.y);
+		if (!img->img_ptr)
+			return (ft_free((void **)&img->path), NULL);
+		img->addr = mlx_get_data_addr(img->img_ptr, &img->bpp, &img->size_line, \
+			&img->endian);
+		set_ima_fun_ptrs(img);
+	}
+	return (img);
+}
+
+// FIX-ME: can not use real strcmp().
+void	set_wall_image(t_data *dt, const char *id, const char *path)
+{
+	if (strcmp(id, "NO") == 0)
+		dt->ima_north = open_image(dt, path);
+	else if (strcmp(id, "SO") == 0)
+		dt->ima_south = open_image(dt, path);
+	else if (strcmp(id, "EA") == 0)
+		dt->ima_east = open_image(dt, path);
+	else if (strcmp(id, "WE") == 0)
+		dt->ima_west = open_image(dt, path);
+}
 
 void	free_image(t_ima img, void *mlx_ptr)
 {
 	if (mlx_ptr && img.img_ptr)
+	{
+		if (img.path)
+		{
+			free(img.path);
+			img.path = NULL;
+		}
 		mlx_destroy_image(mlx_ptr, img.img_ptr);
+	}
 	memset_zero_img(&img);
-}
-
-int	is_img_valid(t_ima *img)
-{
-	if (!img)
-		return (0);
-	if (!img->img_ptr || !img->addr)
-		return (0);
-	if (img->dim.x <= 0 || img->dim.y <= 0)
-		return (0);
-	if (img->bpp <= 0 || img->size_line <= 0)
-		return (0);
-	if (img->endian < 0 || img->endian > 1)
-		return (0);
-	return (1);
 }
