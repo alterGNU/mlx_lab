@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 19:24:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 07:00:18 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 20:45:31 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ t_hit	init_hit(void)
 	hit.angle = fpos_new(-1.f, -1.f);
 	hit.tan_angle = 0.f;
 	hit.dist = fpos_new(0.f, 0.f);
-	hit.img_pix = ipos_new(-1, -1);
 	hit.y_inter = ipos_new(-1, -1);
 	hit.txt_pix = fpos_new(-1.f, -1.f);
 	hit.txt_ty = fpos_new(0.f, 0.f);

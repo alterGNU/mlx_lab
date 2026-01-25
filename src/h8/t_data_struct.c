@@ -6,16 +6,16 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:20:43 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 09:15:41 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/24 20:45:57 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-// FIX-ME: can not use memset function
 static void	zero_memset_data(t_data *dt)
 {
-	memset(dt->txt_mode_str, 0, sizeof(dt->txt_mode_str));
+	ft_memset(dt->txt_mode_str, 0, sizeof(dt->txt_mode_str));
+	ft_memset(dt->funcalled, 0, sizeof(dt->txt_mode_str));
 	dt->txt_mode = 1;
 	dt->tile_dim = (t_fpos){0.0f, 0.0f};
 	dt->player = (t_play){{0.0f, 0.0f}, 0.0f, 0, 0, -1, NULL, 0};
@@ -35,10 +35,10 @@ static void	zero_memset_data(t_data *dt)
 	dt->start2d = (t_fpos){0.0f, 0.0f};
 	dt->start3d = (t_fpos){0.0f, 0.0f};
 	dt->delay_between_frames_ms = convert_fps_to_frame_delay(FPS);
-	memset(&dt->last_frame_time, 0, sizeof(struct timeval));
-	memset(&dt->fps_start_inter, 0, sizeof(struct timeval));
-	memset(dt->fps_str, 0, sizeof(dt->fps_str));
-	memset(dt->mv_flags, 0, sizeof(dt->mv_flags));
+	ft_memset(&dt->last_frame_time, 0, sizeof(struct timeval));
+	ft_memset(&dt->fps_start_inter, 0, sizeof(struct timeval));
+	ft_memset(dt->fps_str, 0, sizeof(dt->fps_str));
+	ft_memset(dt->mv_flags, 0, sizeof(dt->mv_flags));
 	dt->rot_elem = 0.0f;
 	dt->nb_of_rays = 0;
 	dt->hits = NULL;
@@ -70,6 +70,7 @@ t_data	init_data(const char **str_arr)
 
 	zero_memset_data(&dt);
 	set_txt_mode_str(&dt);
+	set_funcalled(&dt);
 	fpos_set(&dt.tile_dim, (float)TILE_X, (float)TILE_Y);
 	init_movement_flags(&dt);
 	dt.player = init_player();
@@ -87,8 +88,6 @@ t_data	init_data(const char **str_arr)
 	dt.nb_of_rays = get_nb_of_rays();
 	if (dt.nb_of_rays > 1)
 		dt.rot_elem = FOV / (dt.nb_of_rays - 1);
-	//if (FOV > FOV_PRE)
-	//	dt.rot_elem = FOV * FOV_PRE / (FOV - FOV_PRE);
 	dt.column_width = (int)(IMG3D_WIDTH / dt.nb_of_rays);
 	img3d_width = dt.nb_of_rays * dt.column_width; //NOTE: ensure width is multiple of nb_of_rays
 	if (DRAW_MINIMAP)

@@ -6,19 +6,19 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 19:21:19 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/25 05:41:47 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HEADER_H
 # define HEADER_H
 // -[ Debug/UI toggles ]--------------------------------------------------------
-# define DISPLAY_FUNCALLED 0	// 0: disabled, 1: enabled 
 # define DRAW_FUN_AUTO 1		// 0: fun draw 3d not autonomous, 1: autonomous
-# define OPTI_MODE 1			// 0: generic, 1: for little-endian 32bpp
+# define OPTI_MODE 0			// 0: generic, 1: for little-endian 32bpp
 # define DRAW_MINIMAP 1			// 0: do not draw 2d image (map), else: draw it
 # define DRAW_2D_RAYS 1			// 0: none, 1: first/last, 2: all rays
 # define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
+# define DISPLAY_FUNCALLED 1	// 0: disabled, 1: enabled 
 //-[ Window ]-------------------------------------------------------------------
 # if DRAW_FUN_AUTO > 0
 #  if OPTI_MODE > 0
@@ -203,9 +203,9 @@ typedef struct s_hit
 	t_fpos			angle;	// x: degree, y: radian
 	float			tan_angle;
 	t_fpos			dist;	// x: real distance, y: corrected distance(fish-eye effect)
-	t_ipos			img_pix;// pixel coord. in image.
 	t_ipos			y_inter;// x:y start in image, y:y stop in image.
 	t_fpos			txt_pix;// pixel coord. in texture image.
+	// TODO: no need offset... just step...could be a float.
 	t_fpos			txt_ty;	// x:step on texture pixel column, y:offset on texture pixel column
 	t_text			*texture;
 	t_ima			*ima_xpm;

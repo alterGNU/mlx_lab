@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 04:38:58 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/25 05:38:02 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,64 +59,114 @@ void	draw3d_obj_vlines_le32(t_ima *img, t_hit *hit, int col_width)
 	}
 }
 
-/**
- * Draws vertical lines representing 3D objects based on raycasting hits.
- * - Do not draw floor vertical lines [0 to y_start[
- * + Draw (only) the vertical lines of the objects [y_start to y_stop]
- * - Do not draw ceiling vertical lines [y_stop to img_3d_buffer.height[
- * TODO-LIST:
- *  -[] create all 3 fun. draw3d_obj_{vlines,texture,image}()
- *  -[] move texture in hit struct as a pointer to dt->textures
- *  -[] should be able to draw object smaller that the column width
- *  -[] use object dim.x too...j should start at (col_width - obj_width)/2
- * NOTE: texture need to be store in hit struct to avoid passing it as parameter
- */
 void	draw3d_obj_texture(t_ima *img, t_hit *hit, int col_width)
 {
-	int		i;
-	int		y;
-	int		index_text;
-	int		color;
-	int		j;
+	t_ipos	i;
+	t_text	*txt;
+	t_ipos	y_inter;
+	t_fpos	txt_pix;
+	int		c;
 
-	i = 0;
-	while (hit[i].valid)
+	i = ipos_new(0, 0);
+	while (hit[i.x].valid)
 	{
-		hit[i].img_pix = ipos_new(i * col_width, hit[i].y_inter.x);
-		y = hit[i].y_inter.x;
-		while (y < hit[i].y_inter.y)
+		txt = hit[i.x].texture;
+		txt_pix = hit[i.x].txt_pix;
+		y_inter = hit[i.x].y_inter;
+		while (y_inter.x < y_inter.y)
 		{
-			index_text = (int)(hit[i].txt_pix.y + \
-				(float)(y - hit[i].y_inter.x) * hit[i].txt_ty.x) * \
-				hit[i].texture->dim.x + (int)(hit[i].txt_pix.x);
-			color = hit[i].texture->img[ft_imax(0, ft_imin(index_text, \
-				hit[i].texture->size - 1))];
-			j = 0;
-			while (j < col_width)
-				img->put_pix_to_img(img, i * col_width + j++, y, color);
-			y++;
+			c = txt->img[ft_imax(0, ft_imin((int)(txt_pix.y) * txt->dim.x + \
+				(int)(txt_pix.x), txt->size - 1))];
+			i.y = -1;
+			while (++i.y < col_width)
+				img->put_pix_to_img(img, i.x * col_width + i.y, y_inter.x, c);
+			txt_pix.y += hit[i.x].txt_ty.x;
+			y_inter.x++;
 		}
-		i++;
+		i.x++;
 	}
 }
 
 void	draw3d_obj_texture_le32(t_ima *img, t_hit *hit, int col_width)
 {
+	t_ipos	i;
+	t_text	*txt;
+	t_ipos	y_inter;
+	t_fpos	txt_pix;
+	int		c;
+
+	i = ipos_new(0, 0);
+	while (hit[i.x].valid)
+	{
+		txt = hit[i.x].texture;
+		txt_pix = hit[i.x].txt_pix;
+		y_inter = hit[i.x].y_inter;
+		while (y_inter.x < y_inter.y)
+		{
+			c = txt->img[ft_imax(0, ft_imin((int)(txt_pix.y) * txt->dim.x + \
+				(int)(txt_pix.x), txt->size - 1))];
+			i.y = -1;
+			while (++i.y < col_width)
+				((int *)(img->addr + y_inter.x * img->size_line))\
+					[i.x * col_width + i.y] = c;
+			txt_pix.y += hit[i.x].txt_ty.x;
+			y_inter.x++;
+		}
+		i.x++;
+	}
+}
+
+//void	draw3d_obj_ima_xpm(t_ima *img, t_hit *hit, int col_width)
+//{
+//	int		i;
+//	int		j;
+//	int		y;
+//	t_ima	*xpm;
+//	int		color;
+//	int		src_x;
+//	int		src_y;
+//
+//	i = 0;
+//	while (hit[i].valid)
+//	{
+//		xpm = hit[i].ima_xpm;
+//		y = hit[i].y_inter.x;
+//		while (y < hit[i].y_inter.y)
+//		{
+//			src_y = ft_imax(0, ft_imin((int)hit[i].txt_pix.y, xpm->dim.y - 1));
+//			src_x = ft_imax(0, ft_imin((int)hit[i].txt_pix.x, xpm->dim.x - 1));
+//			color = *(int *)(xpm->addr + (src_y * xpm->size_line + src_x * 4));
+//			j = 0;
+//			while (j < col_width)
+//				img->put_pix_to_img(img, i * col_width + j++, y, color);
+//			hit[i].txt_pix.y += hit[i].txt_ty.x;
+//			y++;
+//		}
+//		i++;
+//	}
+//}
+void	draw3d_obj_ima_xpm(t_ima *img, t_hit *hit, int col_width)
+{
 	int		i;
 	int		y;
-	int		index_txt;
+	int		src_x;
+	int		src_y;
 	int		color;
 	int		j;
+	t_ima	*xpm;
 
 	i = 0;
 	while (hit[i].valid)
 	{
-		hit[i].img_pix = ipos_new(i * col_width, hit[i].y_inter.x);
+		xpm = hit[i].ima_xpm;
 		y = hit[i].y_inter.x;
 		while (y < hit[i].y_inter.y)
 		{
-			index_txt = (int)(hit[i].txt_pix.y + (float)(y - hit[i].y_inter.x) * hit[i].txt_ty.x) * hit[i].texture->dim.x + (int)(hit[i].txt_pix.x);
-			color = hit[i].texture->img[ft_imax(0, ft_imin(index_txt, hit[i].texture->size - 1))];
+			src_y = (int)(hit[i].txt_pix.y + (float)(y - hit[i].y_inter.x) * hit[i].txt_ty.x);
+			src_x = (int)(hit[i].txt_pix.x);
+			src_y = ft_imax(0, ft_imin(src_y, xpm->dim.y - 1));
+			src_x = ft_imax(0, ft_imin(src_x, xpm->dim.x - 1));
+			color = *(int *)(xpm->addr + (src_y * xpm->size_line + src_x * 4));
 			j = 0;
 			while (j < col_width)
 				((int *)(img->addr + y * img->size_line))[i * col_width + j++] = color;
