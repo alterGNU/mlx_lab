@@ -36,13 +36,11 @@ SRC			=	display_infos.c \
 				draw_3dfun.c \
 				draw_buffer_images.c \
 				draw_geo_shapes.c \
-				draw_lines.c \
 				libft.c \
 				main_loop.c \
 				main.c \
 				memcpy_utils.c \
 				move_flags.c \
-				put_pix_to_img.c \
 				raycast_collision.c \
 				raycast_hit_precomp.c \
 				raycast_update_hit.c \
@@ -51,6 +49,8 @@ SRC			=	display_infos.c \
 				t_fpos_struct.c \
 				t_fpos_utils.c \
 				t_hit_array.c \
+				t_hit_fun_drawlines.c \
+				t_hit_fun_putpixel.c \
 				t_hit_struct.c \
 				t_ima_builders.c \
 				t_ima_manipulations.c \

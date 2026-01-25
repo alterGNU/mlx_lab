@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/25 08:41:03 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/25 09:27:17 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,8 @@ typedef struct s_ima
 	void			(*put_pix_to_img)(struct s_ima *, int, int, int);
 	void			(*draw_vlines)(struct s_ima *, int, t_ipos, int);
 	int				(*dark_filter)(int color, float darkness_factor);
-	//void			(*cpy_col)(struct s_ima *, struct s_ima *, t_hit *, int);
+	int				(*get_pixel)(struct s_ima, int x, int y);
+	 //void			(*cpy_col)(struct s_ima *, struct s_ima *, t_hit *, int);
 }	t_ima;
 
 // NOTE: in cub3d can be insert to/or/replace by the t_plan struct
@@ -295,11 +296,6 @@ void	draw_dda_line_opti(t_ima *img, t_fpos a_pos, t_fpos b_pos, int color);
 void	draw_circle(t_ima *img, t_fpos c_pos, int r, int color);			// ✅
 void	draw_vector(t_ima *img, t_fpos start, t_fpos vec, int color);		// ✅
 void	draw_vector_opti(t_ima *img, t_fpos c, t_fpos ang, int color);		// ✅
-// -[ draw_lines.c ]-----------------------------------------------------------4
-void	draw_hline(t_ima *img, int x, t_fpos pos, int color);				// ✅
-void	draw_vlines_generic(t_ima *img, int x, t_ipos y_inter, int color);	// ✅
-void	draw_vlines_little_end_32(t_ima *img, int x, t_ipos y_inter, int color);
-void	draw_vlines_big_end_32(t_ima *img, int x, t_ipos y_inter, int color);//✅
 // -[ libft.c ]----------------------------------------------------------------3
 void	*ft_free(void **ptr);												// ✅
 char	*ft_strdup(const char *src);										// ✅
@@ -315,11 +311,6 @@ void	*ft_memcpy_by_words(void *dst, const void *src, size_t len);		// ✅
 void	init_movement_flags(t_data *dt);									// ✅
 int		key_pressed(int keycode, t_data *dt);								// ✅
 int		key_released(int keycode, t_data *dt);								// ✅
-// - [ put_pix_to_img.c ]------------------------------------------------------4
-void	put_pix_to_img_little_end(t_ima *img, int x, int y, int color);		// ✅
-void	put_pix_to_img_little_end_32(t_ima *img, int x, int y, int color);	// ✅
-void	put_pix_to_img_big_end(t_ima *img, int x, int y, int color);		// ✅
-void	put_pix_to_img_big_end_32(t_ima *img, int x, int y, int color);		// ✅
 // -[ raycast_collisions.c ]---------------------------------------------------3
 int		collision_detected(const t_data *dt, t_fpos ray_pos);				// ❌
 t_fpos	h_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
@@ -354,6 +345,16 @@ float	fpos_prod(const t_fpos a);											// ✅
 t_hit	*create_hit_array(int size);										// ✅
 void	free_hit_array(t_hit **hit_arr);									// ✅
 int		print_hit_array(t_hit *hit_arr);									// ✅
+// - [ t_hit_fun_drawlines.c ]-------------------------------------------------4
+void	draw_hline(t_ima *img, int x, t_fpos pos, int color);				// ✅
+void	draw_vlines_generic(t_ima *img, int x, t_ipos y_inter, int color);	// ✅
+void	draw_vlines_little_end_32(t_ima *img, int x, t_ipos y_inter, int color);
+void	draw_vlines_big_end_32(t_ima *img, int x, t_ipos y_inter, int color);//✅
+// -[ t_hit_fun_putpixel.c ]---------------------------------------------------4
+void	put_pix_to_img_little_end(t_ima *img, int x, int y, int color);		// ✅
+void	put_pix_to_img_little_end_32(t_ima *img, int x, int y, int color);	// ✅
+void	put_pix_to_img_big_end(t_ima *img, int x, int y, int color);		// ✅
+void	put_pix_to_img_big_end_32(t_ima *img, int x, int y, int color);		// ✅
 // -[ t_hit_struct.c ]---------------------------------------------------------4
 t_hit	init_hit(void);														// ✅
 void	set_hit_obj_dim(t_hit *hit);										// ✅
