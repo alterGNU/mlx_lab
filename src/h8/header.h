@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/25 07:48:11 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/25 08:41:03 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define HEADER_H
 // -[ Debug/UI toggles ]--------------------------------------------------------
 # define DRAW_FUN_AUTO 0		// 0: fun draw 3d not autonomous, 1: autonomous
-# define OPTI_MODE 1			// 0: generic, 1: for little-endian 32bpp
+# define OPTI_MODE 0			// 0: generic, 1: for little-endian 32bpp
 # define DRAW_MINIMAP 1			// 0: do not draw 2d image (map), else: draw it
 # define DRAW_2D_RAYS 1			// 0: none, 1: first/last, 2: all rays
 # define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
@@ -324,6 +324,10 @@ void	put_pix_to_img_big_end_32(t_ima *img, int x, int y, int color);		// ✅
 int		collision_detected(const t_data *dt, t_fpos ray_pos);				// ❌
 t_fpos	h_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
 t_fpos	v_found_hit_dda(const t_data *dt, const t_hit *hit);				// ✅
+// -[ raycast_hit_precomp.c ]--------------------------------------------------3
+void	precomp_hit_vline(t_hit *hit, float img_height);					// ✅
+void	precomp_hit_vtext(t_hit *hit, float img_height);					// ✅
+void	precomp_hit_xpm(t_hit *hit, float img_height);						// ✅
 // -[raycast_update_hit.c ]----------------------------------------------------5
 void	found_hit_set_type(const t_data *dt, t_hit *hit);					// ✅
 void	update_hit_tpos(t_data *dt);										// ✅
