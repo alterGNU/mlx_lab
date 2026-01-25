@@ -6,15 +6,15 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/25 05:41:47 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/25 07:48:11 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HEADER_H
 # define HEADER_H
 // -[ Debug/UI toggles ]--------------------------------------------------------
-# define DRAW_FUN_AUTO 1		// 0: fun draw 3d not autonomous, 1: autonomous
-# define OPTI_MODE 0			// 0: generic, 1: for little-endian 32bpp
+# define DRAW_FUN_AUTO 0		// 0: fun draw 3d not autonomous, 1: autonomous
+# define OPTI_MODE 1			// 0: generic, 1: for little-endian 32bpp
 # define DRAW_MINIMAP 1			// 0: do not draw 2d image (map), else: draw it
 # define DRAW_2D_RAYS 1			// 0: none, 1: first/last, 2: all rays
 # define DRAW_HITS_TXT 0		// 0: disable, 1: enable hit positions display
@@ -68,6 +68,10 @@
 # define PATH_SOUTH_IMAGE "../../textures/wall2.xpm"
 # define PATH_EAST_IMAGE  "../../textures/wall3.xpm"
 # define PATH_WEST_IMAGE  "../../textures/wall4.xpm"
+//# define PATH_NORTH_IMAGE "../../textures/tile_512.xpm"
+//# define PATH_SOUTH_IMAGE "../../textures/wood_512.xpm"
+//# define PATH_EAST_IMAGE  "../../textures/tile_512.xpm"
+//# define PATH_WEST_IMAGE  "../../textures/wood_512.xpm"
 # define PATH_VINS_IMAGE  "../../textures/matrix.xpm"
 # define PATH_HINS_IMAGE  "../../textures/matrix.xpm"
 // -[ Engine ]------------------------------------------------------------------
@@ -269,19 +273,20 @@ void	draw2d_hit_lines(t_data *dt);										// ✅
 int		draw_buffer_2dimg(t_data *dt);										// ✅
 // -[ draw_3dbuff_img.c ]------------------------------------------------------1
 int		draw_buffer_3dimg(t_data *dt);										// ✅
-// -[ draw_3dfun_auto.c ]------------------------------------------------------5
+// -[ draw_3dfun_auto.c ]------------------------------------------------------6
 void	draw3d_obj_vlines_auto(t_ima *img, t_hit *hit, int col_width);		// ❌
 void	draw3d_obj_vlines_auto_le32(t_ima *img, t_hit *hit, int col_width); // ❌
 void	draw3d_obj_texture_auto(t_ima *img, t_hit *hit, int col_width);		// ❌
 void	draw3d_obj_texture_auto_le32(t_ima *img, t_hit *hit, int col_width);// ❌
 void	draw3d_obj_ima_xpm_auto(t_ima *img, t_hit *hit, int col_width);		// ❌
 void	draw3d_obj_ima_xpm_auto_le32(t_ima *img, t_hit *hit, int col_width);// ❌
-// -[ draw_3dfun.c ]-----------------------------------------------------------5
+// -[ draw_3dfun.c ]-----------------------------------------------------------6
 void	draw3d_obj_vlines(t_ima *img, t_hit *hit, int col_width);			// ✅
 void	draw3d_obj_vlines_le32(t_ima *img, t_hit *hit, int col_width);		// ✅
 void	draw3d_obj_texture(t_ima *img, t_hit *hit, int col_width);			// ✅
 void	draw3d_obj_texture_le32(t_ima *img, t_hit *hit, int col_width);		// ✅
 void	draw3d_obj_ima_xpm(t_ima *img, t_hit *hit, int col_width);			// ✅
+void	draw3d_obj_ima_xpm_le32(t_ima *img, t_hit *hit, int col_width);		// ✅
 // -[ draw_buffer_images.c ]---------------------------------------------------1
 int		draw_buffer_images(t_data *dt);										// ❌
 // -[ draw_geo_shapes.c ]------------------------------------------------------5

@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/25 05:38:02 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/25 08:09:42 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,62 +116,73 @@ void	draw3d_obj_texture_le32(t_ima *img, t_hit *hit, int col_width)
 	}
 }
 
-//void	draw3d_obj_ima_xpm(t_ima *img, t_hit *hit, int col_width)
-//{
-//	int		i;
-//	int		j;
-//	int		y;
-//	t_ima	*xpm;
-//	int		color;
-//	int		src_x;
-//	int		src_y;
-//
-//	i = 0;
-//	while (hit[i].valid)
-//	{
-//		xpm = hit[i].ima_xpm;
-//		y = hit[i].y_inter.x;
-//		while (y < hit[i].y_inter.y)
-//		{
-//			src_y = ft_imax(0, ft_imin((int)hit[i].txt_pix.y, xpm->dim.y - 1));
-//			src_x = ft_imax(0, ft_imin((int)hit[i].txt_pix.x, xpm->dim.x - 1));
-//			color = *(int *)(xpm->addr + (src_y * xpm->size_line + src_x * 4));
-//			j = 0;
-//			while (j < col_width)
-//				img->put_pix_to_img(img, i * col_width + j++, y, color);
-//			hit[i].txt_pix.y += hit[i].txt_ty.x;
-//			y++;
-//		}
-//		i++;
-//	}
-//}
+/**
+ * while (++i.y < col_width)
+ * 	img->put_pix_to_img(img, i.x * col_width + i.y, y_inter.x, c);
+ */
 void	draw3d_obj_ima_xpm(t_ima *img, t_hit *hit, int col_width)
 {
-	int		i;
-	int		y;
-	int		src_x;
-	int		src_y;
-	int		color;
-	int		j;
-	t_ima	*xpm;
+	t_ipos	i;
+	t_ima	*txt;
+	t_ipos	y_inter;
+	t_fpos	txt_pix;
+	int		c;
 
-	i = 0;
-	while (hit[i].valid)
+	i = ipos_new(0, 0);
+	while (hit[i.x].valid)
 	{
-		xpm = hit[i].ima_xpm;
-		y = hit[i].y_inter.x;
-		while (y < hit[i].y_inter.y)
+		txt = hit[i.x].ima_xpm;
+		txt_pix = hit[i.x].txt_pix;
+		y_inter = hit[i.x].y_inter;
+		while (y_inter.x < y_inter.y)
 		{
-			src_y = (int)(hit[i].txt_pix.y + (float)(y - hit[i].y_inter.x) * hit[i].txt_ty.x);
-			src_x = (int)(hit[i].txt_pix.x);
-			src_y = ft_imax(0, ft_imin(src_y, xpm->dim.y - 1));
-			src_x = ft_imax(0, ft_imin(src_x, xpm->dim.x - 1));
-			color = *(int *)(xpm->addr + (src_y * xpm->size_line + src_x * 4));
-			j = 0;
-			while (j < col_width)
-				((int *)(img->addr + y * img->size_line))[i * col_width + j++] = color;
-			y++;
+			c = *(int *)(txt->addr + (int)(txt_pix.y) * txt->size_line + \
+				(int)(txt_pix.x) * (txt->bpp / 8));
+			i.y = -1;
+			while (++i.y < col_width)
+				*(int *)(img->addr + y_inter.x * img->size_line + \
+					(i.x * col_width + i.y) * (img->bpp / 8)) = c;
+			txt_pix.y += hit[i.x].txt_ty.x;
+			y_inter.x++;
 		}
-		i++;
+		i.x++;
+	}
+}
+
+/**
+ * ARRAY INDEXING EQUIVALENT:
+ * *(int *)(img->addr + y_inter.x * img->size_line + (i.x * col_width + i.y) * 4)
+ * <=>
+ * ((int *)(txt->addr + (int)(txt_pix.y) * txt->size_line))[(int)(txt_pix.x)];
+ * ARRAY INDEXING EQUIVALENT:
+ * *(int *)(txt->addr + (int)(txt_pix.y) * txt->size_line + (int)(txt_pix.x) * 4)
+ * <=>
+ */
+void	draw3d_obj_ima_xpm_le32(t_ima *img, t_hit *hit, int col_width)
+{
+	t_ipos	i;
+	t_ima	*txt;
+	t_ipos	y_inter;
+	t_fpos	txt_pix;
+	int		c;
+
+	i = ipos_new(0, 0);
+	while (hit[i.x].valid)
+	{
+		txt = hit[i.x].ima_xpm;
+		txt_pix = hit[i.x].txt_pix;
+		y_inter = hit[i.x].y_inter;
+		while (y_inter.x < y_inter.y)
+		{
+			c = ((int *)(txt->addr + (int)(txt_pix.y) * txt->size_line))\
+				[(int)(txt_pix.x)];
+			i.y = -1;
+			while (++i.y < col_width)
+				((int *)(img->addr + y_inter.x * img->size_line))\
+					[i.x * col_width + i.y] = c;
+			txt_pix.y += hit[i.x].txt_ty.x;
+			y_inter.x++;
+		}
+		i.x++;
 	}
 }
