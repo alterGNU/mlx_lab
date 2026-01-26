@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/26 09:46:58 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/26 09:57:05 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,10 @@
 //# define PATH_SOUTH_IMAGE "../../textures/wood_512.xpm"
 //# define PATH_EAST_IMAGE  "../../textures/tile_512.xpm"
 //# define PATH_WEST_IMAGE  "../../textures/wood_512.xpm"
-# define PATH_VINS_IMAGE  "../../textures/matrix.xpm"
-# define PATH_HINS_IMAGE  "../../textures/matrix.xpm"
+//# define PATH_VINS_IMAGE  "../../textures/matrix.xpm"
+//# define PATH_HINS_IMAGE  "../../textures/matrix.xpm"
+# define PATH_VINS_IMAGE  "../../textures/matrix2.xpm"
+# define PATH_HINS_IMAGE  "../../textures/matrix2.xpm"
 // -[ Engine ]------------------------------------------------------------------
 # define PRE_RAY 0.0001f	// Ray detection precision
 # define EPSILON 0.000001f	// Small value to avoid division by zero
