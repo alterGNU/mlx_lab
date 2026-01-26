@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/25 09:27:17 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/26 06:48:43 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,9 +193,8 @@ typedef struct s_ima
 	int				endian;
 	void			(*put_pix_to_img)(struct s_ima *, int, int, int);
 	void			(*draw_vlines)(struct s_ima *, int, t_ipos, int);
-	int				(*dark_filter)(int color, float darkness_factor);
-	int				(*get_pixel)(struct s_ima, int x, int y);
-	 //void			(*cpy_col)(struct s_ima *, struct s_ima *, t_hit *, int);
+	int				(*dark_filter)(int color, float darkness_factor);//TODO: apply filter...
+	void			(*draw_txt_vlines)(struct s_ima *, struct s_ima *, t_hit *, int);
 }	t_ima;
 
 // NOTE: in cub3d can be insert to/or/replace by the t_plan struct
@@ -350,6 +349,9 @@ void	draw_hline(t_ima *img, int x, t_fpos pos, int color);				// ✅
 void	draw_vlines_generic(t_ima *img, int x, t_ipos y_inter, int color);	// ✅
 void	draw_vlines_little_end_32(t_ima *img, int x, t_ipos y_inter, int color);
 void	draw_vlines_big_end_32(t_ima *img, int x, t_ipos y_inter, int color);//✅
+// -[ t_hit_fun_drawtxtlines.c ]-----------------------------------------------2
+void	draw_txt_vlines_gen(t_ima *img, t_ima *txt, t_hit *hit, int col_width);
+void	draw_txt_vlines_32(t_ima *img, t_ima *txt, t_hit *hit, int col_width);
 // -[ t_hit_fun_putpixel.c ]---------------------------------------------------4
 void	put_pix_to_img_little_end(t_ima *img, int x, int y, int color);		// ✅
 void	put_pix_to_img_little_end_32(t_ima *img, int x, int y, int color);	// ✅

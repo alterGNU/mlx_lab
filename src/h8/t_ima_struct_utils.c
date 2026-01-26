@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:18:44 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 05:53:58 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/26 07:04:01 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,13 @@ int	is_img_valid(t_ima *img)
 	return (1);
 }
 
+// TODO: simplify conditions
 void	set_ima_fun_ptrs(t_ima *img)
 {
+	if (img->bpp == 32)
+		img->draw_txt_vlines = &draw_txt_vlines_32;
+	else
+		img->draw_txt_vlines = &draw_txt_vlines_gen;
 	if (img->endian == 0)
 	{
 		img->dark_filter = &dark_filter_little_end;

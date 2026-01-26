@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 16:25:51 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/25 08:09:42 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/26 06:46:46 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,36 +116,15 @@ void	draw3d_obj_texture_le32(t_ima *img, t_hit *hit, int col_width)
 	}
 }
 
-/**
- * while (++i.y < col_width)
- * 	img->put_pix_to_img(img, i.x * col_width + i.y, y_inter.x, c);
- */
 void	draw3d_obj_ima_xpm(t_ima *img, t_hit *hit, int col_width)
 {
-	t_ipos	i;
-	t_ima	*txt;
-	t_ipos	y_inter;
-	t_fpos	txt_pix;
-	int		c;
+	int	i;
 
-	i = ipos_new(0, 0);
-	while (hit[i.x].valid)
+	i = -1;
+	while (hit[++i].valid)
 	{
-		txt = hit[i.x].ima_xpm;
-		txt_pix = hit[i.x].txt_pix;
-		y_inter = hit[i.x].y_inter;
-		while (y_inter.x < y_inter.y)
-		{
-			c = *(int *)(txt->addr + (int)(txt_pix.y) * txt->size_line + \
-				(int)(txt_pix.x) * (txt->bpp / 8));
-			i.y = -1;
-			while (++i.y < col_width)
-				*(int *)(img->addr + y_inter.x * img->size_line + \
-					(i.x * col_width + i.y) * (img->bpp / 8)) = c;
-			txt_pix.y += hit[i.x].txt_ty.x;
-			y_inter.x++;
-		}
-		i.x++;
+		hit[i].txt_ty.y = i * col_width;
+		img->draw_txt_vlines(img, hit[i].ima_xpm, &hit[i], col_width);
 	}
 }
 

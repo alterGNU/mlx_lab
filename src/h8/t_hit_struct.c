@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 19:24:14 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/24 20:45:31 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/25 10:01:58 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ void	set_hit_texture(const t_data *dt, t_hit *hit)
 	if (hit->type.x < 0)
 	{
 		if (hit->type.x % 2)
-			hit->texture = dt->txt_v;
-		else
 			hit->texture = dt->txt_h;
+		else
+			hit->texture = dt->txt_v;
 	}
 	if (hit->type.x == NOW)
 		hit->texture = dt->txt_north;

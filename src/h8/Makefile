@@ -50,6 +50,7 @@ SRC			=	display_infos.c \
 				t_fpos_utils.c \
 				t_hit_array.c \
 				t_hit_fun_drawlines.c \
+				t_hit_fun_drawtxtlines.c \
 				t_hit_fun_putpixel.c \
 				t_hit_struct.c \
 				t_ima_builders.c \
