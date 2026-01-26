@@ -6,7 +6,7 @@
 /*   By: lagrondi <lagrondi.student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/04 12:08:27 by lagrondi          #+#    #+#             */
-/*   Updated: 2026/01/26 06:48:43 by lagrondi         ###   ########.fr       */
+/*   Updated: 2026/01/26 09:46:58 by lagrondi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,14 @@
 # define EIW_COLOR 0x35751b
 # define SIW_COLOR 0X224215
 # define WIW_COLOR 0x406930
-# define PATH_NORTH_IMAGE "../../textures/wall1.xpm"
-# define PATH_SOUTH_IMAGE "../../textures/wall2.xpm"
-# define PATH_EAST_IMAGE  "../../textures/wall3.xpm"
-# define PATH_WEST_IMAGE  "../../textures/wall4.xpm"
+# define PATH_NORTH_IMAGE "../../textures/NO.xpm"
+# define PATH_SOUTH_IMAGE "../../textures/SO.xpm"
+# define PATH_EAST_IMAGE  "../../textures/EA.xpm"
+# define PATH_WEST_IMAGE  "../../textures/WE.xpm"
+//# define PATH_NORTH_IMAGE "../../textures/wall1.xpm"
+//# define PATH_SOUTH_IMAGE "../../textures/wall2.xpm"
+//# define PATH_EAST_IMAGE  "../../textures/wall3.xpm"
+//# define PATH_WEST_IMAGE  "../../textures/wall4.xpm"
 //# define PATH_NORTH_IMAGE "../../textures/tile_512.xpm"
 //# define PATH_SOUTH_IMAGE "../../textures/wood_512.xpm"
 //# define PATH_EAST_IMAGE  "../../textures/tile_512.xpm"
